@@ -14,14 +14,16 @@ from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
 import altair as alt
 import pandas as pd
-
+from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 class PDF(FPDF):
     def header(self):
@@ -648,12 +650,24 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
                             recomendaciones_especificas,
                             puesto)
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        tmp_file.write(pdf_output.getvalue())
-        tmp_file_path = tmp_file.name
+    public_folder = './static/pdf_reports/'
+    os.makedirs(public_folder, exist_ok=True)
 
-    # Return a downloadable link to the generated PDF
-    return FileResponse(tmp_file_path, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=analisis_cv.pdf"})
+    # Guardar el archivo PDF
+    pdf_filename = "analisis_cv.pdf"
+    pdf_filepath = os.path.join(public_folder, pdf_filename)
+
+    with open(pdf_filepath, 'wb') as f:
+        f.write(pdf_output.getvalue())
+
+    # Devuelve la URL donde el PDF está disponible para ser accedido
+    pdf_url = f"https://api-cv-myworkin.onrender.com/static/pdf_reports/{pdf_filename}"
+
+    # Devuelves el enlace en formato JSON
+    return JSONResponse(content={"pdf_url": pdf_url})
+
+
+
 def extract_score_from_text(text):
     try:
         score = int(text.split(":")[1].strip().split()[0])
