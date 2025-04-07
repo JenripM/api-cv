@@ -17,6 +17,7 @@ import pandas as pd
 from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from datetime import datetime
 
 load_dotenv()
 
@@ -652,9 +653,10 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     public_folder = './static/pdf_reports/'
     os.makedirs(public_folder, exist_ok=True)
+    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     # Guardar el archivo PDF
-    pdf_filename = "analisis_cv.pdf"
+    pdf_filename = f"{candidate_name}_{puesto}_{now}.pdf"
     pdf_filepath = os.path.join(public_folder, pdf_filename)
 
     with open(pdf_filepath, 'wb') as f:
