@@ -15,6 +15,7 @@ from fastapi.responses import StreamingResponse
 import altair as alt
 import pandas as pd
 
+from fastapi.responses import FileResponse
 
 load_dotenv()
 
@@ -277,7 +278,7 @@ def create_pdf(analysis_text: str,
     return pdf_output
 
 
-@app.post("/analizar-cv/")
+@app.get("/analizar-cv/")
 async def analizar_cv(pdf_url: str, puesto_postular: str):
     response = requests.get(pdf_url)
     
@@ -647,8 +648,12 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
                             recomendaciones_especificas,
                             puesto)
 
-    return StreamingResponse(pdf_output, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=analisis_cv.pdf"})
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(pdf_output.getvalue())
+        tmp_file_path = tmp_file.name
 
+    # Return a downloadable link to the generated PDF
+    return FileResponse(tmp_file_path, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=analisis_cv.pdf"})
 def extract_score_from_text(text):
     try:
         score = int(text.split(":")[1].strip().split()[0])
