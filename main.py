@@ -14,7 +14,6 @@ from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
 import altair as alt
 import pandas as pd
-import uvicorn
 
 
 load_dotenv()
@@ -87,7 +86,21 @@ class PDF(FPDF):
         self.ln(5) 
 
 
-def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitability_score: int, alignment_score: int, cv_approach_analysis: str, cv_improvement_suggestions: str, candidate_name: str, observations_and_opportunities: str, elements_clave:str,cursos_ceritificaciones:str, formato_diseno_cv:str):
+def create_pdf(analysis_text: str,
+                score: int,
+                suitability_analysis: str,
+                suitability_score: int,
+                alignment_score: int,
+                cv_approach_analysis: str,
+                cv_improvement_suggestions: str,
+                candidate_name: str,
+                observations_and_opportunities: str, 
+                elements_clave:str,
+                cursos_ceritificaciones:str,
+                formato_diseno_cv:str,
+                areas_mejora:str,
+                recomendaciones_especificas:str,
+                puesto:str):
     pdf = PDF()
     pdf.add_page()
 
@@ -104,9 +117,11 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
     pdf.set_text_color(0, 0, 0)  
     pdf.cell(0, 15, f"{candidate_name}", 0, 1, 'I')  
 
+    puesto = puesto.replace("_", " ")  
     pdf.set_font("Poppins-Regular", '', 12)  
     pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "Analista de Marketing", 0, 1, 'I')
+    pdf.cell(0, 15, f"{puesto}", 0, 1, 'I')
+
 
     pdf.ln(2) 
     pdf.set_draw_color(255, 165, 0)  
@@ -123,7 +138,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.set_font("Poppins-Regular", size=12)
 
-    pdf.multi_cell(0, 10, analysis_text)
+    pdf.multi_cell(0, 5, analysis_text)
 
     pdf.ln(10)
     pdf.set_font("Poppins-Bold", '', 14) 
@@ -137,7 +152,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)  
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, suitability_analysis)  
+    pdf.multi_cell(0, 5, suitability_analysis)  
 
 
     pdf.ln(2)  
@@ -161,7 +176,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, cv_approach_analysis) 
+    pdf.multi_cell(0, 5, cv_approach_analysis) 
 
 
 
@@ -172,16 +187,45 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, cv_improvement_suggestions)  
+    pdf.multi_cell(0, 5, cv_improvement_suggestions)  
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
     pdf.set_text_color(0, 0, 0)  
     pdf.cell(0, 15, "SECCIÓN 4: OBSERVACIONES Y OPORTUNIDADES DE MEJORA", 0, 1, 'I')
 
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "Fortalezas", 0, 1, 'I') 
+
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, observations_and_opportunities)
+    pdf.multi_cell(0, 5, observations_and_opportunities)
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "Áreas de mejora", 0, 1, 'I') 
+
+    pdf.set_font("Poppins-Regular", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.multi_cell(0, 5, areas_mejora) 
+
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "Recomendaciones especificas", 0, 1, 'I') 
+
+    pdf.set_font("Poppins-Regular", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.multi_cell(0, 5, recomendaciones_especificas) 
+
+
+
+
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -195,7 +239,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, elements_clave)
+    pdf.multi_cell(0, 5, elements_clave)
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -204,7 +248,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, cursos_ceritificaciones)
+    pdf.multi_cell(0, 5, cursos_ceritificaciones)
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -213,7 +257,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 10, formato_diseno_cv)
+    pdf.multi_cell(0, 5, formato_diseno_cv)
 
 
     pdf.ln(10) 
@@ -224,7 +268,7 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
     pdf.ln(1)  
     pdf.set_font("Poppins-Bold", '', 10)  
     pdf.set_text_color(255, 165, 0) 
-    pdf.multi_cell(0, 10, "Para Mas Informacion, visitanos en myworkin2.com o contactanos en info@myworkin2.com", align='C')
+    pdf.multi_cell(0, 10, "Para Mas Información, visiten en workin2.com o contactanos en diego@workin2.com", align='C')
 
     pdf_output = BytesIO()
     pdf_output.write(pdf.output(dest='S').encode('latin1')) 
@@ -234,16 +278,16 @@ def create_pdf(analysis_text: str, score: int, suitability_analysis: str, suitab
 
 
 @app.post("/analizar-cv/")
-async def analizar_cv(pdf_url: str):
+async def analizar_cv(pdf_url: str, puesto_postular: str):
     response = requests.get(pdf_url)
     
+    puesto = puesto_postular
+
     if response.status_code != 200:
         return {"error": "No se pudo descargar el archivo PDF."}
     
-    # Guardar el contenido del PDF en un archivo temporal
     pdf_content = BytesIO(response.content)
 
-    # Extraer el texto del PDF
     contenido = extract_text_from_pdf(pdf_content)
 
 
@@ -310,6 +354,10 @@ async def analizar_cv(pdf_url: str):
     Luego, calcula un porcentaje de alineación, que debe ser un número entre 0 y 100, indicando el grado de adecuación entre el perfil del candidato y el puesto. 
 
     Por favor, responde con solo un número que represente el porcentaje de encaje.
+
+    Por ejemplo: 89 
+
+    Solo debe ser un numero
     {contenido}
     """
 
@@ -387,15 +435,20 @@ async def analizar_cv(pdf_url: str):
         - Iniciar cada logro con un verbo de acción poderoso.
         - Incluir resultados cuantificables.
         - Alinear cada experiencia con el rol objetivo.
-        - Mantener coherencia y no inventar logros no evidentes.
+        - Brindar ejemplos con los verbos pero relacionados con el cv, no quiero que me des ejemplos tuyos, utiliza oraciones del cv y agrega el verbo, pero referente a la experiencia laboral
+        Dame unos 3 ejemplos, tienen que ser concretos no solamente me des los verbos, si no la oracion completa
 
     2. Formación Académica:
+        Debes verificar si tengo datos como:
         - Nombre de la universidad.
         - Carrera.
         - Especialización (si existe).
         - Mérito académico destacado (solo si es relevante).
+        Si tengo esos datos debes darme que otra informacion de formacion academica puedo agregar
 
     3. Habilidades Técnicas:
+            Debes brindarme Habilidades  Técnicas, en caso no tenga esta informacion: si tengo, ve que otra habilidad  puedes dar, pero no me pongas las que tengo
+
         - Nombre de la herramienta.
         - Nivel de dominio (Básico / Intermedio / Avanzado).
         - Relevancia con el rol.
@@ -407,6 +460,7 @@ async def analizar_cv(pdf_url: str):
         - Fecha de obtención.
 
     Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de 'Analista de Marketing'.
+    No agregues asetericos, ni numerales
     {contenido}
     """
 
@@ -419,17 +473,17 @@ async def analizar_cv(pdf_url: str):
     cv_improvement_suggestions = response5['choices'][0]['message']['content']
 
     prompt7 = f"""
-    Eres un reclutador profesional. Por favor, proporciona un análisis detallado de las observaciones y oportunidades de mejora para el candidato en el puesto de 'Analista de Marketing'. En este análisis, evalúa lo siguiente:
+    Eres un reclutador profesional. Por favor, proporciona un análisis detallado. En este análisis, evalúa lo siguiente:
 
-    1. Fortalezas: Identifica las áreas en las que el candidato sobresale y tiene un fuerte desempeño. Esto puede incluir habilidades específicas, experiencia relevante, o logros notables que aportan valor al puesto.
+    Identifica las áreas en las que el candidato sobresale y tiene un fuerte desempeño. Esto puede incluir habilidades específicas, experiencia relevante, o logros notables que aportan valor al puesto. Dame en guiones, se breve y consiso
 
-    2. Áreas de mejora: Señala las áreas donde el candidato puede mejorar para ser más adecuado para el puesto. Esto puede incluir habilidades faltantes, experiencia relevante o áreas en las que necesita formación adicional.
-
-    3. Recomendaciones específicas: Proporciona sugerencias claras y accionables para cada área de mejora. Las recomendaciones deben ser prácticas y enfocadas en cómo el candidato puede mejorar para mejorar su idoneidad para el puesto.
+    Se breve y consiso, hazlo en guiones y se especifico
 
     Por favor, asegúrate de que cada sección esté claramente separada y de que las recomendaciones sean específicas y detalladas.
 
-    Alos subtitulos no les coloques numerales o astericos
+    No debe a ver subtitulos no les coloques numerales o astericos
+    No pongas subtitulos, todo hazlo por guiones y de manera general
+
     {contenido}
     """
 
@@ -439,6 +493,57 @@ async def analizar_cv(pdf_url: str):
         temperature=0.7,
     )
     observations_and_opportunities = response7['choices'][0]['message']['content']
+
+
+    prompt13 = f"""
+    Eres un reclutador profesional. Por favor, proporciona un análisis detallado. En este análisis, evalúa lo siguiente:
+
+    Señala las áreas donde el candidato puede mejorar para ser más adecuado para el puesto. Esto puede incluir habilidades faltantes, experiencia relevante o áreas en las que necesita formación adicional.
+
+    Por favor, asegúrate de que cada sección esté claramente separada y de que las recomendaciones sean específicas y detalladas.
+
+    Se breve y consiso, hazlo en guiones y se especifico
+
+    No debe a ver subtitulos no les coloques numerales o astericos, sin asteriscos
+    
+    No pongas subtitulos, todo hazlo por guiones y de manera general
+
+    {contenido}
+    """
+
+    response13 = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt13}],
+        temperature=0.7,
+    )
+    areas_mejora = response13['choices'][0]['message']['content']
+
+
+
+
+
+    prompt14 = f"""
+    Eres un reclutador profesional. Por favor, proporciona un análisis detallado. En este análisis, evalúa lo siguiente:
+
+    Proporciona sugerencias claras y accionables para cada área de mejora. Las recomendaciones deben ser prácticas y enfocadas en cómo el candidato puede mejorar para mejorar su idoneidad para el puesto.
+
+    Por favor, asegúrate de que cada sección esté claramente separada y de que las recomendaciones sean específicas y detalladas.
+
+    Se breve y consiso, hazlo en guiones y se especifico
+
+    No debe a ver subtitulos no les coloques numerales o astericos, sin asteriscos, quiero por guiones, se claro
+    
+    No pongas subtitulos, todo hazlo por guiones y de manera general
+    {contenido}
+    """
+
+    response14 = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt14}],
+        temperature=0.7,
+    )
+    recomendaciones_especificas = response14['choices'][0]['message']['content']
+
 
 
 
@@ -453,10 +558,12 @@ async def analizar_cv(pdf_url: str):
         - Usar términos que suelen estar en las descripciones de puestos, especialmente habilidades técnicas y blandas.
         - Asegurar que estas palabras clave estén integradas de forma natural en el CV, no en forma de lista.
         - Si no están, sugerir dónde y cómo integrarlas.
+        Tiene que sacarlas de la posición que estoy buscando. Por ejemplo, si voy a una posición de Analista de Marketing, quizas palabras clave sean SEO, SEM, REDES SOCIALES, ETC
+        esas palabras variaran dependiendo el {puesto} al que estoy
 
-    Proporciona filtros ATS, separados por guiones. Responde únicamente con los filtros ATS en el siguiente formato por guiones
+        Proporciona filtros ATS, separados por guiones. Responde únicamente con los filtros ATS en el siguiente formato por guiones
 
-    No incluyas ningún texto adicional. Tienes que darme asi las palabras, solo 5 palabras
+     Tienes que darme asi las palabras, solo 5 palabras, Las palabras claves no deben ser del cv, si no del puesto que se busca
 
     {contenido}
     """
@@ -490,13 +597,27 @@ async def analizar_cv(pdf_url: str):
     prompt12 = f"""
      Eres un reclutador profesional. Evalúa si el CV cumple con los criterios mínimos de legibilidad y presentación profesional, basándote en el formato Harvard. Los criterios son los siguientes:
 
-    1. **1 página**: El CV debe ocupar solo una página.
-    2. **Buena jerarquía visual**: Asegúrate de que la información esté organizada de manera clara, con títulos y subtítulos bien diferenciados.
-    3. **Tipografía clara**: El CV debe usar una tipografía legible y profesional.
-    4. **Uso correcto de espacios**: Los márgenes y el espaciado deben ser adecuados, sin saturar el documento.
-    5. **Estructura coherente**: El CV debe seguir una estructura lógica, por ejemplo, con secciones bien definidas (formación, experiencia laboral, habilidades, etc.).
+    1. 1 página: El CV debe ocupar solo una página. (Debes verificar que si tiene una pagina o mas)
+    2. Buena jerarquía visual: Asegúrate de que la información esté organizada de manera clara, con títulos y subtítulos bien diferenciados. (Se directo)
+    3. Tipografía clara: El CV debe usar una tipografía legible y profesional. (Se breve al indicar eso)
+    4. Uso correcto de espacios: Los márgenes y el espaciado deben ser adecuados, sin saturar el documento.
+    5. Estructura coherente: El CV debe seguir una estructura lógica, por ejemplo, con secciones bien definidas (formación, experiencia laboral, habilidades, etc.).
 
     Si el CV cumple con estos criterios, confirma que pasa los filtros ATS. Si no, indica que no cumple y proporciónale el siguiente enlace donde puede encontrar un formato adecuado: https://www.workin2.com/post/descarga-gratis-formatos-de-cv-para-estudiantes-y-practicantes.
+    No agregues asetericos, ni numerales
+
+    Tienes que verificar bien el documento, contar todo bien
+    Ejemplo: Algo asi debe ser: si es que cumple: Tienes que indicar detalle por detalle
+    El CV cumple con los criterios mínimos de legibilidad y presentación profesional en
+    formato Harvard. 
+    1. Cumple con tener una sola página.
+    2. La jerarquía visual está bien definida con títulos y subtítulos diferenciados.
+    3. La tipografía es clara y profesional.
+    4. Los espacios y márgenes son adecuados, sin saturar el documento.
+    5. Sigue una estructura coherente con secciones bien definidas (Experiencia,
+    Voluntariado, Educación, Habilidades & Certificaciones, Logros destacados, Hobbies).
+    Por lo tanto, este CV pasa los filtros ATS. ¡Buen trabajo!
+
     {contenido}
     """
 
@@ -510,7 +631,21 @@ async def analizar_cv(pdf_url: str):
 
 
 
-    pdf_output = create_pdf(analysis_text, score, suitability_analysis, suitability_score, alignment_score, cv_approach_analysis, cv_improvement_suggestions, candidate_name,observations_and_opportunities,elements_clave,cursos_ceritificaciones,formato_diseno_cv)
+    pdf_output = create_pdf(analysis_text,
+                            score,
+                            suitability_analysis,
+                            suitability_score,
+                            alignment_score,
+                            cv_approach_analysis,
+                            cv_improvement_suggestions,
+                            candidate_name,
+                            observations_and_opportunities,
+                            elements_clave,
+                            cursos_ceritificaciones,
+                            formato_diseno_cv,
+                            areas_mejora,
+                            recomendaciones_especificas,
+                            puesto)
 
     return StreamingResponse(pdf_output, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=analisis_cv.pdf"})
 
@@ -523,9 +658,3 @@ def extract_score_from_text(text):
 
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Hola, mundo"}
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
