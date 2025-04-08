@@ -512,6 +512,10 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     
     No pongas subtitulos, todo hazlo por guiones y de manera general
 
+    No quiero Asteriscos, si el {puesto} es en ingles, tu mantiene el puesto tal como es pero la respuesta en español
+
+    No quiero astericos, no me des subtitulos
+
     {contenido}
     """
 
