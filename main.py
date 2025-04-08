@@ -656,7 +656,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
     # Guardar el archivo PDF
-    pdf_filename = f"{candidate_name}_{puesto}_{now}.pdf"
+    pdf_filename = f"{candidate_name}_{now}.pdf"
     pdf_filepath = os.path.join(public_folder, pdf_filename)
 
     with open(pdf_filepath, 'wb') as f:
