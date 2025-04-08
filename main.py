@@ -104,7 +104,10 @@ def create_pdf(analysis_text: str,
                 formato_diseno_cv:str,
                 areas_mejora:str,
                 recomendaciones_especificas:str,
-                puesto:str):
+                puesto:str,
+                formacion_academica:str,
+                habilidades_tecnicas:str,
+                certificaciones:str):
     pdf = PDF()
     pdf.add_page()
 
@@ -189,9 +192,45 @@ def create_pdf(analysis_text: str,
     pdf.set_text_color(0, 0, 0)  
     pdf.cell(0, 15, "SECCIÓN 3: SUGERENCIAS DE MEJORA POR SECCIÓN DEL CV", 0, 1, 'I')
 
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "1. Experiencia Laboral", 0, 1, 'I') 
+
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
     pdf.multi_cell(0, 5, cv_improvement_suggestions)  
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "2. Formación Academica", 0, 1, 'I') 
+
+
+    pdf.set_font("Poppins-Regular", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.multi_cell(0, 5, formacion_academica)
+
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "3. Habilidades Tecnicas", 0, 1, 'I') 
+
+
+    pdf.set_font("Poppins-Regular", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.multi_cell(0, 5, habilidades_tecnicas)
+
+    pdf.ln(2)  
+    pdf.set_font("Poppins-Bold", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.cell(0, 15, "", 0, 1, '4. Certificaciones') 
+
+    pdf.set_font("Poppins-Regular", '', 12)
+    pdf.set_text_color(0, 0, 0)  
+    pdf.multi_cell(0, 5, certificaciones)
+
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -431,37 +470,14 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt5 = f"""
-    SECCIÓN 3: SUGERENCIAS DE MEJORA POR SECCIÓN DEL CV
 
     Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
 
-    1. Experiencia Laboral:
         - Iniciar cada logro con un verbo de acción poderoso.
         - Incluir resultados cuantificables.
         - Alinear cada experiencia con el rol objetivo.
         - Brindar ejemplos con los verbos pero relacionados con el cv, no quiero que me des ejemplos tuyos, utiliza oraciones del cv y agrega el verbo, pero referente a la experiencia laboral
         Dame unos 3 ejemplos, tienen que ser concretos no solamente me des los verbos, si no la oracion completa
-
-    2. Formación Académica:
-        Debes verificar si tengo datos como:
-        - Nombre de la universidad.
-        - Carrera.
-        - Especialización (si existe).
-        - Mérito académico destacado (solo si es relevante).
-        Si tengo esos datos debes darme que otra informacion de formacion academica puedo agregar
-
-    3. Habilidades Técnicas:
-            Debes brindarme Habilidades  Técnicas, en caso no tenga esta informacion: si tengo, ve que otra habilidad  puedes dar, pero no me pongas las que tengo
-
-        - Nombre de la herramienta.
-        - Nivel de dominio (Básico / Intermedio / Avanzado).
-        - Relevancia con el rol.
-
-    4. Certificaciones:
-        - Sugerir certificaciones específicas que potencien el perfil.
-        - Nombre de la certificación.
-        - Institución que la emite (si hay).
-        - Fecha de obtención.
 
     Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
     No agregues asetericos, ni numerales
@@ -475,6 +491,98 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         #max_tokens=200 
     )
     cv_improvement_suggestions = response5['choices'][0]['message']['content']
+
+
+
+
+
+
+
+    prompt20 = f"""
+
+    Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
+
+
+        Debes verificar si tengo datos como:
+        - Nombre de la universidad.
+        - Carrera.
+        - Especialización (si existe).
+        - Mérito académico destacado (solo si es relevante).
+        Si tengo esos datos debes darme que otra informacion de formacion academica puedo agregar
+
+    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
+    No agregues asetericos, ni numerales
+    {contenido}
+    """
+
+    response20 = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt20}],
+        temperature=0.7,
+        #max_tokens=200 
+    )
+    formacion_academica = response20['choices'][0]['message']['content']
+
+
+
+
+
+
+
+
+
+
+    prompt21 = f"""
+
+    Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
+
+
+        Debes brindarme Habilidades  Técnicas, en caso no tenga esta informacion: si tengo, ve que otra habilidad  puedes dar, pero no me pongas las que tengo
+
+        - Nombre de la herramienta.
+        - Nivel de dominio (Básico / Intermedio / Avanzado).
+        - Relevancia con el rol.
+
+    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
+    No agregues asetericos, ni numerales, no agregues subtitulos
+    {contenido}
+    """
+
+    response21 = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt21}],
+        temperature=0.7,
+        #max_tokens=200 
+    )
+    habilidades_tecnicas = response21['choices'][0]['message']['content']
+
+
+
+
+
+    prompt22 = f"""
+
+    Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
+
+        - Sugerir certificaciones específicas que potencien el perfil.
+        - Nombre de la certificación.
+        - Institución que la emite (si hay).
+        - Fecha de obtención.
+
+    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
+    No agregues asetericos, ni numerales
+    {contenido}
+    """
+
+    response22 = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt22}],
+        temperature=0.7,
+        #max_tokens=200 
+    )
+    certificaciones = response22['choices'][0]['message']['content']
+
+
 
     prompt7 = f"""
     Eres un reclutador profesional. Por favor, proporciona un análisis detallado. En este análisis, evalúa lo siguiente:
@@ -653,7 +761,10 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
                             formato_diseno_cv,
                             areas_mejora,
                             recomendaciones_especificas,
-                            puesto)
+                            puesto,
+                            formacion_academica,
+                            habilidades_tecnicas,
+                            certificaciones)
 
     public_folder = './static/pdf_reports/'
     os.makedirs(public_folder, exist_ok=True)
