@@ -296,7 +296,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt6 = f"""
-    Eres un reclutador profesional. Por favor, extrae el nombre completo del candidato que aparece en el CV para el puesto de 'Analista de Marketing'. El nombre debe ser identificado con precisión, considerando los posibles formatos y variaciones en la presentación de la información del candidato dentro del documento. 
+    Eres un reclutador profesional. Por favor, extrae el nombre completo del candidato que aparece en el CV para el puesto de {puesto}. El nombre debe ser identificado con precisión, considerando los posibles formatos y variaciones en la presentación de la información del candidato dentro del documento. 
     Solamente dame el nombre completo
 
     Ejemplo: (Solamente dame eso)
@@ -316,7 +316,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt1 = f"""
-    Eres un reclutador profesional. Analiza el siguiente currículum vitae para el puesto de 'Analista de Marketing'.
+    Eres un reclutador profesional. Analiza el siguiente currículum vitae para el puesto de {puesto}.
     Debes proporcionar el siguiente análisis detallado del CV:
 
     Genera un resumen claro, atractivo y profesional que destaque el potencial del candidato, alineando su perfil con habilidades transferibles, conocimientos, logros formativos y actitud, incluso si no tiene experiencia directa en el cargo. Asegúrate de cubrir:
@@ -330,8 +330,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     {contenido}
     """
 
-    prompt2 = f""" Todo relacionado a Marketing quiero que identifiques brechas
-        - Habilidades técnicas faltantes (ej. marketing digital).
+    prompt2 = f""" Todo relacionado a {puesto} quiero que identifiques brechas
+        - Habilidades técnicas faltantes (ej. {puesto}).
         - Conocimientos específicos del sector (ej. banca).
         - Certificaciones o formación adicional necesaria.
         - Herramientas requeridas por el rol y nivel de dominio.
@@ -339,21 +339,21 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     3. Recomendaciones de mejora claras y accionables. las recomendaciones deben ir en cada brecha, no por separado
 
      Ejemplo: igual a este ejmplo debe ser: las recomendaciones deben ir en cada brecha
-    - Marketing digital (Alto): Requiere capacitación específica para mejorar. 
+    - {puesto} (Alto): Requiere capacitación específica para mejorar. 
     - Conocimiento del sector bancario (Alto): Necesita inmersión en el sector. 
-    - Herramientas de marketing (Medio): Mejorar el uso de herramientas específicas de marketing digital. 
-    - Certificaciones en marketing (Medio): Obtener certificaciones reconocidas.
+    - Herramientas de {puesto} (Medio): Mejorar el uso de herramientas específicas de {puesto} 
+    - Certificaciones en {puesto} (Medio): Obtener certificaciones reconocidas.
 
     {contenido}
     """
 
     prompt3 = f"""
-    Eres un reclutador profesional. Analiza el perfil del candidato para el puesto de 'Analista de Marketing'. Evalúa lo siguiente para determinar qué tan adecuado es el candidato para el puesto:
+    Eres un reclutador profesional. Analiza el perfil del candidato para el puesto de {puesto}. Evalúa lo siguiente para determinar qué tan adecuado es el candidato para el puesto:
 
     - Experiencia laboral relevante.
-    - Habilidades necesarias para el rol (marketing digital, análisis de datos, etc.).
+    - Habilidades necesarias para el rol de {puesto}.
     - Capacitación y formación complementaria.
-    - Actitudes y aptitudes generales relacionadas con el marketing.
+    - Actitudes y aptitudes generales relacionadas con el {puesto}.
 
     Luego, calcula un porcentaje de alineación, que debe ser un número entre 0 y 100, indicando el grado de adecuación entre el perfil del candidato y el puesto. 
 
@@ -413,11 +413,11 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     prompt4 = f"""
     Enfoque del CV:
-    Utilizando el porcentaje de encaje de {alignment_score}% para el puesto de 'Analista de Marketing', genera un análisis sobre cómo el perfil del candidato se ajusta a este puesto. Considera lo siguiente:
+    Utilizando el porcentaje de encaje de {alignment_score}% para el puesto de {puesto}, genera un análisis sobre cómo el perfil del candidato se ajusta a este puesto. Considera lo siguiente:
 
     - Habilidades generales y específicas que tiene el candidato.
     - Áreas donde tiene una fuerte alineación con el puesto (por ejemplo, habilidades analíticas, gestión de proyectos).
-    - Áreas donde el candidato tiene desajustes importantes (por ejemplo, falta de experiencia específica en marketing digital o bancario).
+    - Áreas donde el candidato tiene desajustes importantes (por ejemplo, falta de experiencia específica en {puesto}).
 
     El análisis debe ser un párrafo coherente, explicando cómo el porcentaje se traduce en la adecuación del candidato al puesto. Tiene que ser breve y entendible
     """
@@ -433,7 +433,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     prompt5 = f"""
     SECCIÓN 3: SUGERENCIAS DE MEJORA POR SECCIÓN DEL CV
 
-    Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de 'Analista de Marketing'. En esta parte, cubre lo siguiente:
+    Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
 
     1. Experiencia Laboral:
         - Iniciar cada logro con un verbo de acción poderoso.
@@ -463,7 +463,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         - Institución que la emite (si hay).
         - Fecha de obtención.
 
-    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de 'Analista de Marketing'.
+    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
     No agregues asetericos, ni numerales
     {contenido}
     """
@@ -562,7 +562,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         - Usar términos que suelen estar en las descripciones de puestos, especialmente habilidades técnicas y blandas.
         - Asegurar que estas palabras clave estén integradas de forma natural en el CV, no en forma de lista.
         - Si no están, sugerir dónde y cómo integrarlas.
-        Tiene que sacarlas de la posición que estoy buscando. Por ejemplo, si voy a una posición de Analista de Marketing, quizas palabras clave sean SEO, SEM, REDES SOCIALES, ETC
+        Tiene que sacarlas de la posición que estoy buscando. Por ejemplo, si voy a una posición de {puesto}, quizas palabras clave sean SEO, SEM, REDES SOCIALES, ETC todo relacionado al {puesto}
         esas palabras variaran dependiendo el {puesto} al que estoy
 
         Proporciona filtros ATS, separados por guiones. Responde únicamente con los filtros ATS en el siguiente formato por guiones
