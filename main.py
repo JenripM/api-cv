@@ -107,7 +107,8 @@ def create_pdf(analysis_text: str,
                 puesto:str,
                 formacion_academica:str,
                 habilidades_tecnicas:str,
-                certificaciones:str):
+                certificaciones:str,
+                cv_rating:str):
     pdf = PDF()
     pdf.add_page()
 
@@ -122,15 +123,33 @@ def create_pdf(analysis_text: str,
     pdf.ln(1)  
     pdf.set_font("Poppins-Bold", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, f"{candidate_name}", 0, 1, 'I')  
+    # Primero, agregamos el nombre del candidato (a la izquierda)
+    pdf.cell(70, 10, f"{candidate_name}", 0, 0, 'L')  # Alineado a la izquierda
+    pdf.ln(10)  
+    # Luego, agregamos el puesto (en el centro)
+    puesto = puesto.replace('_', ' ')
+    pdf.cell(70, 10, f"{puesto}", 0, 0, 'I')  # Alineado al centro
 
-    puesto = puesto.replace("_", " ")  
-    pdf.set_font("Poppins-Regular", '', 12)  
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, f"{puesto}", 0, 1, 'I')
+    pdf.set_font("Poppins-Bold", '', 15)  # Cambiamos el tamaño de la fuente a 20 para el cv_rating
 
+    circle_radius = 20
+    circle_x = 180  
+    circle_y = pdf.get_y() + 5 
+    pdf.set_line_width(1)
+    # Dibuja el círculo
+    pdf.set_draw_color(2, 69, 121)  
+    pdf.set_fill_color(0, 0, 0)  
+    pdf.ellipse(circle_x - circle_radius, circle_y - circle_radius, 2 * circle_radius, 2 * circle_radius)
 
-    pdf.ln(2) 
+    pdf.set_font("Poppins-Bold", '', 25)  
+
+    pdf.set_text_color(2, 69, 121)  
+    cv_rating_text = f"{cv_rating} / 10"  
+    pdf.text(circle_x - 10, circle_y + 4, cv_rating_text)  
+
+    pdf.set_font("Poppins-Bold", '', 12)  
+
+    pdf.ln(32) 
     pdf.set_draw_color(255, 165, 0)  
     pdf.set_line_width(0.5)  
     pdf.line(10, pdf.get_y(), 200, pdf.get_y())  
@@ -746,6 +765,39 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     formato_diseno_cv = response12['choices'][0]['message']['content']
 
 
+    prompt_analysis_cv = f"""
+    Eres un reclutador profesional. Analiza el siguiente currículum vitae para el puesto de {puesto}. 
+    Proporciona una calificación de 1 a 10, basada en qué tan bien se ajusta el candidato al puesto. La calificación debe ser un número entero entre 1 y 10.
+
+    Considera los siguientes aspectos:
+    1. Experiencia relevante.
+    2. Habilidades técnicas necesarias para el puesto.
+    3. Habilidades blandas que podrían ser relevantes.
+    4. Formación académica y certificaciones pertinentes.
+    5. La presentación y claridad del CV.
+    Analisa el cv
+    El resultado debe ser un numero entero solo un numero enteroo
+    {contenido}
+    """
+
+    response_analysis_cv = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_analysis_cv}],
+        temperature=0.7,
+        #max_tokens=50
+    )
+
+    # Extraemos solo el número de la calificación de la respuesta
+    cv_rating = response_analysis_cv['choices'][0]['message']['content'].strip()
+
+    # Asegurarse de que el valor sea un número entero
+    try:
+        cv_rating = int(cv_rating)
+    except ValueError:
+        cv_rating = 1  # Si la respuesta no es un número válido, asignamos un 0
+
+
+
 
     pdf_output = create_pdf(analysis_text,
                             score,
@@ -764,7 +816,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
                             puesto,
                             formacion_academica,
                             habilidades_tecnicas,
-                            certificaciones)
+                            certificaciones,
+                            cv_rating)
 
     public_folder = './static/pdf_reports/'
     os.makedirs(public_folder, exist_ok=True)
