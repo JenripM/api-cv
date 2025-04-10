@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
+import re  # Asegúrate de importar esta librería al inicio del archivo
 
 load_dotenv()
 
