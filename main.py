@@ -18,7 +18,6 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
-import re  # Asegúrate de importar esta librería al inicio del archivo
 
 load_dotenv()
 
@@ -793,19 +792,14 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     )
 
     # Extraemos solo el número de la calificación de la respuesta
-    cv_rating_text = response_analysis_cv['choices'][0]['message']['content'].strip()
+    cv_rating = response_analysis_cv['choices'][0]['message']['content'].strip()
 
-    # Intentamos extraer el número entero desde el texto generado
-    import re
+    # Asegurarse de que el valor sea un número entero
+    try:
+        cv_rating = int(cv_rating)
+    except ValueError:
+        cv_rating = 5  # Si la respuesta no es un número válido, asignamos un 5, que sería un valor neutral
 
-    # Buscar un número entero en el texto
-    cv_rating_match = re.search(r'\b\d+\b', cv_rating_text)
-
-    # Si encontramos un número, lo convertimos a entero, de lo contrario, asignamos un valor neutral (5)
-    if cv_rating_match:
-        cv_rating = int(cv_rating_match.group())
-    else:
-        cv_rating = 5  # Valor predeterminado si no se encuentra un número
 
 
     pdf_output = create_pdf(analysis_text,
