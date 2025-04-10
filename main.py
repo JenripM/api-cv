@@ -776,11 +776,14 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     3. Habilidades blandas
     4. Formación académica y certificaciones
     5. Presentación y claridad del CV
+    4. Conocimientos 
 
     Debes analizar correctamente el {puesto} con respecto al cv que estas analizando, el puntaje debe ser la evualacion entre el cv y el {puesto}
     
     Debes analizarlo correctamente, el {puesto}, con la informacion del cv, osea por ejemplo si te paso un cv de un biologo a un puesto de ing. industrial no me lo calificaras con un puntaje alto
     tienes que comprender bien la situacion
+
+    Estudialo bien, el cv y luego calificas, debes averiguar del {puesto} y luego analizarlo con el cv, si se relacionan tendran un puntaje adecuado, y si no tienen el  puntajes bajo
     {contenido}
     """
 
