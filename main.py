@@ -766,19 +766,17 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt_analysis_cv = f"""
-    Eres un reclutador profesional. Analiza el siguiente currículum vitae para el puesto de {puesto}. 
-    Proporciona una calificación de 1 a 10, basada en qué tan bien se ajusta el candidato al puesto. La calificación debe ser un número entero entre 1 y 10.
+    Eres un reclutador profesional con experiencia en la evaluación de currículums para el puesto de {puesto}. 
+    Tu tarea es analizar el siguiente currículum y proporcionar una calificación numérica del 1 al 10, basándote en qué tan bien se ajusta el candidato al puesto. 
+    La calificación debe ser un número entero entre 1 y 10, sin justificación, solo un número. 
+    No debe ser un número muy bajo, analiza a fondo el CV y proporciona una calificación justa.
 
-    Considera los siguientes aspectos:
-    1. Experiencia relevante.
-    2. Habilidades técnicas necesarias para el puesto.
-    3. Habilidades blandas que podrían ser relevantes.
-    4. Formación académica y certificaciones pertinentes.
-    5. La presentación y claridad del CV.
-
-    Proporciona una justificación de tu calificación, enfocándote en los aspectos clave del CV que justifican la puntuación que das.
-
-    Analiza el siguiente CV y dame una calificación bien fundamentada:  lo valores tienen q variar
+    Analiza estos aspectos: 
+    1. Experiencia relevante
+    2. Habilidades técnicas
+    3. Habilidades blandas
+    4. Formación académica y certificaciones
+    5. Presentación y claridad del CV
 
     {contenido}
     """
@@ -787,7 +785,6 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         model="gpt-3.5-turbo", 
         messages=[{"role": "user", "content": prompt_analysis_cv}],
         temperature=0.7,
-        max_tokens=100
     )
 
     # Extraemos solo el número de la calificación de la respuesta
@@ -797,7 +794,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     try:
         cv_rating = int(cv_rating)
     except ValueError:
-        cv_rating = 5  # Si la respuesta no es un número válido, asignamos un 5, que sería un valor neutral
+        cv_rating = 3  # Si la respuesta no es un número válido, asignamos el puntaje máximo
+    # Si la respuesta no es un número válido, asignamos un 5, que sería un valor neutral
 
 
 
