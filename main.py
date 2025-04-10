@@ -768,8 +768,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     prompt_analysis_cv = f"""
     Eres un reclutador profesional con experiencia en la evaluación de currículums para el puesto de {puesto}. 
     Tu tarea es analizar el siguiente currículum y proporcionar una calificación numérica del 1 al 10, basándote en qué tan bien se ajusta el candidato al puesto. 
-    La calificación debe ser un número entero entre 1 y 10, sin justificación, solo un número. 
-    No debe ser un número muy bajo, analiza a fondo el CV y proporciona una calificación justa.
+    La calificación debe ser un número entero entre 1 y 10. Puedes incluir una breve oración si lo deseas, pero el número debe estar claro en la respuesta.
 
     Analiza estos aspectos: 
     1. Experiencia relevante
@@ -787,16 +786,15 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         temperature=0.7,
     )
 
-    # Extraemos solo el número de la calificación de la respuesta
-    cv_rating = response_analysis_cv['choices'][0]['message']['content'].strip()
+    # Obtener contenido de la respuesta
+    response_text = response_analysis_cv['choices'][0]['message']['content'].strip()
 
-    # Asegurarse de que el valor sea un número entero
-    try:
-        cv_rating = int(cv_rating)
-    except ValueError:
-        cv_rating = 3  # Si la respuesta no es un número válido, asignamos el puntaje máximo
-    # Si la respuesta no es un número válido, asignamos un 5, que sería un valor neutral
-
+    # Usar regex para extraer el primer número entero entre 1 y 10
+    match = re.search(r'\b([1-9]|10)\b', response_text)
+    if match:
+        cv_rating = int(match.group(1))
+    else:
+        cv_rating = 5  # Valor neutral si no se encuentra un número válido
 
 
     pdf_output = create_pdf(analysis_text,
