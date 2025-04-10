@@ -770,13 +770,17 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     Proporciona una calificación de 1 a 10, basada en qué tan bien se ajusta el candidato al puesto. La calificación debe ser un número entero entre 1 y 10.
 
     Considera los siguientes aspectos:
-    1. Experiencia relevante.
-    2. Habilidades técnicas necesarias para el puesto.
-    3. Habilidades blandas que podrían ser relevantes.
-    4. Formación académica y certificaciones pertinentes.
-    5. La presentación y claridad del CV.
-    Analisa el cv
-    El resultado debe ser un numero entero solo un numero enteroo, no me des numeros muy bajos, analiza bien el cv dame numero enteros
+
+    1. **Experiencia relevante**: Evalúa si el candidato tiene experiencia práctica en el área relacionada con el puesto. ¿Está la experiencia del candidato alineada con lo que se requiere para este puesto?
+    2. **Habilidades técnicas**: Evalúa si las habilidades técnicas del candidato coinciden con las requeridas para el puesto. ¿Está el candidato bien preparado técnicamente?
+    3. **Habilidades blandas**: Evalúa las habilidades interpersonales, comunicación y otras cualidades que podrían ser importantes para el puesto. ¿El candidato tiene habilidades para trabajar en equipo y comunicarse eficazmente?
+    4. **Formación académica y certificaciones**: Evalúa si la educación del candidato y las certificaciones son pertinentes para el puesto. ¿La formación académica es adecuada?
+    5. **Presentación y claridad del CV**: Evalúa si el CV está bien estructurado, es claro y profesional. ¿El CV presenta bien al candidato de manera ordenada y comprensible?
+
+    El resultado debe ser un número entero entre 1 y 10, que refleje cómo el candidato se ajusta al puesto según estos criterios. Asegúrate de que la calificación sea variable y refleje el desempeño en cada aspecto: por ejemplo, si el candidato tiene experiencia y habilidades adecuadas, la calificación debe ser alta, mientras que si falta algún aspecto clave, la calificación será más baja. 
+
+    No me des calificaciones extremadamente bajas sin justificación clara, y evita calificaciones siempre bajas como 1.
+
     {contenido}
     """
 
@@ -784,7 +788,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         model="gpt-3.5-turbo", 
         messages=[{"role": "user", "content": prompt_analysis_cv}],
         temperature=0.7,
-        #max_tokens=50
+        max_tokens=100
     )
 
     # Extraemos solo el número de la calificación de la respuesta
@@ -794,7 +798,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     try:
         cv_rating = int(cv_rating)
     except ValueError:
-        cv_rating = 1  # Si la respuesta no es un número válido, asignamos un 0
+        cv_rating = 5  # Si la respuesta no es un número válido, asignamos un 5, que sería un valor neutral
 
 
 
