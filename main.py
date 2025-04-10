@@ -776,7 +776,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     4. Formación académica y certificaciones pertinentes.
     5. La presentación y claridad del CV.
     Analisa el cv
-    El resultado debe ser un numero entero solo un numero enteroo
+    El resultado debe ser un numero entero solo un numero enteroo, no me des numeros muy bajos, analiza bien el cv dame numero enteros
     {contenido}
     """
 
