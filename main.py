@@ -777,6 +777,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     4. Formación académica y certificaciones
     5. Presentación y claridad del CV
 
+    Debes analizar correctamente el {puesto} con respecto al cv que estas analizando, el puntaje debe ser la evualacion entre el cv y el {puesto}
     {contenido}
     """
 
