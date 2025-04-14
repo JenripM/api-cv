@@ -596,11 +596,14 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         - Alinear cada experiencia con el rol objetivo.
         - Brindar ejemplos con los verbos pero relacionados con el cv, no quiero que me des ejemplos tuyos, utiliza oraciones del cv y agrega el verbo, pero referente a la experiencia laboral.
 
-    
+      
+    Devuelme como ese JSON, en formato correcto
+    Cada punto que hagas, hazle un salto de línea, o sea que no esté todo pegado. Osea en  Cada Corchete Separado
+    Solo es de la formación Laboral. TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
 
+    Todo en relacion con el {puesto}
 
     Formato de salida es el siguiente dame en JSON, formato correcto:   
-    Todo en relacion con el {puesto}
 
        [{{
             "Empresa":,
@@ -614,9 +617,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
             "Evaluación": ,
             "Sugerencia": 
         }}]
-        Devuelme como ese JSON, en formato correcto
-        Cada punto que hagas, hazle un salto de línea, o sea que no esté todo pegado. Osea en  Cada Corchete Separado
-        Solo es de la formación Laboral. TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
+      
     """
 
 
@@ -973,7 +974,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     if match:
         cv_rating = int(match.group(1))
     else:
-        cv_rating = 5  # Valor neutral si no se encuentra un número válido
+        cv_rating = 5  
 
 
     pdf_output = create_pdf(analysis_text,
@@ -1000,17 +1001,14 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     os.makedirs(public_folder, exist_ok=True)
     now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-    # Guardar el archivo PDF
     pdf_filename = f"{candidate_name.replace(' ', '-')}_{now}.pdf"
     pdf_filepath = os.path.join(public_folder, pdf_filename)
 
     with open(pdf_filepath, 'wb') as f:
         f.write(pdf_output.getvalue())
 
-    # Devuelve la URL donde el PDF está disponible para ser accedido
     pdf_url = f"https://api-cv-myworkin.onrender.com/static/pdf_reports/{pdf_filename}"
 
-    # Devuelves el enlace en formato JSON
     return JSONResponse(content={"pdf_url": pdf_url})
 
 
