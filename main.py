@@ -18,7 +18,7 @@ from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
-
+import json
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -195,14 +195,14 @@ def create_pdf(analysis_text: str,
     pdf.add_alignment_bar_chart(alignment_score)
 
 
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "Enfoque del CV", 0, 1, 'I') 
+    #pdf.ln(2)  
+   # pdf.set_font("Poppins-Bold", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.cell(0, 15, "Enfoque del CV", 0, 1, 'I') 
 
-    pdf.set_font("Poppins-Regular", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, cv_approach_analysis) 
+    #pdf.set_font("Poppins-Regular", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+   # pdf.multi_cell(0, 5, cv_approach_analysis) 
 
 
 
@@ -218,7 +218,37 @@ def create_pdf(analysis_text: str,
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, cv_improvement_suggestions)  
+    
+    suggestions_data = json.loads(cv_improvement_suggestions)
+
+
+    # Ahora puedes manipularlo como una lista de diccionarios
+    for item in suggestions_data:
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Empresa:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Empresa']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "CV Actual:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f" {item['Actual']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Resultado Medible:", 0, 1, 'I')
+        pdf.ln(0)   
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Evaluación']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Sugerencia:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Sugerencia']}")
+        pdf.ln(5)  
+
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -228,71 +258,119 @@ def create_pdf(analysis_text: str,
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, formacion_academica)
 
+
+    suggestions_data2 = json.loads(formacion_academica)
+
+
+    for item in suggestions_data2:
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "CV Actual:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f" {item['Actual']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Evaluación:", 0, 1, 'I')
+        pdf.ln(0)   
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Evaluación']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Sugerencia:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Sugerencia']}")
+        pdf.ln(5)  
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "3. Habilidades Tecnicas", 0, 1, 'I') 
+    pdf.cell(0, 15, "3. Habilidades", 0, 1, 'I') 
 
 
     pdf.set_font("Poppins-Regular", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, habilidades_tecnicas)
+
+
+
+    suggestions_data3 = json.loads(habilidades_tecnicas)
+
+
+    for item in suggestions_data3:
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "CV Actual:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f" {item['Actual']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Evaluación:", 0, 1, 'I')
+        pdf.ln(0)   
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Evaluación']}")
+
+        pdf.set_font("Poppins-Bold", '', 12)
+        pdf.cell(0, 15, "Sugerencia:", 0, 1, 'I') 
+        pdf.ln(0)  
+        pdf.set_font("Poppins-Regular", '', 12)
+        pdf.multi_cell(0, 5, f"{item['Sugerencia']}")
+        pdf.ln(5)  
+
+
+   # pdf.ln(2)  
+   # pdf.set_text_color(0, 0, 0)  
+   # pdf.set_font("Poppins-Bold", '', 12)
+   # pdf.set_text_color(0, 0, 0)  
+   # pdf.cell(0, 15, "4. Certificaciones", 0, 1, 'I') 
+
+   # pdf.set_font("Poppins-Regular", '', 12)
+   # pdf.set_text_color(0, 0, 0)  
+   # pdf.multi_cell(0, 5, certificaciones)
+
+
+   # pdf.ln(2)  
+    #pdf.set_font("Poppins-Bold", '', 12)
+   # pdf.set_text_color(0, 0, 0)  
+   # pdf.cell(0, 15, "SECCIÓN 4: OBSERVACIONES Y OPORTUNIDADES DE MEJORA", 0, 1, 'I')
+
+
+    #pdf.ln(2)  
+    #pdf.set_font("Poppins-Bold", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.cell(0, 15, "Fortalezas", 0, 1, 'I') 
+
+    #pdf.set_font("Poppins-Regular", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.multi_cell(0, 5, observations_and_opportunities)
+
+    #pdf.ln(2)  
+    #pdf.set_font("Poppins-Bold", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.cell(0, 15, "Áreas de mejora", 0, 1, 'I') 
+
+    #pdf.set_font("Poppins-Regular", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.multi_cell(0, 5, areas_mejora) 
+
+
+    #pdf.ln(2)  
+    #pdf.set_font("Poppins-Bold", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.cell(0, 15, "Recomendaciones especificas", 0, 1, 'I') 
+
+    #pdf.set_font("Poppins-Regular", '', 12)
+    #pdf.set_text_color(0, 0, 0)  
+    #pdf.multi_cell(0, 5, recomendaciones_especificas) 
+
+
+
+
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
     pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "", 0, 1, '4. Certificaciones') 
-
-    pdf.set_font("Poppins-Regular", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, certificaciones)
-
-
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "SECCIÓN 4: OBSERVACIONES Y OPORTUNIDADES DE MEJORA", 0, 1, 'I')
-
-
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "Fortalezas", 0, 1, 'I') 
-
-    pdf.set_font("Poppins-Regular", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, observations_and_opportunities)
-
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "Áreas de mejora", 0, 1, 'I') 
-
-    pdf.set_font("Poppins-Regular", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, areas_mejora) 
-
-
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "Recomendaciones especificas", 0, 1, 'I') 
-
-    pdf.set_font("Poppins-Regular", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.multi_cell(0, 5, recomendaciones_especificas) 
-
-
-
-
-
-    pdf.ln(2)  
-    pdf.set_font("Poppins-Bold", '', 12)
-    pdf.set_text_color(0, 0, 0)  
-    pdf.cell(0, 15, "SECCIÓN 5:  RECOMENDACIONES ADICIONALES", 0, 1, 'I')
+    pdf.cell(0, 15, "SECCIÓN 4:  RECOMENDACIONES ADICIONALES", 0, 1, 'I')
 
     pdf.ln(2)  
     pdf.set_font("Poppins-Bold", '', 12)
@@ -384,25 +462,42 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     4. Alineación con el rol postulado.
     5. Valor agregado que puede aportar.
 
-    Tiene que ser un resumen no tan largo, Un parrafo, Maximo 6 lineas
+    Tiene que ser un resumen no tan largo, Un parrafo, Maximo 5 lineas
     {contenido}
     """
 
-    prompt2 = f""" Todo relacionado a {puesto} quiero que identifiques brechas
-        - Habilidades técnicas faltantes (ej. {puesto}).
-        - Conocimientos específicos del sector (ej. banca).
-        - Certificaciones o formación adicional necesaria.
-        - Herramientas requeridas por el rol y nivel de dominio.
-    2. Nivel de cada brecha: Alto / Medio / Bajo.
-    3. Recomendaciones de mejora claras y accionables. las recomendaciones deben ir en cada brecha, no por separado
+    prompt2 = f"""
 
-     Ejemplo: igual a este ejmplo debe ser: las recomendaciones deben ir en cada brecha
-    - {puesto} (Alto): Requiere capacitación específica para mejorar. 
-    - Conocimiento del sector bancario (Alto): Necesita inmersión en el sector. 
-    - Herramientas de {puesto} (Medio): Mejorar el uso de herramientas específicas de {puesto} 
-    - Certificaciones en {puesto} (Medio): Obtener certificaciones reconocidas.
+    Compáralo con los requisitos habituales para el rol de {puesto}, e identifica las principales 
+    brechas lo que se espera para desempeñarse con éxito en ese cargo. 
+    Clasifica las brechas en las siguientes categorías: 
+    Habilidades técnicas      Todo en relación con el {puesto}
+    Conocimientos del sector o industria      Todo en relación con el {puesto}
+    Certificaciones o formación clave      Todo en relación con el {puesto}
+    Herramientas, plataformas o tecnologías     Todo en relación con el {puesto}
 
-    {contenido}
+    Para cada brecha, proporciona:     
+    Una descripción clara y específica. 
+    Una recomendación concreta, práctica y de aplicación inmediata o a corto plazo. 
+
+    Formato de salida (una línea por brecha, un comentario por categoría): 
+
+    Habilidad técnica: [nombre] - [Descripción].  
+    Recomendación: [acción concreta].  
+
+    Conocimiento sectorial: [nombre] - [Descripción].  
+    Recomendación: [acción concreta].  
+
+    Certificación/formación: [nombre] - [Descripción].  
+    Recomendación: [acción concreta].  
+
+    Herramienta/tecnología: [nombre] - [Descripción].  
+    Recomendación: [acción concreta].  
+
+    Sé breve, profesional y enfocado en el {puesto}.
+    Cada punto debe estar separado en líneas distintas para claridad.
+
+    Todo en relación con el {puesto}
     """
 
     prompt3 = f"""
@@ -478,6 +573,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     - Áreas donde el candidato tiene desajustes importantes (por ejemplo, falta de experiencia específica en {puesto}).
 
     El análisis debe ser un párrafo coherente, explicando cómo el porcentaje se traduce en la adecuación del candidato al puesto. Tiene que ser breve y entendible
+   
+   
     """
 
     response4 = openai.ChatCompletion.create(
@@ -489,19 +586,39 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt5 = f"""
-
     Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
 
+    En la parte de "Actual" indicaras todo lo de experiencia laboral, igual que en el cv {contenido}
+    En la parte de "Evaluacion" indicaras como Si presenta un resultado cuantificable o No presenta resultado cuantificable
+    En la parte de "Sugerencia" debes darme la correccion segun la parte "Actual":
         - Iniciar cada logro con un verbo de acción poderoso.
         - Incluir resultados cuantificables.
         - Alinear cada experiencia con el rol objetivo.
-        - Brindar ejemplos con los verbos pero relacionados con el cv, no quiero que me des ejemplos tuyos, utiliza oraciones del cv y agrega el verbo, pero referente a la experiencia laboral
-        Dame unos 3 ejemplos, tienen que ser concretos no solamente me des los verbos, si no la oracion completa
+        - Brindar ejemplos con los verbos pero relacionados con el cv, no quiero que me des ejemplos tuyos, utiliza oraciones del cv y agrega el verbo, pero referente a la experiencia laboral.
 
-    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
-    No agregues asetericos, ni numerales
-    {contenido}
+    
+
+
+    Formato de salida es el siguiente dame en JSON, formato correcto:   
+    Todo en relacion con el {puesto}
+
+       [{{
+            "Empresa":,
+            "Actual": ,
+            "Evaluación": ,
+            "Sugerencia": 
+        }}
+        {{
+            "Empresa":,
+            "Actual": ,
+            "Evaluación": ,
+            "Sugerencia": 
+        }}]
+        Devuelme como ese JSON, en formato correcto
+        Cada punto que hagas, hazle un salto de línea, o sea que no esté todo pegado. Osea en  Cada Corchete Separado
+        Solo es de la formación Laboral. TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
     """
+
 
     response5 = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", 
@@ -520,18 +637,36 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     prompt20 = f"""
 
     Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
+    Formación académica: 
 
+    En la parte de "Actual" indicaras todo lo de experiencia academica, igual que en el cv {contenido}, Solo Menciona Grado Academico - Profesion o Estudio
 
-        Debes verificar si tengo datos como:
-        - Nombre de la universidad.
-        - Carrera.
-        - Especialización (si existe).
-        - Mérito académico destacado (solo si es relevante).
-        Si tengo esos datos debes darme que otra informacion de formacion academica puedo agregar
+    En la parte de "Evaluacion" indicaras Correcto o Incorrecto
 
-    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
-    No agregues asetericos, ni numerales
-    {contenido}
+    En la parte de "Sugerencia" debes darme la correccion segun la parte "Actual":
+        - Si falta alguno de estos elementos, indica específicamente qué falta., Si falta algo en "Evaluacion" seria incorrecto 
+        - Si hay información adicional (como materias, cursos, proyectos, etc.), indica concretamente 
+        qué sobra y que debe eliminarlo. 
+        - Si no figura el orden de mérito y pudiera tenerlo, sugiere que lo agregue si corresponde 
+        (importante). Evita decir que indique lo de promedio.
+        - Si no necesita sugerencia, es decir todo esta correcto, solo indicar Esta bien
+        - Indicar en caso no se mencione el estudio, o carrera estudiada o profesion, Si no menciona en "Evaluacion" seria incorrecto 
+
+     Formato de salida:
+       [{{
+            "Actual": ,
+            "Evaluación": ,
+            "Sugerencia": 
+        }}
+        {{
+            "Actual": ,
+            "Evaluación": ,
+            "Sugerencia": 
+        }}]
+        Devuelme como ese JSON, en formato correcto
+        Cada punto que hagas, hazle un salto de línea, o sea que no esté todo pegado. Osea en  Cada Corchete Separado
+        Solo es de la formación academica., TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
+        {contenido}
     """
 
     response20 = openai.ChatCompletion.create(
@@ -555,15 +690,38 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     Brinda sugerencias personalizadas de mejora por sección del CV, orientadas al rol de {puesto}. En esta parte, cubre lo siguiente:
 
+        Habilidades: 
+        ● Verifica que las habilidades estén agrupadas por tipo (por ejemplo: Programación, 
+        Herramientas, Software). 
+        ● Verifica que cada habilidad tenga un nivel de dominio indicado (por ejemplo: Básico, 
+        Intermedio, Avanzado). 
+        ● El formato debe ser corrido por agrupación, como en este ejemplo: 
+        Programación: Python (Avanzado), C++ (Básico) 
+        Formato de salida: 
+        CV Actual: [Texto original de la sección de habilidades] 
+        Evaluación: [Correcto / Falta nivel / Falta agrupación / Faltan ambos] 
+        Sugerencia: [Versión sugerida con habilidades agrupadas y nivel de dominio en formato 
+        correcto, Si No hay sugerencias, indicar que todo esta bien] 
+        Contenido del CV a evaluar: 
+        No Agregues Simbolos o Guiones o Astericos en los Subtitulos
+        Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado
+        Todo en relacion con el {puesto}
 
-        Debes brindarme Habilidades  Técnicas, en caso no tenga esta informacion: si tengo, ve que otra habilidad  puedes dar, pero no me pongas las que tengo
+        Formato de salida:
+        [{{
+                "Actual": ,
+                "Evaluación": ,
+                "Sugerencia": 
+            }}
+            {{
+                "Actual": ,
+                "Evaluación": ,
+                "Sugerencia": 
+            }}]
+        Devuelme como ese JSON, en formato correcto
 
-        - Nombre de la herramienta.
-        - Nivel de dominio (Básico / Intermedio / Avanzado).
-        - Relevancia con el rol.
-
-    Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
-    No agregues asetericos, ni numerales, no agregues subtitulos
+        Cada punto que hagas, hazle un salto de línea, o sea que no esté todo pegado. Osea en  Cada Corchete Separado
+        Solo es de la Habilidades., TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
     {contenido}
     """
 
@@ -590,6 +748,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     Por favor, asegúrate de proporcionar sugerencias específicas y prácticas para cada sección mencionada, basadas en el perfil del candidato y su adecuación al rol de {puesto}.
     No agregues asetericos, ni numerales
+        Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado, TODO LO QUE ANALIZAS ES RESPECTO AL CV, NO ME AGREGUES COSAS QUE NO SON
+
     {contenido}
     """
 
@@ -614,6 +774,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     No debe a ver subtitulos no les coloques numerales o astericos
     No pongas subtitulos, todo hazlo por guiones y de manera general
+    Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado
 
     {contenido}
     """
@@ -642,6 +803,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     No quiero Asteriscos, si el {puesto} es en ingles, tu mantiene el puesto tal como es pero la respuesta en español
 
     No quiero astericos, no me des subtitulos
+    Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado
 
     {contenido}
     """
@@ -664,11 +826,16 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     Por favor, asegúrate de que cada sección esté claramente separada y de que las recomendaciones sean específicas y detalladas.
 
-    Se breve y consiso, hazlo en guiones y se especifico
+    Se breve y consiso
 
     No debe a ver subtitulos no les coloques numerales o astericos, sin asteriscos, quiero por guiones, se claro
     
     No pongas subtitulos, todo hazlo por guiones y de manera general
+        Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado
+
+    No me pongas asteriscos o lineas o simbolos a los subtitutlos
+    Ejemplo: **Formación Académica:**, eso no quiero quita los asteriscos, sin asteriscos ni otro simbolos
+    Solo debe ser Formacion Academica, no le agregues asteriscos
     {contenido}
     """
 
@@ -687,20 +854,22 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt8 = f"""
-    Eres un reclutador profesional. Proporciona un conjunto de recomendaciones prácticas y estratégicas para optimizar el CV a nivel técnico y de contenido, considerando su compatibilidad con filtros ATS (Applicant Tracking Systems), posibles mejoras en formación profesional, y aspectos de formato y presentación general. Esta sección apunta a los ajustes finales que pueden marcar la diferencia entre ser descartado o avanzar en un proceso de selección.
+    Identifica 5 palabras clave segun el {puesto}
+    relevantes para ese rol, que suelen aparecer en descripciones de empleo similares. Estas 
+    deben incluir habilidades técnicas o blandas clave para el puesto. 
 
-        - Identificar palabras clave específicas del rol al que postula el candidato.
-        - Usar términos que suelen estar en las descripciones de puestos, especialmente habilidades técnicas y blandas.
-        - Asegurar que estas palabras clave estén integradas de forma natural en el CV, no en forma de lista.
-        - Si no están, sugerir dónde y cómo integrarlas.
-        Tiene que sacarlas de la posición que estoy buscando. Por ejemplo, si voy a una posición de {puesto}, quizas palabras clave sean SEO, SEM, REDES SOCIALES, ETC todo relacionado al {puesto}
-        esas palabras variaran dependiendo el {puesto} al que estoy
+    Solo utiliza referencias propias del rol de {puesto}. 
+     
+    NO CURSOS TEC, Se estricto al momento de dar las palabras clave todo en relacion con el {puesto}, evita mencionar cosas relacionadas con "Experiencia en..."
+    Las palabras claves son relacionadas con el {puesto}
+    Formato de salida:
+    - Palabra clave 1: Indica en que parte del CV incluirlo,  y un ejemplo de como incluirlo  debes crearlo tu, no con informacion del CV, logro, el ejemplo debe incluir resultados cuantificables agrega algun valor cuantificable, ya sea tasas %, enteros, si es que tiene, Por ejemplo:
+    - Palabra clave 2: Indica en que parte del CV incluirlo,  y un ejemplo de como incluirlo  debes crearlo tu, no con informacion del CV, logro, el ejemplo debe incluir  resultados cuantificables agrega algun valor cuantificable, ya sea tasas %, enteros, si es que tiene Por ejemplo:
+    - Palabra clave 3: Indica en que parte del CV incluirlo,  y un ejemplo de como incluirlo  debes crearlo tu, no con informacion del CV, logro, el ejemplo debe incluir  resultados cuantificables agrega algun valor cuantificable, ya sea tasas %, enteros, si es que tiene Por ejemplo:
+    - Palabra clave 4: Indica en que parte del CV incluirlo,  y un ejemplo de como incluirlo  debes crearlo tu, no con informacion del CV, logro, el ejemplo debe incluir  resultados cuantificables agrega algun valor cuantificable, ya sea tasas %, enteros,si es que tiene Por ejemplo:
+    - Palabra clave5: Indica en que parte del CV incluirlo,  y un ejemplo de como incluirlo  debes crearlo tu ,no con informacion del CV, logro,  el ejemplo debe incluir resultados cuantificables agrega algun valor cuantificable, ya sea tasas %, enteros, si es que tiene Por ejemplo:
 
-        Proporciona filtros ATS, separados por guiones. Responde únicamente con los filtros ATS en el siguiente formato por guiones
-
-     Tienes que darme asi las palabras, solo 5 palabras, Las palabras claves no deben ser del cv, si no del puesto que se busca
-
-    {contenido}
+    Recuerda la palabra clave damelo normal, sin agregar guiones, segun el formato de salida
     """
 
 
@@ -717,6 +886,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     - Recomendar certificaciones alineadas a las competencias clave del rol.
     - Añadir formación en habilidades blandas relevantes y diferenciadoras (ej. comunicación, gestión del tiempo, trabajo en equipo). 
     Ser específicos: nombre, plataforma o institución, y razón por la que son valiosos.
+    No agregues asteriscos
     {contenido}
     """
 
@@ -766,24 +936,28 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
     prompt_analysis_cv = f"""
-    Eres un reclutador profesional con experiencia en la evaluación de currículums para el puesto de {puesto}. 
-    Tu tarea es analizar el siguiente currículum y proporcionar una calificación numérica del 1 al 10, basándote en qué tan bien se ajusta el candidato al puesto. 
-    La calificación debe ser un número entero entre 1 y 10. Puedes incluir una breve oración si lo deseas, pero el número debe estar claro en la respuesta.
-
-    Analiza estos aspectos: 
-    1. Experiencia relevante
-    2. Habilidades técnicas
-    3. Habilidades blandas
-    4. Formación académica y certificaciones
-    5. Presentación y claridad del CV
-    4. Conocimientos 
-
-    Debes analizar correctamente el {puesto} con respecto al cv que estas analizando, el puntaje debe ser la evualacion entre el cv y el {puesto}
+    Eres un reclutador profesional con experiencia en selección de talento junior. Tu tarea es 
+    analizar el siguiente documento y otorgar una calificación numérica del 1 al 10, basada 
+    exclusivamente en qué tan bien se ajusta el perfil al puesto de {puesto}. 
+    Evalúa los siguientes criterios: 
+    ● Experiencia relevante para el rol 
+    ● Habilidades técnicas alineadas al puesto 
+    ● Habilidades blandas adecuadas al entorno 
+    ● Formación académica y certificaciones 
+    ● Presentación, claridad y estructura del CV 
+    ● Conocimiento aplicable al puesto 
+    Condición especial: Si el candidato cumple adecuadamente en al menos dos de estos seis 
+    criterios, el puntaje mínimo será 5, incluso si no hay coincidencia total con el puesto. 
+    Condición adicional: Si el documento no es un currículum o no contiene información 
+    personal y profesional de un candidato, responde automáticamente con 0/10. 
+    Importante: Este análisis aplica a talento junior. No penalices fuertemente la falta de 
+    experiencia laboral formal. Evalúa con enfoque en potencial, habilidades y nivel de 
+    alineación. 
+    Contenido del documento a evaluar: 
+    {contenido} 
+    Solo responde con un número en formato Numero. No incluyas ninguna explicación, 
+    comentario ni texto adicional. 
     
-    Debes analizarlo correctamente, el {puesto}, con la informacion del cv, osea por ejemplo si te paso un cv de un biologo a un puesto de ing. industrial no me lo calificaras con un puntaje alto
-    tienes que comprender bien la situacion
-
-    Estudialo bien, el cv y luego calificas, debes averiguar del {puesto} y luego analizarlo con el cv, si se relacionan tendran un puntaje adecuado, y si no tienen el  puntajes bajo
     {contenido}
     """
 
@@ -793,10 +967,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         temperature=0.7,
     )
 
-    # Obtener contenido de la respuesta
     response_text = response_analysis_cv['choices'][0]['message']['content'].strip()
 
-    # Usar regex para extraer el primer número entero entre 1 y 10
     match = re.search(r'\b([1-9]|10)\b', response_text)
     if match:
         cv_rating = int(match.group(1))
