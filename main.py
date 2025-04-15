@@ -23,6 +23,7 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -89,7 +90,14 @@ class PDF(FPDF):
         self.image(chart_path, x=10, w=180)
         self.ln(5) 
 
-
+def safe_json_load(data):
+    try:
+        # Intentamos cargar el JSON
+        return json.loads(data)
+    except json.JSONDecodeError:
+        # Si ocurre un error, retornamos None o el valor que prefieras
+        return None
+        
 def create_pdf(analysis_text: str,
                 score: int,
                 suitability_analysis: str,
@@ -222,6 +230,7 @@ def create_pdf(analysis_text: str,
     suggestions_data = json.loads(cv_improvement_suggestions)
 
 
+    
     # Ahora puedes manipularlo como una lista de diccionarios
     for item in suggestions_data:
         pdf.set_font("Poppins-Bold", '', 12)
@@ -603,7 +612,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     Todo en relacion con el {puesto}
 
-    Formato de salida es el siguiente dame en JSON, formato correcto:   
+    Devuélveme solo en formato JSON, con la siguiente estructura exacta (asegúrate de que el formato sea correcto):
 
        [{{
             "Empresa":,
@@ -630,8 +639,11 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     cv_improvement_suggestions = response5['choices'][0]['message']['content']
 
 
-
-
+    suggestions_data = safe_json_load(cv_improvement_suggestions)
+    
+    if suggestions_data is None:
+        return await analizar_cv(pdf_url, puesto_postular)  
+    
 
 
 
@@ -653,7 +665,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         - Si no necesita sugerencia, es decir todo esta correcto, solo indicar Esta bien
         - Indicar en caso no se mencione el estudio, o carrera estudiada o profesion, Si no menciona en "Evaluacion" seria incorrecto 
 
-     Formato de salida:
+    Devuélveme solo en formato JSON, con la siguiente estructura exacta (asegúrate de que el formato sea correcto):
        [{{
             "Actual": ,
             "Evaluación": ,
@@ -708,7 +720,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         Cada punto que hagas, hazle un salto de linea, osea que no este todo pegado
         Todo en relacion con el {puesto}
 
-        Formato de salida:
+        Devuélveme solo en formato JSON, con la siguiente estructura exacta (asegúrate de que el formato sea correcto):
         [{{
                 "Actual": ,
                 "Evaluación": ,
