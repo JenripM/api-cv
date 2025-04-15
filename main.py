@@ -693,6 +693,12 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
 
+    suggestions_data2 = safe_json_load(formacion_academica)
+    
+    if suggestions_data2 is None:
+        return await analizar_cv(pdf_url, puesto_postular)  
+    
+
 
 
 
@@ -748,7 +754,10 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
 
 
-
+    suggestions_data3 = safe_json_load(habilidades_tecnicas)
+    
+    if suggestions_data3 is None:
+        return await analizar_cv(pdf_url, puesto_postular)  
 
     prompt22 = f"""
 
