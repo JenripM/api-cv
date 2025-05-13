@@ -1369,7 +1369,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     with open(pdf_filepath, 'wb') as f:
         f.write(pdf_output.getvalue())
 
-    pdf_url = f"https://myworkin-cv.onrender.com//static/pdf_reports/{pdf_filename}"
+    pdf_url = f"https://myworkin-cv.onrender.com/static/pdf_reports/{pdf_filename}"
 
 
     phone = extract_phone(contenido)
