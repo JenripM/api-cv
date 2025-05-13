@@ -19,6 +19,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 import json
+import hashlib
+from datetime import datetime
+import time
+
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -428,6 +432,12 @@ def create_pdf(analysis_text: str,
 
 @app.get("/analizar-cv/")
 async def analizar_cv(pdf_url: str, puesto_postular: str):
+    start_time = time.time()
+    end_time = time.time()
+    processing_time_ms = int((end_time - start_time) * 1000)  # Convertir a milisegundos
+    analysis_datetime = datetime.now().isoformat()  # "YYYY-MM-DDTHH:MM:SS"
+
+    original_pdf = pdf_url
     response = requests.get(pdf_url)
     
     puesto = puesto_postular
@@ -438,6 +448,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     pdf_content = BytesIO(response.content)
 
     contenido = extract_text_from_pdf(pdf_content)
+
+    email = extract_email(contenido)
 
 
     prompt6 = f"""
@@ -526,6 +538,45 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     Solo debe ser un numero
     {contenido}
     """
+
+
+    prompt_error_analysis = f"""
+    Eres un reclutador profesional. A continuación, analiza el siguiente currículum vitae para identificar los errores más comunes que se presentan en este documento. Los errores pueden incluir:
+    - Errores de formato
+    - Errores ortográficos
+    - Secciones mal estructuradas
+    - Información innecesaria o faltante
+    - Uso incorrecto de la tipografía o la organización visual
+
+    Por favor, lista todos los errores comunes que encuentres en el CV y devuélvelos como una lista de errores. Cada error debe estar separado por guiones (-). No agregues información adicional.
+
+    {contenido}
+    """
+
+    response_error_analysis = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_error_analysis}],
+        temperature=0.7,
+    )
+
+    errores_comunes = response_error_analysis['choices'][0]['message']['content'].strip()
+
+
+    prompt_fortaleza = f"""
+    Eres un reclutador profesional. A continuación, analiza el siguiente currículum vitae para identificar las fortalezas más comunes que se presentan en este documento. Los errores pueden incluir:
+   
+    Por favor, lista todos las fortalezas comunes que encuentres en el CV y devuélvelos como una lista de errorfortalezases. Cada fortalezas debe estar separado por guiones (-). No agregues información adicional.
+
+    {contenido}
+    """
+
+    respon_fortaleza = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_fortaleza}],
+        temperature=0.7,
+    )
+
+    fortalezas = respon_fortaleza['choices'][0]['message']['content'].strip()
 
 
     response1 = openai.ChatCompletion.create(
@@ -991,6 +1042,296 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
 
     response_text = response_analysis_cv['choices'][0]['message']['content'].strip()
 
+
+    prompt_experience = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. Por favor, extrae la información relacionada con la experiencia laboral. Para cada experiencia laboral, proporciona la siguiente información de manera estructurada en JSON:
+
+    - Puesto: El título o nombre del puesto ocupado.
+    - Empresa: El nombre de la empresa en la que el candidato ha trabajado.
+    - Duración: El periodo de tiempo en el que trabajó en la empresa (por ejemplo, enero 2020 - diciembre 2022).
+    - Descripción: Las responsabilidades y logros alcanzados en el puesto (debe ser una descripción concisa, resaltando los logros).
+
+    Formato JSON:
+    {{
+        "workExperience": [
+            {{
+                "role": "Puesto",
+                "company": "Empresa",
+                "duration": "Periodo",
+                "description": "Descripción de responsabilidades y logros"
+            }}
+        ]
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_experience = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_experience}],
+        temperature=0.7,
+    )
+
+    # Extrae la experiencia laboral desde la respuesta
+    work_experience = response_experience['choices'][0]['message']['content']
+
+    # Asegúrate de que la respuesta esté en formato JSON válido
+    work_experience_data = safe_json_load(work_experience)
+
+    # Si no se pudo parsear correctamente, podrías intentar nuevamente o manejar el error
+    if work_experience_data is None:
+        return await analizar_cv(pdf_url, puesto_postular)
+
+    # Extraer la experiencia laboral del JSON
+    work_experience = work_experience_data.get("workExperience", [])
+
+    # Ahora puedes hacer algo con el JSON válido que contiene la experiencia laboral
+
+
+
+    prompt_education = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. Por favor, extrae la información relacionada con la educación. Para cada título educativo, proporciona la siguiente información de manera estructurada en JSON:
+
+    - Grado: El título académico obtenido por el candidato (por ejemplo, Licenciatura en Ingeniería de Sistemas).
+    - Institución: El nombre de la institución educativa en la que el candidato obtuvo su título.
+    - Año de graduación: El año de graduación o la fecha en la que el candidato completó sus estudios.
+
+    Formato JSON:
+    {{
+        "education": [
+            {{
+                "degree": "Título obtenido",
+                "institution": "Institución educativa",
+                "graduationYear": "Año de graduación"
+            }}
+        ]
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_education = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_education}],
+        temperature=0.7,
+    )
+
+    # Extrae la información de educación desde la respuesta
+    education_data = response_education['choices'][0]['message']['content']
+
+    # Asegúrate de que la respuesta esté en formato JSON válido
+    education_data_json = safe_json_load(education_data)
+
+    # Si no se pudo parsear correctamente, podrías intentar nuevamente o manejar el error
+    if education_data_json is None:
+        return await analizar_cv(pdf_url, puesto_postular)
+
+    # Extraer la educación del JSON
+    education = education_data_json.get("education", [])
+
+    # Ahora puedes hacer algo con el JSON válido que contiene la información de la educación
+
+
+    prompt_feedback_summary = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. Por favor, proporciona un resumen general del feedback para el candidato, considerando los siguientes aspectos:
+
+    - La calidad general del CV, incluyendo su claridad y profesionalismo.
+    - La relevancia de la experiencia laboral para el puesto al que está aplicando.
+    - La adecuación de las habilidades técnicas y blandas para el puesto.
+    - Cualquier área de mejora significativa o notoria en el CV.
+    - La estructura general del CV y su legibilidad.
+
+    Tu tarea es resumir el feedback en un párrafo breve, claro y directo. No incluyas detalles extensos ni repitas información ya mencionada, mantén el análisis conciso y práctico.
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_feedback_summary = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_feedback_summary}],
+        temperature=0.7,
+        # max_tokens=150  # Puedes ajustar los tokens si necesitas una respuesta más larga o más corta
+    )
+
+    feedback_summary = response_feedback_summary['choices'][0]['message']['content'].strip()
+
+    raw_text = contenido  # Aquí, 'contenido' ya es el texto completo del CV extraído
+
+    prompt_skills = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. 
+    Por favor, extrae las habilidades técnicas, habilidades blandas e idiomas mencionados en el CV. 
+
+    Proporciona los datos de la siguiente manera, asegurándote de que cada sección esté bien organizada:
+
+    - Habilidades Técnicas: [Lista de habilidades técnicas]
+    - Habilidades Blandas: [Lista de habilidades blandas]
+    - Idiomas: [Lista de idiomas con niveles de dominio]
+
+    Ejemplo de formato correcto:
+
+    {{
+        "skills": {{
+            "technical": [
+                "Python",
+                "JavaScript"
+            ],
+            "soft": [
+                "Comunicación",
+                "Trabajo en equipo"
+            ],
+            "languages": [
+                "Inglés (Avanzado)",
+                "Español (Nativo)"
+            ]
+        }}
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_skills = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_skills}],
+        temperature=0.7,
+    )
+    
+    skills = process_skills_response(response_skills['choices'][0]['message']['content'])
+
+
+
+    prompt_formatting = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. 
+    Por favor, proporciona un análisis detallado sobre el formato y lenguaje del CV, evaluando lo siguiente:
+
+    1. Claridad del CV: ¿Es fácil de leer y entender? ¿La información está organizada de manera clara?
+    2. Profesionalismo: ¿El CV tiene un aspecto profesional? ¿La tipografía y el diseño son adecuados?
+    3. Errores gramaticales y ortográficos: ¿Cuántos errores gramaticales y ortográficos hay en el CV?
+    4. Uso de verbos de acción: ¿Se utilizan verbos de acción en las descripciones de las experiencias laborales? ¿Son adecuados para resaltar logros?
+
+    Formato de salida: 
+    {{
+        "formattingAndLanguage": {{
+            "clarity": "string_evaluacion_claridad",
+            "professionalism": "string_evaluacion_profesionalismo",
+            "grammarSpellingErrorsCount": "number_cantidad_errores",
+            "actionVerbsUsed": "boolean"
+        }}
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_formatting = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_formatting}],
+        temperature=0.7,
+    )
+    formatting = process_formatting_response(response_formatting['choices'][0]['message']['content'])
+
+
+    prompt_keywords = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. 
+    Por favor, extrae las palabras clave relevantes para el puesto en cuestión y las habilidades generales mencionadas en el CV. 
+
+    Primero, identifica las palabras clave relacionadas con el puesto de {puesto}, estas pueden ser habilidades técnicas, habilidades blandas o certificaciones que son relevantes para el rol. Luego, clasifica las palabras clave en las siguientes categorías:
+
+    1. **Palabras clave encontradas**: Las palabras clave relacionadas con el puesto que aparecen en el CV.
+    2. **Palabras clave faltantes**: Las palabras clave que son esenciales para el puesto pero no aparecen en el CV.
+    3. **Palabras clave de habilidades generales encontradas**: Las habilidades generales que son valiosas para el rol (por ejemplo: comunicación, trabajo en equipo, etc.).
+
+    Formato de salida: 
+    {{
+        "keywordAnalysis": {{
+            "jobKeywordsFound": ["palabra_clave_1", "palabra_clave_2"],
+            "jobKeywordsMissing": ["palabra_clave_faltante_1"],
+            "generalSkillsKeywordsFound": ["habilidad_general_1"]
+        }}
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_keywords = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo", 
+    messages=[{"role": "user", "content": prompt_keywords}],
+    temperature=0.7,
+    )
+
+    keywords = process_keywords_response(response_keywords['choices'][0]['message']['content'])
+
+
+    prompt_ats_compliance = f"""
+    Eres un reclutador profesional con experiencia en el uso de sistemas de seguimiento de candidatos (ATS). A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. 
+    Por favor, evalúa el cumplimiento del CV con respecto a los criterios comunes de un sistema ATS. 
+
+    Tu tarea es realizar lo siguiente:
+
+    1. **Puntaje de Cumplimiento ATS (de 0 a 100)**: Evalúa el grado de cumplimiento del CV con los criterios comunes de los sistemas ATS, como el uso de palabras clave, la legibilidad, el formato, y la estructura.
+    2. **Problemas encontrados**: Proporciona una lista de los problemas comunes detectados en el CV en relación con el cumplimiento de los estándares ATS. Algunos problemas pueden incluir:
+        - Uso insuficiente de palabras clave relacionadas con el puesto.
+        - Formato inapropiado o no compatible con el ATS.
+        - Mala organización de la información.
+        - Información irrelevante o mal estructurada.
+        - Falta de secciones claves como experiencia, habilidades, educación.
+    3. **Recomendaciones para mejorar el cumplimiento ATS**: Brinda sugerencias sobre cómo mejorar el CV para cumplir mejor con los requisitos de un sistema ATS. Las recomendaciones deben ser prácticas y concretas.
+
+    Formato de salida: 
+    {{
+        "atsCompliance": {{
+            "score": "number_puntaje_ats_0_100",
+            "issues": ["problema_ats_1", "problema_ats_2"],
+            "recommendations": ["sugerencia_ats_1"]
+        }}
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_ats_compliance = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_ats_compliance}],
+        temperature=0.7,
+    )
+
+    ats_compliance = process_ats_response(response_ats_compliance['choices'][0]['message']['content'])
+
+
+    prompt_strengths = f"""
+    Eres un reclutador profesional. A continuación, se muestra el contenido del CV de un candidato para el puesto de {puesto}. 
+    Por favor, identifica las fortalezas clave del candidato, basándote en sus habilidades, experiencias, logros y cualidades que puedan ser relevantes para el puesto.
+
+    Por favor, proporciona las fortalezas de manera clara y concreta, considerando lo siguiente:
+
+    1. **Habilidades clave**: Identifica las habilidades que el candidato domina y que son valiosas para el puesto.
+    2. **Experiencia destacada**: Menciona la experiencia laboral relevante que resalta en el CV.
+    3. **Logros notables**: Identifica cualquier logro que sea impresionante o demuestre un impacto significativo.
+    4. **Cualidades personales**: Si se mencionan cualidades que aportan al puesto, inclúyelas como fortalezas.
+
+    Formato de salida:
+    {{
+        "strengths": ["fortaleza_identificada_1", "fortaleza_identificada_2"]
+    }}
+
+    Contenido del CV a evaluar:
+    {contenido}
+    """
+
+    response_strengths = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", 
+        messages=[{"role": "user", "content": prompt_strengths}],
+        temperature=0.7,
+    )
+
+
+
+
     match = re.search(r'\b([1-9]|10)\b', response_text)
     if match:
         cv_rating = int(match.group(1))
@@ -1028,10 +1369,72 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     with open(pdf_filepath, 'wb') as f:
         f.write(pdf_output.getvalue())
 
-    pdf_url = f"https://api-cv-myworkin.onrender.com/static/pdf_reports/{pdf_filename}"
+    pdf_url = f"https://myworkin-cv.onrender.com//static/pdf_reports/{pdf_filename}"
 
-    return JSONResponse(content={"pdf_url": pdf_url})
 
+    phone = extract_phone(contenido)
+    linkedin = extract_linkedin(contenido)
+    address = extract_address(contenido)
+
+    return JSONResponse(content={
+        "status": "success", 
+        "message": "CV procesado y análisis guardado exitosamente.",
+        "analysis_id": generate_analysis_id(candidate_name),
+        "extractedData": {
+            "cvAnalysisId": generate_analysis_id(candidate_name),
+            "userId": generate_user_id(candidate_name),
+            "jobPositionApplied": puesto, 
+            "cvOriginalFileUrl": original_pdf,
+            "analysisDateTime": analysis_datetime,  # Aquí agregamos la fecha y hora
+            "processingTimeMs": processing_time_ms,  # Aq
+            "extractedData": { 
+                "candidateName": candidate_name,
+                "contactInfo": {
+                    "email": email if email else "No disponible",  # Aquí agregamos el email extraído
+                    "phone": phone,
+                    "linkedin": linkedin,
+                    "address": address
+                },
+                "professionalSummary": analysis_text,
+                "workExperience": work_experience,
+
+                "education": education,
+                "skills": skills["skills"],
+                "rawText": raw_text,
+            },
+            "analysisResults": { 
+                "pdf_url": pdf_url,
+                "overallScore": f"{cv_rating}/10",
+                "atsCompliance": ats_compliance["atsCompliance"],
+                "strengths": fortalezas,
+                "areasForImprovement": errores_comunes, 
+                "keywordAnalysis": keywords["keywordAnalysis"],
+                "formattingAndLanguage": formatting["formattingAndLanguage"],
+                "feedbackSummary": feedback_summary  # Aquí agregamos el feedback summary
+            }
+        },
+    })
+
+def process_keywords_response(response):
+    # Intentar extraer la respuesta en formato JSON
+    keywords_data = safe_json_load(response)
+
+    # Si la respuesta no tiene el formato correcto, crear una estructura predeterminada
+    if keywords_data is None or "keywordAnalysis" not in keywords_data:
+        keywords_data = {
+            "keywordAnalysis": {
+                "jobKeywordsFound": [],
+                "jobKeywordsMissing": [],
+                "generalSkillsKeywordsFound": []
+            }
+        }
+
+    # Asegurarse de que todas las claves estén presentes
+    keywords_data["keywordAnalysis"].setdefault("jobKeywordsFound", [])
+    keywords_data["keywordAnalysis"].setdefault("jobKeywordsMissing", [])
+    keywords_data["keywordAnalysis"].setdefault("generalSkillsKeywordsFound", [])
+
+    return keywords_data
 
 
 def extract_score_from_text(text):
@@ -1041,5 +1444,130 @@ def extract_score_from_text(text):
     except Exception as e:
         return 0
 
+def process_ats_response(response):
+    # Intentar extraer la respuesta en formato JSON
+    ats_data = safe_json_load(response)
+
+    # Si la respuesta no tiene el formato correcto, crear una estructura predeterminada
+    if ats_data is None or "atsCompliance" not in ats_data:
+        ats_data = {
+            "atsCompliance": {
+                "score": 0,
+                "issues": [],
+                "recommendations": []
+            }
+        }
+
+    # Asegurarse de que todas las claves estén presentes
+    ats_data["atsCompliance"].setdefault("score", 0)
+    ats_data["atsCompliance"].setdefault("issues", [])
+    ats_data["atsCompliance"].setdefault("recommendations", [])
+
+    return ats_data
 
 
+def process_formatting_response(response):
+    # Intentar extraer la respuesta en formato JSON
+    formatting_data = safe_json_load(response)
+
+    # Si la respuesta no tiene el formato correcto, crear una estructura predeterminada
+    if formatting_data is None or "formattingAndLanguage" not in formatting_data:
+        formatting_data = {
+            "formattingAndLanguage": {
+                "clarity": "No disponible",
+                "professionalism": "No disponible",
+                "grammarSpellingErrorsCount": 0,
+                "actionVerbsUsed": False
+            }
+        }
+
+    # Asegurarse de que todas las claves estén presentes
+    formatting_data["formattingAndLanguage"].setdefault("clarity", "No disponible")
+    formatting_data["formattingAndLanguage"].setdefault("professionalism", "No disponible")
+    formatting_data["formattingAndLanguage"].setdefault("grammarSpellingErrorsCount", 0)
+    formatting_data["formattingAndLanguage"].setdefault("actionVerbsUsed", False)
+
+    return formatting_data
+
+def process_skills_response(response):
+    # Intenta extraer la respuesta en formato JSON
+    skills_data = safe_json_load(response)
+
+    # Si la respuesta no tiene el formato correcto, ajustarlo
+    if skills_data is None or "skills" not in skills_data:
+        # Crear un objeto vacío para asegurar la estructura
+        skills_data = {
+            "skills": {
+                "technical": [],
+                "soft": [],
+                "languages": []
+            }
+        }
+
+    # Asegurarte de que las secciones estén presentes, aunque sean listas vacías
+    skills_data["skills"].setdefault("technical", [])
+    skills_data["skills"].setdefault("soft", [])
+    skills_data["skills"].setdefault("languages", [])
+
+    return skills_data
+
+
+def generate_analysis_id(candidate_name):
+    # Extrae iniciales del nombre
+    initials = ''.join([word[0] for word in candidate_name.split() if word]).upper()
+
+    # Fecha y hora actual
+    now = datetime.now().strftime('%Y%m%d%H%M%S')
+
+    # Hash corto basado en nombre y timestamp
+    hash_short = hashlib.md5((candidate_name + now).encode()).hexdigest()[:6]
+
+    # ID único
+    return f"{initials}-{now}-{hash_short}"
+
+def generate_user_id(candidate_name):
+    normalized_name = candidate_name.lower().replace(" ", "")
+    hash_short = hashlib.md5(normalized_name.encode()).hexdigest()[:8]
+    return f"user_{hash_short}"
+
+def extract_email(text):
+    # Expresión regular para identificar un correo electrónico
+    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    
+    # Buscar el correo electrónico en el texto
+    email_match = re.search(email_pattern, text)
+    
+    if email_match:
+        return email_match.group(0)  # Devuelve el primer email encontrado
+    else:
+        return None  # Si no se encuentra ningún correo
+
+
+
+
+def extract_phone(text):
+    # Expresión regular para buscar un número de teléfono (ejemplo: (555) 555-5555 o 555-555-5555)
+    phone_pattern = r'\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}'
+    phone_match = re.search(phone_pattern, text)
+    if phone_match:
+        return phone_match.group(0)  # Devuelve el primer teléfono encontrado
+    else:
+        return "No disponible"
+
+def extract_linkedin(text):
+    # Expresión regular para buscar un enlace de LinkedIn (por ejemplo: https://www.linkedin.com/in/usuario/)
+    linkedin_pattern = r'https?://(?:www\.)?linkedin\.com/in/[\w-]+'
+    linkedin_match = re.search(linkedin_pattern, text)
+    if linkedin_match:
+        return linkedin_match.group(0)  # Devuelve el primer enlace de LinkedIn encontrado
+    else:
+        return "No disponible"
+
+def extract_address(text):
+    # Expresión regular para buscar una dirección (básica, puede necesitar ajustes dependiendo del formato)
+    address_pattern = r'(?:Calle|Av\.|Avenida|Pje\.)\s?[a-zA-Z0-9\s,.-]+'
+    address_match = re.search(address_pattern, text)
+    if address_match:
+        return address_match.group(0)  # Devuelve la primera dirección encontrada
+    else:
+        return "No disponible"
