@@ -690,21 +690,18 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     """
 
 
-    response5 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": prompt5}],
-        temperature=0.7,
-        #max_tokens=200 
-    )
-    cv_improvement_suggestions = response5['choices'][0]['message']['content']
+    while True:
+        response5 = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", 
+            messages=[{"role": "user", "content": prompt5}],
+            temperature=0.7,
+            #max_tokens=200 
+        )
+        cv_improvement_suggestions = response5['choices'][0]['message']['content']
 
-
-    suggestions_data = safe_json_load(cv_improvement_suggestions)
-    
-    if suggestions_data is None:
-        return await analizar_cv(pdf_url, puesto_postular)  
-    
-
+        suggestions_data = safe_json_load(cv_improvement_suggestions)
+        if suggestions_data is not None:
+            break
 
 
     prompt20 = f"""
@@ -742,25 +739,18 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
         {contenido}
     """
 
-    response20 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": prompt20}],
-        temperature=0.7,
-        #max_tokens=200 
-    )
-    formacion_academica = response20['choices'][0]['message']['content']
+    while True:
+        response20 = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", 
+            messages=[{"role": "user", "content": prompt20}],
+            temperature=0.7,
+            #max_tokens=200 
+        )
+        formacion_academica = response20['choices'][0]['message']['content']
 
-
-
-
-    suggestions_data2 = safe_json_load(formacion_academica)
-    
-    if suggestions_data2 is None:
-        return await analizar_cv(pdf_url, puesto_postular)  
-    
-
-
-
+        suggestions_data2 = safe_json_load(formacion_academica)
+        if suggestions_data2 is not None:
+            break
 
 
 
@@ -804,20 +794,18 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
     {contenido}
     """
 
-    response21 = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": prompt21}],
-        temperature=0.7,
-        #max_tokens=200 
-    )
-    habilidades_tecnicas = response21['choices'][0]['message']['content']
+    while True:
+        response21 = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo", 
+            messages=[{"role": "user", "content": prompt21}],
+            temperature=0.7,
+            #max_tokens=200 
+        )
+        habilidades_tecnicas = response21['choices'][0]['message']['content']
 
-
-
-    suggestions_data3 = safe_json_load(habilidades_tecnicas)
-    
-    if suggestions_data3 is None:
-        return await analizar_cv(pdf_url, puesto_postular)  
+        suggestions_data3 = safe_json_load(habilidades_tecnicas)
+        if suggestions_data3 is not None:
+            break
 
     prompt22 = f"""
 
@@ -1423,6 +1411,25 @@ async def analizar_cv(pdf_url: str, puesto_postular: str):
             }
         },
     })
+
+
+@app.get("/backup-static/")
+async def backup_static():
+    static_folder = "static"
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for root, dirs, files in os.walk(static_folder):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Añadir archivo al zip con ruta relativa
+                arcname = os.path.relpath(file_path, static_folder)
+                zip_file.write(file_path, arcname=arcname)
+
+    zip_buffer.seek(0)
+    return StreamingResponse(zip_buffer, media_type="application/zip", headers={"Content-Disposition": "attachment; filename=static_backup.zip"})
+
+
 
 def process_keywords_response(response):
     # Intentar extraer la respuesta en formato JSON
