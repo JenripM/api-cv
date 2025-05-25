@@ -23,6 +23,9 @@ import hashlib
 from datetime import datetime
 import time
 from fastapi.middleware.cors import CORSMiddleware       # ← NUEVO
+import shutil
+import zipfile
+import io
 
 load_dotenv()
 
