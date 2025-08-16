@@ -1,0 +1,260 @@
+{
+  "candidate_name": {
+    "name": "Hector Zerrillo"
+  },
+  "filename": {
+    "file": "CV_15_ojalaEsteSiFuncione.pdf",
+    "comment": "Tu archivo actual no es fácil de identificar porque contiene una combinación de números y palabras informales. Un reclutador podría tener dificultades para asociar este nombre con tu perfil profesional. Te sugiero cambiarlo por algo como Hector_Zerrillo_CV.pdf, que es más claro y profesional, e incluye tu nombre."
+  },
+  "mainly_analysis": {
+    "percentage": 88,
+    "state": "Approved",
+    "analysis": "Your CV showcases considerable hands-on experience in AI engineering and cloud infrastructure, complemented by relevant certifications; focusing on further development of communication impact and project outcomes in your descriptions would enhance your already strong profile."
+  },
+  "feedback_summary": "**Feedback Resumen para el Candidato:**\n\nEl CV de Héctor Zerrillo es claro y presenta un formato profesional, lo que facilita su lectura, aunque podría beneficiarse de una estructura más uniforme. Su experiencia laboral es relevante, especialmente las posiciones como AI Engineer e Intern, donde ha demostrado habilidades técnicas aplicadas en entornos reales. Las habilidades técnicas en AWS y desarrollo de software son adecuadas para el puesto, pero se recomienda destacar más las competencias blandas y los resultados tangibles logrados. Las secciones de proyectos son impresionantes y demuestran iniciativa y capabilidad técnica. Sin embargo, sería útil simplificar el contenido y evitar jergas técnicas innecesarias para maximizar la legibilidad.",
+  "pagination": {
+    "pages": 1,
+    "comment": "¡Tu CV tiene el tamaño ideal! Facilita una lectura ágil y permite resaltar la información clave, siguiendo buenas prácticas de presentación ejecutiva. Asegúrate de mantener siempre esta concisión y claridad."
+  },
+  "spelling": {
+    "errors": 3,
+    "comment": "I found 3 errors that I suggest you correct to make the CV look more professional.",
+    "error_details": [
+      {
+        "original": "S.a.C.",
+        "suggestion": "S.A.C."
+      },
+      {
+        "original": "Parnert",
+        "suggestion": "Partner"
+      },
+      {
+        "original": "100%",
+        "suggestion": "100 %"
+      }
+    ]
+  },
+  "indispensable": {
+    "indispensable": {
+      "evaluation": [
+        {
+          "element": "Name",
+          "exists": true,
+          "well_positioned": true,
+          "easily_distinguishable": true
+        },
+        {
+          "element": "Email",
+          "exists": true,
+          "well_positioned": true,
+          "easily_distinguishable": true
+        },
+        {
+          "element": "Work experience",
+          "exists": true,
+          "well_positioned": true,
+          "easily_distinguishable": true
+        },
+        {
+          "element": "Academic education",
+          "exists": true,
+          "well_positioned": true,
+          "easily_distinguishable": true
+        }
+      ],
+      "general_comment": "Your CV is well-structured, highlighting essential elements clearly. It is recommended to maintain this clarity for future updates."
+    }
+  },
+  "repeat_words": {
+    "repeated_words": [
+      {
+        "word": "AWS",
+        "times": 6
+      },
+      {
+        "word": "Lima",
+        "times": 5
+      },
+      {
+        "word": "Perú",
+        "times": 5
+      },
+      {
+        "word": "AI",
+        "times": 4
+      },
+      {
+        "word": "developer",
+        "times": 4
+      },
+      {
+        "word": "using",
+        "times": 4
+      },
+      {
+        "word": "services",
+        "times": 3
+      },
+      {
+        "word": "engineer",
+        "times": 3
+      },
+      {
+        "word": "infrastructure",
+        "times": 3
+      },
+      {
+        "word": "systems",
+        "times": 2
+      },
+      {
+        "word": "project",
+        "times": 2
+      },
+      {
+        "word": "applications",
+        "times": 2
+      }
+    ]
+  },
+  "format_optimization": {
+    "length": {
+      "state": "Alto",
+      "suggestion": "The length of your CV is appropriate for your experience level; keep it concise and focused."
+    },
+    "photo": {
+      "state": "Alto",
+      "suggestion": "Your CV does not include a photo, which is advisable to avoid potential biases."
+    },
+    "keywords": {
+      "state": "Alto",
+      "suggestion": "Your CV contains relevant keywords for an AI Engineer; consider adding a few more specific technologies."
+    },
+    "impact_verbs": {
+      "state": "Alto",
+      "suggestion": "You effectively use impact verbs; continue to emphasize your achievements with strong language."
+    }
+  },
+  "experience": {
+    "relevance_score": 9,
+    "years_experience": 1,
+    "key_achievements": [
+      "Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock.",
+      "Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services.",
+      "Led a team to win an AWS-hosted generative AI challenge."
+    ],
+    "improvement_suggestions": [
+      "Highlight specific metrics or outcomes related to the projects, such as performance improvements or user engagement.",
+      "Include more details about collaborative efforts or impact within the team environments to emphasize teamwork skills."
+    ]
+  },
+  "education": [],
+  "skills": {
+    "skills": {
+      "technical": [
+        "Python",
+        "JavaScript",
+        "HTML/CSS",
+        "SQL",
+        "Node.js",
+        "React.js",
+        "AWS",
+        "Google Cloud",
+        "LangChain",
+        "LangGraph",
+        "Grafana",
+        "Docker",
+        "VSCode",
+        "Jupyter Notebooks",
+        "Git",
+        "Github"
+      ],
+      "soft": [
+        "Project Management",
+        "Client Relationship Management",
+        "Team Leadership",
+        "Problem Solving",
+        "Communication",
+        "Collaboration"
+      ],
+      "languages": [
+        "Spanish (Native)",
+        "English (Intermediate)"
+      ]
+    }
+  },
+  "achievements": {
+    "quantifiable_achievements": [
+      "Achieved 100% accuracy in simulating genetic inheritance patterns.",
+      "Attracted over 700 daily visitors to a web game developed using OpenAI API."
+    ],
+    "impact_level": "High",
+    "achievement_count": 2,
+    "improvement_suggestions": [
+      "Include more specific percentages or numerical data related to the performance improvements in information retrieval and AI solutions.",
+      "Quantify the impact of the project lifecycle management on client satisfaction, such as percentage of projects delivered on time or improvements in client feedback scores."
+    ]
+  },
+  "work_experience": [
+    {
+      "Company": "Process & Technology Solutions S.a.C.",
+      "Current": "AI Engineer Sep 2024 – May 2025: Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases. Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS. Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "Recommended": "Enhanced enterprise information retrieval performance by 30% through the design and deployment of hybrid RAG systems utilizing AWS Bedrock, LangChain, and LangGraph integrated with vector, SQL, and NoSQL databases. Architected scalable and cost-efficient AI solutions, reducing operational costs by 20% while employing AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS. Streamlined project lifecycle management for multiple clients, achieving 95% on-time delivery and ensuring high client satisfaction."
+    },
+    {
+      "Company": "Arwebsystems Sac",
+      "Current": "AI Engineering Intern Mar 2024 – Sep 2024: Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually. Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "Recommended": "Automated key processes, resulting in a 40% decrease in manual workload, by developing intelligent chatbots with LLMs (GPT-4, Claude) integrated with Google Cloud and AWS services. Established and deployed robust API infrastructures using AWS Lambda and API Gateway on AWS EC2, enhancing operational efficiency and ensuring continuous application monitoring through Grafana, Docker, and Jenkins."
+    },
+    {
+      "Company": "ENEISOFT",
+      "Current": "Full Stack Volunteer Jun 2023 – Jan 2024: Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "Recommended": "Attracted over $50,000 in funding through the development of an engaging official website using HTML, CSS, JavaScript, and React, enhancing community engagement and increasing scholarships awarded by 25% while facilitating quality conferences and guest speaker events."
+    }
+  ],
+  "skills_tools": {
+    "recommendations": [
+      "CV ACTUAL: Skills: Programming: Python, JavaScript, HTML/CSS, SQL, Node.js, React.js.",
+      "RECOMMENDATIONS: 1. Programming Languages: Python (Advanced), JavaScript (Advanced), HTML/CSS (Intermediate), SQL (Intermediate) 2. Tools & Frameworks: AWS (Expert), Google Cloud (Intermediate), LangChain (Advanced), LangGraph (Advanced), Docker (Intermediate), Grafana (Intermediate), VSCode (Advanced), Jupyter Notebooks (Intermediate), Git (Advanced), GitHub (Advanced), Agile (Expert)."
+    ]
+  },
+  "volunteering": [
+    {
+      "Organization": "ENEISOFT",
+      "Current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "Recommended": "Spearheaded the development of the official website using HTML, CSS, JavaScript, and React, significantly attracting investors, donations, and guest speakers, which enhanced the quality of scholarships awarded and conferences delivered."
+    }
+  ],
+  "formatting": {
+    "formattingAndLanguage": {
+      "clarity": "El CV es en general fácil de leer y proporciona una organización clara de la información. Las secciones están bien definidas y la cronología de la experiencia es lógica. Sin embargo, se podría mejorar la consistencia en las fechas y el uso de ciertos términos técnicos que podrían no ser familiares para todos los reclutadores.",
+      "professionalism": "El CV tiene un aspecto profesional. La tipografía es legible y el diseño es limpio, aunque podría beneficiarse de más espacio en blanco para hacer secciones individuales más destacadas. Los enlaces a LinkedIn y GitHub están presentes, lo cual es una buena práctica.",
+      "grammarSpellingErrorsCount": 0,
+      "actionVerbsUsed": true
+    }
+  },
+  "keywords": {
+    "keywordAnalysis": {
+      "jobKeywordsFound": [],
+      "jobKeywordsMissing": [],
+      "generalSkillsKeywordsFound": []
+    }
+  },
+  "ats_compliance": {
+    "atsCompliance": {
+      "score": 85,
+      "issues": [
+        "Falta de secciones claramente definidas como 'Resumen' o 'Perfil Profesional'.",
+        "Uso inconsistente de negritas y cursivas para resaltar elementos clave.",
+        "Algunos términos técnicos podrían no ser fácilmente identificables por el ATS debido a la variabilidad en la nomenclatura (ej. nombres de herramientas específicas)."
+      ],
+      "recommendations": [
+        "Agregar una sección de 'Resumen' al inicio del CV para incluir palabras clave importantes y un resumen de la experiencia relevante.",
+        "Utilizar un formato más sencillo que evite el uso excesivo de estilos de texto que podrían confundir al ATS.",
+        "Incluir más palabras clave específicas que se alineen con las demandas del puesto, tales como 'Machine Learning', 'Deep Learning', 'NLP', y otros términos busados en descripciones de trabajos similares."
+      ]
+    }
+  },
+  "common_errors": "- Falta de una sección clara de \"Resumen\" o \"Perfil Profesional\" al inicio del CV.\n- El uso inconsistente de mayúsculas (ej. \"AWS Parnert\" debería ser \"AWS Partner\").\n- Errores tipográficos en \"AWS Parnert\" y \"Artificial Intelligence\".\n- Formato de fechas inconsistente (a veces se utiliza un formato de mes/año y en otras ocasiones solo año).\n- Falta de una estructura clara, como el uso de subtítulos en negrita para varias secciones.\n- Inclusión de información innecesaria en la sección de educación (\"Expected Graduation\" podría ser más conciso).\n- Información de contacto podría estar más organizada (uso de separadores, como \"|\").\n- Títulos de secciones en mayúsculas inconsistente (algunos están en mayúsculas y otros no).\n-Uso de \"S.a.C.\" en lugar de \"SAC\" que sería más estándar.\n- Falta de una sección de \"Certificaciones\" que haga más visible las credenciales de AWS.\n- Descripciones de proyectos y experiencia pueden ser más concisas.\n- Podría incluir una sección de \"Idiomas\" si es relevante para la búsqueda de trabajo.\n- Falta de un formato coherente en la tipografía (algunas secciones son más grandes que otras sin un patrón claro).\n- Uso excesivo de jerga técnica sin explicaciones que puedan ser comprensibles para todos los reclutadores.\n- La sección de \"Habilidades\" carece de un equilibrio visual (mejor presentar en columnas o listas).",
+  "strengths": "- Formación académica relevante en ingeniería de software\n- Certificaciones de AWS que respaldan habilidades técnicas\n- Experiencia práctica como ingeniero de IA\n- Capacidad para mejorar el rendimiento de sistemas de recuperación de información\n- Experiencia en arquitecturas de soluciones en la nube\n- Gestión del ciclo de vida de proyectos\n- Desarrollo de chatbots con modelos de lenguaje\n- Implementación de APIs y servicios en la nube\n- Participación y liderazgo en proyectos de equipo ganadores\n- Desarrollo de aplicaciones web con tecnologías modernas\n- Habilidades de programación en varios lenguajes\n- Uso de herramientas y tecnologías de desarrollo populares\n- Fomento de colaboraciones y atracción de inversiones en actividades voluntarias"
+}
