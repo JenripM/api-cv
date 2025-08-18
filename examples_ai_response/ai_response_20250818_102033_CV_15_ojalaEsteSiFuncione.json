@@ -1,0 +1,225 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "CV_15_ojalaEsteSiFuncione.pdf",
+    "ai_feedback": "El nombre del archivo es informal y poco profesional. Recomiendo renombrarlo con formato: Apellido_Nombre_Rol.pdf o Zerrillo_Hector_AI_Engineer.pdf para facilitar identificación por reclutadores y sistemas ATS."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "El CV parece conciso y de una sola página, lo cual es apropiado para candidatos en etapas tempranas o con experiencia limitada. Mantenerlo en 1 página está bien; si añade más detalles técnicos o publicaciones, limitar a máximo 2 páginas."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Parnert",
+        "recommended": "Partner"
+      },
+      {
+        "current": "x4 AWS Certified Lima, Perú",
+        "recommended": "AWS Certifications (4) — listar por certificación y fecha"
+      },
+      {
+        "current": "Arwebsystems Sac | IT Operations Automation",
+        "recommended": "Arwebsystems S.A.C. | IT Operations Automation"
+      },
+      {
+        "current": "PartyRock",
+        "recommended": "PartyRock (verificar nomenclatura oficial del servicio/evento)"
+      }
+    ],
+    "spelling_errors": 4,
+    "ai_feedback": "Se encontraron algunos errores tipográficos y de capitalización (por ejemplo 'Parnert' en lugar de 'Partner'). Revisar nombres de empresas, certificaciones y acrónimos para consistencia y corrección. Estandarizar formatos (S.A.C., S.a.C.) y remover abreviaturas inexactas."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "teléfono",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "LinkedIn/GitHub",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "educación",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Los elementos esenciales están presentes y visibles. Mejorar orden lógico: colocar un breve resumen profesional/emphático al inicio y detallar duración en meses/años y ubicación consistente para cada experiencia. Añadir enlaces activos (LinkedIn, GitHub, proyectos) si no están ya enlazados."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "Longitud apropiada (1 página). Mantener foco en logros cuantificables; si se añaden más proyectos o detalles técnicos, llegar máximo 2 páginas."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No incluye foto (lo cual es generalmente adecuado para roles técnicos y para cumplir con prácticas internacionales). No es necesario añadirla; si se añade, usar foto profesional y sobria."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye varias palabras clave relevantes (AWS, LangChain, LLMs), pero puede optimizarse añadiendo términos comunes de ofertas de AI Engineer: 'Model Deployment', 'MLOps', 'Model Monitoring', 'PyTorch', 'TensorFlow', 'CI/CD for ML', 'feature engineering', 'data pipelines'."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 7,
+    "ai_feedbacks": [
+      "Actualmente usa buenos verbos como 'Improved', 'Enabled', 'Managed', 'Developed' y 'Led'.",
+      "Sustituir verbos genéricos por otros más cuantificables: 'Optimized' -> especificar % o latencia reducida; 'Implemented' -> 'Deployed' + métricas; 'Built' -> 'Designed and deployed'.",
+      "Comenzar más bullets con resultados cuantificables: 'Achieved', 'Reduced', 'Increased', 'Accelerated', 'Saved'."
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Alto",
+      "ai_feedback": "Muestra habilidades técnicas relevantes: diseño de RAG, uso de LLMs, infra AWS, integración de servicios y monitoreo. Buen balance entre desarrollo y arquitectura."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Algunos logros incluyen métricas (por ejemplo, 700 daily visitors, 100% accuracy), pero muchos bullets carecen de números claros (cost reductions, throughput, latency, ROI, tiempo de despliegue). Añadir métricas cuantificables para mayor impacto."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C.",
+      "current": "AI Engineer Sep 2024 – May 2025 ● Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases. ● Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS. ● Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "recommended": "AI Engineer (Sep 2024 – May 2025) — Designed and deployed hybrid RAG systems (AWS Bedrock, LangChain, LangGraph) integrating vector stores, SQL and NoSQL, improving information retrieval accuracy by X% and reducing response latency by Y%. Architected and implemented scalable cloud infrastructure (Lambda, S3, RDS, DynamoDB, OpenSearch, SQS), reducing hosting costs by Z% and increasing uptime to 99.X%. Led end-to-end delivery for N client projects, delivering on schedule and achieving customer satisfaction score of X/5."
+    },
+    {
+      "company": "Arwebsystems Sac",
+      "current": "AI Engineering Intern Mar 2024 – Sep 2024 ● Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually. ● Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "recommended": "AI Engineering Intern (Mar 2024 – Sep 2024) — Developed and deployed LLM-based chatbots (GPT-4, Claude) integrated with GCP and AWS, automating X processes and reducing manual effort by Y hours/week. Built serverless APIs (Lambda + API Gateway) and provisioned EC2 services; implemented CI/CD and monitoring (Jenkins, Docker, Grafana) to achieve X% reduction in incidents and improved deployment frequency."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer (Jun 2023 – Jan 2024) — Developed React-based website to support fundraising and events, contributing to increased donations and attracting X guest speakers; enabled scholarship awards to Y students. Implemented analytics and UX improvements that increased user engagement by Z%."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Programming: Python, JavaScript, HTML/CSS, SQL, Node.js, React.js. Tools: AWS, Google Cloud, LangChain, LangGraph, Grafana, Docker, VSCode, Jupyter Notebooks, Git, Github, Agile.",
+    "ai_feedback": "Lista sólida para AI Engineer, destacar frameworks de ML (PyTorch, TensorFlow), librerías de NLP (Transformers), experiencia en MLOps (MLflow, TFX, Kubeflow), herramientas de vector DB (Pinecone, Milvus), y técnicas (fine-tuning, prompt engineering, model evaluation). Ordenar por relevancia y nivel de dominio (Avanzado/Intermedio/Básico)."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer (Jun 2023 – Jan 2024) — Designed and developed the official React website to support fundraising and events; integrated donation and event management features, contributing to X% increase in donations and facilitating scholarships for Y beneficiaries."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Bachelor in Software Engineering",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "date": "Expected Graduation, Dec 2027",
+      "ai_feedback": "Carrera relevante para AI Engineer. Indicar promedio si es competitivo, cursos relevantes (ML, Data Science, Estadística) y proyectos académicos destacados. Agregar formato consistente para fechas."
+    },
+    {
+      "degree": "AWS Certifications",
+      "institution": "AWS",
+      "date": "2024 - 2025 (varias)",
+      "ai_feedback": "Excelente incluir certificaciones AWS. Especificar fechas exactas por certificación y nivel (por ejemplo 'AWS Certified Machine Learning - Specialty — 2024'). Esto mejora credibilidad y búsqueda por reclutadores."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "AWS",
+      "LangChain",
+      "LangGraph",
+      "LLMs",
+      "GPT-4",
+      "Claude",
+      "S3",
+      "Lambda",
+      "RDS",
+      "DynamoDB",
+      "OpenSearch",
+      "SQS",
+      "Docker",
+      "Grafana",
+      "CI/CD",
+      "React",
+      "Python",
+      "Jupyter Notebooks",
+      "Git"
+    ],
+    "missing_keywords": [
+      "MLOps",
+      "Model Deployment",
+      "TensorFlow",
+      "PyTorch",
+      "MLflow",
+      "Kubeflow",
+      "Feature Engineering",
+      "Data Pipeline",
+      "ETL",
+      "A/B testing",
+      "Model Monitoring",
+      "Vector DB names (Pinecone, Milvus)",
+      "Prompt Engineering (explicit)",
+      "Docker Compose / Kubernetes"
+    ],
+    "general_skills": [
+      "Cloud Architecture",
+      "Model Integration",
+      "Full-stack Development",
+      "Monitoring",
+      "Automation",
+      "Team Leadership",
+      "Project Lifecycle Management"
+    ],
+    "ai_feedback": "Buen uso de keywords técnicas. Añadir términos de MLOps, frameworks ML, herramientas específicas de vector DB y métricas de rendimiento para mejorar coincidencia con ofertas de AI Engineer y sistemas ATS."
+  },
+  "executive_summary_analysis": {
+    "current": "",
+    "recommended": "AI Engineer with hands-on experience designing and deploying RAG systems and LLM integrations on AWS and Google Cloud. Proficient in full-stack development, cloud architecture, and MLOps fundamentals. Led winning generative AI projects and deployed production solutions that improved retrieval accuracy and user engagement. Busco aportar experiencia en model deployment y operativización de ML para soluciones escalables."
+  },
+  "ats_compliance": {
+    "score": 75,
+    "issues": [
+      "Formato potencialmente no parseable si usa tablas o columnas (no verificable desde texto).",
+      "Uso inconsistente de abreviaturas y puntuación en nombres de empresas y certificaciones.",
+      "Falta de secciones claramente etiquetadas con etiquetas estándar (por ejemplo 'Certifications' separado con fechas).",
+      "Algunas palabras clave importantes de MLOps/ML no están presentes."
+    ],
+    "ai_feedbacks": [
+      "Usar secciones con títulos estándar (Summary, Experience, Education, Skills, Certifications, Projects) para mejorar lectura ATS.",
+      "Incluir fechas en formato consistente (Mes Año – Mes Año) y localizaciones separadas.",
+      "Incluir palabras clave faltantes y usar texto simple sin gráficos ni columnas complejas.",
+      "Asegurar que los enlaces (LinkedIn, GitHub) estén en texto plano y completos."
+    ]
+  },
+  "main_analysis": {
+    "score": 82,
+    "summary": "Candidato con experiencia práctica relevante en RAG, LLMs y arquitectura AWS; buen perfil técnico para roles de AI Engineer junior/medios, pero puede mejorar añadiendo métricas, MLOps y frameworks ML específicos.",
+    "ai_feedback": "Muy buen CV para un perfil emergente en AI Engineering. Añadir un resumen ejecutivo, cuantificar logros, corregir errores tipográficos, detallar certificaciones con fechas y agregar keywords de MLOps y frameworks ML elevará la calidad y visibilidad ante reclutadores y ATS."
+  },
+  "common_errors": "Errores tipográficos en nombres-proveedor (Parnert vs Partner)-Inconsistencia en formato de nombres de empresas y siglas (S.a.C., Sac, S.A.C.)-Falta de métricas en varios logros-Falta de cursos/skills ML explícitos (PyTorch/TensorFlow/MLOps)-Certificaciones listadas sin fechas concretas",
+  "strengths": "Experiencia práctica con RAG y LLMs-AWS cloud architecture y servicios relevantes-Proyectos liderados y premio (AWS GameDay Winner)-Stack técnico diverso (Python, React, Docker, Grafana)-Certificaciones AWS múltiples"
+}

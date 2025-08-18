@@ -15,9 +15,10 @@ green = Color(0, 1, 0)
 
 def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     """2. Sección de análisis principal con velocímetro"""
-    analisis = datos_cv.get('mainly_analysis', {}).get('analysis', 'Analysis not available')
-    porcentaje = datos_cv.get('mainly_analysis', {}).get('percentage', 0)
-    nombre = datos_cv.get('candidate_name', {}).get('name', 'name not available')
+    # Actualizar claves según el nuevo formato
+    analisis = datos_cv.get('main_analysis', {}).get('summary', 'Analysis not available')
+    porcentaje = datos_cv.get('main_analysis', {}).get('score', 0)
+    nombre = datos_cv.get('metadata', {}).get('candidate_name', 'name not available')
     puesto_postular = datos_cv.get('puesto_postular', 'puesto_postular no disponible')
 
     alto_degradado = 250   # altura menor para el fondo degradado

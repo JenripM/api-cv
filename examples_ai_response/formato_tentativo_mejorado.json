@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+
+  "main_analysis": {
+    "score": 75,
+    "status": "Con potencial",
+    "summary": "CV con experiencia práctica en soluciones AI y Cloud (AWS, LangChain, LLMs). Buenas iniciativas de proyecto y certificaciones. Falta profundizar métricas, estandarizar formato y destacar deployment/MLOps y frameworks de ML (TensorFlow/PyTorch).",
+    "feedback_summary": "Hector muestra experiencia práctica relevante: diseño de RAG, integración de LLMs, infraestructura AWS y liderazgo en desafíos. Recomendable cuantificar resultados, enfatizar despliegue de modelos y MLOps, listar frameworks ML (TensorFlow/PyTorch), mejorar consistencia de formato y corregir pequeños errores ortográficos y de nomenclatura de empresa/certificaciones."
+  },
+
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "Documento conciso en una página; buena longitud. Si se agrega más experiencia, limite a máximo 2 páginas."
+  },
+
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Parnert",
+        "recommended": "Partner"
+      }
+    ],
+    "spelling_errors": 1,
+    "ai_feedback": "Pocos errores ortográficos; destaca una palabra mal escrita en el nombre de la empresa. Revisión general de mayúsculas y consistencia recomendada."
+  },
+
+  "filename_analysis": {
+    "filename": "Hector_Zerrillo_CV.pdf",
+    "ai_feedback": "Nombre claro pero usar formato 'Nombre_Apellido_CV.pdf' y añadir versión con fecha (ej. _2025) para control de versiones y profesionalismo."
+  },
+
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "Name",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Work experience",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Academic education",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Elementos básicos presentes y visibles; mejorar orden y formato de certificaciones y contactos."
+  },
+
+  "keywords_analysis": {
+    "found_keywords": ["AWS", "LangChain", "RAG", "LLMs", "Bedrock", "Docker"],
+    "missing_keywords": ["PyTorch", "TensorFlow", "MLOps", "Model serving", "CI/CD details"],
+    "general_skills": ["Python", "JavaScript", "SQL", "Cloud Architecture"],
+    "ai_feedback": "Agregar frameworks ML, términos MLOps y métricas de modelos para mejorar matching ATS y expectativas de AI Engineer."
+  },
+
+  "impact_verbs_analysis": {
+    "score": 6,
+    "ai_feedbacks": [
+      "Reemplaza verbos genéricos por impactos: 'Desarrollé' → 'Desarrollé y desplegué X, reduciendo Y en Z%'.",
+      "Cambia 'Used' por 'Implementé' y especifica resultados y métricas.",
+      "Añade métricas cuantificables (latencia, costo, precisión, usuarios) en cada logro"
+    ]
+  },
+
+  "executive_summary_analysis": {
+    "current": "Hector muestra experiencia práctica relevante: diseño de RAG, integración de LLMs, infraestructura AWS y liderazgo en desafíos. Recomendable cuantificar resultados, enfatizar despliegue de modelos y MLOps, listar frameworks ML (TensorFlow/PyTorch), mejorar consistencia de formato y corregir pequeños errores ortográficos y de nomenclatura de empresa/certificaciones.",
+    "recommended": "Hector muestra experiencia práctica relevante: diseño de RAG, integración de LLMs, infraestructura AWS y liderazgo en desafíos. Recomendable cuantificar resultados, enfatizar despliegue de modelos y MLOps, listar frameworks ML (TensorFlow/PyTorch), mejorar consistencia de formato y corregir pequeños errores ortográficos y de nomenclatura de empresa/certificaciones."
+  },
+
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Alto",
+      "ai_feedback": "Cuantificar impacto operativo y económico (ej. reducción de costos, latencia, aumento de precisión). Detallar pipelines de entrenamiento/despliegue (CI/CD, modelos, métricas de producción, monitoring)."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Añadir métricas cuantificables por proyecto según las sugerencias de mejora."
+    },
+    "soft_skills": {
+      "level": "Alto",
+      "ai_feedback": "Las habilidades blandas están bien representadas en el CV."
+    },
+    "technical_language": {
+      "level": "Alto",
+      "ai_feedback": "El lenguaje técnico es apropiado para el puesto."
+    }
+  },
+
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C. | AWS Partner Lima, Perú",
+      "current": "AI Engineer Sep 2024 – May 2025\n● Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases.\n● Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS.\n● Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "recommended": "AI Engineer (Sep 2024 – May 2025) – Diseñé y desplegué un sistema RAG híbrido (Bedrock, LangChain, LangGraph) con motores vectoriales y bases SQL/NoSQL, mejorando la precisión de recuperación en X% y reduciendo latencia en Y%. Arquitecté infraestructura escalable en AWS (Lambda, S3, RDS, DynamoDB, OpenSearch, SQS) que recortó costos operativos Z% y permití despliegues CI/CD para múltiples clientes."
+    },
+    {
+      "company": "Arwebsystems Sac | IT Operations Automation Lima, Perú",
+      "current": "AI Engineering Intern Mar 2024 – Sep 2024\n● Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually.\n● Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "recommended": "AI Engineering Intern (Mar 2024 – Sep 2024) – Implementé chatbots basados en LLMs (GPT-4, Claude) integrados con Google Cloud y AWS para automatizar procesos, reduciendo tiempo manual en X%. Desarrollé APIs con Lambda y API Gateway y desplegué en EC2, configurando monitoring (Grafana, Docker, Jenkins) y garantizando disponibilidad del 99%."
+    }
+  ],
+
+  "skills_tools_analysis": {
+    "current_skills": "Python, JavaScript, AWS, LangChain, LangGraph, Docker, Grafana, Google Cloud, Git",
+    "ai_feedback": "Añadir frameworks ML (PyTorch, TensorFlow), MLOps tools (MLflow, Kubeflow), model serving (TorchServe, Sagemaker), experiment tracking, y detallar experiencia con evaluación de modelos (precision, recall, AUC) y métricas de producción."
+  },
+
+  "education_analysis": [
+    {
+      "degree": "Bachelor in Software Engineering",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "location": "Lima, Perú",
+      "date": "Expected Graduation, Dec 2027",
+      "ai_feedback": "Destacar proyectos relevantes de la carrera y mencionar cursos específicos de ML/AI si los hay."
+    },
+    {
+      "degree": "Certificaciones AWS",
+      "institution": "AWS Certifications",
+      "location": "Lima, Perú",
+      "date": "2024 - 2025",
+      "notes": "Machine Learning - Specialty; Solutions Architect - Associate; Machine Learning Engineer - Associate; AI Practitioner - Foundational (x4 total)",
+      "ai_feedback": "Excelente conjunto de certificaciones. Considerar agregar certificaciones específicas de frameworks ML como TensorFlow o PyTorch."
+    }
+  ],
+
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer – Diseñé y desarrollé el sitio web en React, incrementando visibilidad institucional y apoyo externo; atribuir métricas (número de donaciones, asistentes a eventos, becas otorgadas) para demostrar impacto."
+    }
+  ],
+
+  "format_optimization": {
+    "length": {
+      "status": "Medio",
+      "ai_feedback": "Mantener una página; reducir descripciones largas y priorizar logros cuantificables y tecnologías claves."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No incluye foto. Para mercados donde se requiere, usar foto profesional; en general no es necesaria para roles técnicos."
+    },
+    "keywords": {
+      "status": "Alto",
+      "ai_feedback": "Buen uso de palabras clave Cloud/LLM. Añadir frameworks ML (PyTorch/TensorFlow), MLOps y model deployment."
+    },
+    "impact_verbs": {
+      "score": 6,
+      "ai_feedbacks": [
+        "Reemplaza verbos genéricos por impactos: 'Desarrollé' → 'Desarrollé y desplegué X, reduciendo Y en Z%'.",
+        "Cambia 'Used' por 'Implementé' y especifica resultados y métricas.",
+        "Añade métricas cuantificables (latencia, costo, precisión, usuarios) en cada logro"
+      ]
+    }
+  }
+}

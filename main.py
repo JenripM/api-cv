@@ -18,22 +18,82 @@ import io
 import time
 from fastapi.middleware.cors import CORSMiddleware
 
+
 # Importar servicios reorganizados
-from services.ai_utils import (
-    obtener_nombre_archivo_desde_url, clean_and_load_json, generate_analysis_id,
-    generate_user_id, extract_email, extract_phone, extract_linkedin, extract_address,
-    es_json_valido, safe_json_load, process_formatting_response, process_keywords_response,
-    process_ats_response, process_skills_response
-)
+from services.ai_utils import (generate_analysis_id)
 from services.pdf_generator.pdf_generator import generar_pdf_con_secciones
 from services.pdf_generator.pdf_utils import descargar_imagen
 from services.ai_service import AIService
-from services.cv_processor import CVProcessor
 
 load_dotenv()
 
-# Inicializar el cliente de OpenAI
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Clase simple para manejar funciones de CV
+class CVProcessor:
+    def download_logos(self):
+        """Descarga los logos necesarios"""
+        try:
+            # Crear directorio si no existe
+            os.makedirs("static/analisis_pdfs", exist_ok=True)
+            
+            # Copiar logos si existen
+            ruta_logo = "static/analisis_pdfs/logo.png"
+            ruta_logo2 = "static/analisis_pdfs/MyWorkIn 2.png"
+            
+            # Si no existen, crear archivos vacíos o copiar desde public
+            if not os.path.exists(ruta_logo):
+                shutil.copy("logo.png", ruta_logo) if os.path.exists("logo.png") else None
+            if not os.path.exists(ruta_logo2):
+                shutil.copy("public/img/MyWorkIn 2.png", ruta_logo2) if os.path.exists("public/img/MyWorkIn 2.png") else None
+                
+            return ruta_logo, ruta_logo2
+        except Exception as e:
+            print(f"Error descargando logos: {e}")
+            return "logo.png", "public/img/MyWorkIn 2.png"
+    
+    def generate_pdf_filename(self):
+        """Genera nombre único para el PDF"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return f"analisis_cv_{timestamp}.pdf"
+    
+    def save_analysis_json(self, analysis_results, original_name):
+        """Guarda el análisis de IA en un archivo JSON"""
+        try:
+            # Crear carpeta examples_ai_response si no existe
+            examples_folder = "examples_ai_response"
+            if not os.path.exists(examples_folder):
+                os.makedirs(examples_folder)
+            
+            # Generar nombre único para el archivo JSON
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            json_filename = f"ai_response_{timestamp}_{original_name.replace('.pdf', '')}.json"
+            json_path = os.path.join(examples_folder, json_filename)
+            
+            # Guardar la respuesta de IA en JSON
+            with open(json_path, 'w', encoding='utf-8') as f:
+                json.dump(analysis_results, f, ensure_ascii=False, indent=2)
+            
+            print(f"✅ Análisis de IA guardado en: {json_path}")
+            return json_path
+        except Exception as e:
+            print(f"❌ Error al guardar análisis JSON: {e}")
+            raise
+    
+    def build_final_response(self, analysis_results, puesto, candidate_name, nombre_pdf, ruta_pdf):
+        """Construye la respuesta final"""
+        return {
+            "status": "success",
+            "message": "Análisis completado exitosamente",
+            "data": {
+                "candidate_name": candidate_name,
+                "position": puesto,
+                "pdf_url": f"/static/analisis_pdfs/{nombre_pdf}",
+                "analysis_results": analysis_results
+            }
+        }
+
+# Inicializar servicios después de cargar variables de entorno
+ai_service = AIService(api_key=os.getenv("OPENAI_API_KEY"))
+cv_processor = CVProcessor()
 
 app = FastAPI()
 
@@ -47,9 +107,6 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Inicializar servicios
-ai_service = AIService(os.getenv("OPENAI_API_KEY"))
-cv_processor = CVProcessor()
 
 @app.get("/backup-static/")
 async def backup_static():
@@ -73,7 +130,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
     Endpoint principal para analizar CV usando la nueva tecnología de OpenAI para leer archivos directamente desde URL
     """
     try:
-        # 1. Verificar que la URL del PDF sea accesible
+        # PASO 1: Verificar que la URL del PDF sea accesible
+        print("🔍 Paso 1: Verificando URL del PDF...")
         try:
             response = requests.head(pdf_url, timeout=10)
             if response.status_code != 200:
@@ -85,7 +143,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                     }
                 )
         except Exception as e:
-            print(f"Error al verificar URL del PDF: {e}")
+            print(f"❌ Error al verificar URL del PDF: {e}")
             return JSONResponse(
                 status_code=400,
                 content={
@@ -94,17 +152,16 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                 }
             )
         
-        # 2. Realizar análisis completo usando la nueva API de OpenAI para archivos
+        # PASO 2: Realizar análisis completo usando la nueva API de OpenAI para archivos
+        print("🤖 Paso 2: Realizando análisis de IA...")
         try:
-            # Usar la nueva API que lee el archivo directamente desde la URL
-            analysis_results = await ai_service.analyze_cv_complete(
+            analysis_results = ai_service.analyze_cv_complete(
                 file_url=pdf_url,
                 puesto=puesto_postular,
-                filename=original_name,
-                num_paginas=1  # OpenAI determinará automáticamente el número de páginas
+                filename=original_name
             )
         except Exception as e:
-            print(f"Error al realizar análisis de IA: {e}")
+            print(f"❌ Error al realizar análisis de IA: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -113,94 +170,83 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                 }
             )
         
-        # 3. Preparar datos para el análisis final
+        # PASO 3: Guardar JSON del análisis de IA (INMEDIATAMENTE después del análisis)
+        print("💾 Paso 3: Guardando análisis de IA en JSON...")
         try:
-            candidate_name = analysis_results.get("candidate_name", {})
-            extracted_data = cv_processor.prepare_analysis_data(
-                contenido="[PDF content read by OpenAI]",  # Ya no necesitamos el contenido extraído
-                puesto=puesto_postular,
-                original_pdf=pdf_url,
-                candidate_name=candidate_name,
-                analysis_results=analysis_results
-            )
+            json_path = cv_processor.save_analysis_json(analysis_results, original_name)
         except Exception as e:
-            print(f"Error al preparar datos de análisis: {e}")
+            print(f"❌ Error al guardar JSON: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
                     "status": "error",
-                    "message": f"Error al preparar datos de análisis: {str(e)}"
+                    "message": f"Error al guardar análisis JSON: {str(e)}"
                 }
             )
         
-        # 4. Descargar logos y generar PDF
+        candidate_name = analysis_results.get("candidate_name", "Nombre no disponible")
+        
+        # PASO 4: Preparar logos y generar nombre del PDF
+        print("📄 Paso 4: Preparando generación de PDF...")
         try:
             ruta_logo, ruta_logo2 = cv_processor.download_logos()
             nombre_pdf = cv_processor.generate_pdf_filename()
         except Exception as e:
-            print(f"Error al descargar logos/generar nombre PDF: {e}")
+            print(f"❌ Error al preparar logos/nombre PDF: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
                     "status": "error",
-                    "message": f"Error al descargar logos/generar nombre PDF: {str(e)}"
+                    "message": f"Error al preparar logos/nombre PDF: {str(e)}"
                 }
             )
         
-        # 5. Generar el PDF con los resultados
+        # PASO 5: Generar el PDF con los resultados
+        print("📋 Paso 5: Generando PDF...")
         try:
             ruta_pdf = generar_pdf_con_secciones(analysis_results, nombre_pdf, ruta_logo, ruta_logo2)
-            
-            # Crear carpeta examples_ai_response si no existe
-            examples_folder = "examples_ai_response"
-            if not os.path.exists(examples_folder):
-                os.makedirs(examples_folder)
-            
-            # Generar nombre único para el archivo JSON
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            json_filename = f"ai_response_{timestamp}_{original_name.replace('.pdf', '')}.json"
-            json_path = os.path.join(examples_folder, json_filename)
-            
-            # Guardar la respuesta de IA en JSON
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(analysis_results, f, ensure_ascii=False, indent=2)
-            
-            print(f"Respuesta de IA guardada en: {json_path}")
-            
+            print(f"✅ PDF generado exitosamente: {ruta_pdf}")
         except Exception as e:
-            print(f"Error al generar PDF o guardar respuesta de IA: {e}")
+            print(f"❌ Error al generar PDF: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
                     "status": "error",
-                    "message": f"Error al generar PDF o guardar respuesta de IA: {str(e)}"
+                    "message": f"Error al generar PDF: {str(e)}",
+                    "json_saved": True,
+                    "json_path": json_path
                 }
             )
         
-        # 6. Construir respuesta final
+        # PASO 6: Construir respuesta final
+        print("✅ Paso 6: Construyendo respuesta final...")
         try:
             final_response = cv_processor.build_final_response(
                 analysis_results=analysis_results,
                 puesto=puesto_postular,
                 candidate_name=candidate_name,
-                extracted_data=extracted_data,
                 nombre_pdf=nombre_pdf,
                 ruta_pdf=ruta_pdf
             )
         except Exception as e:
-            print(f"Error al construir respuesta final: {e}")
+            print(f"❌ Error al construir respuesta final: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
                     "status": "error",
-                    "message": f"Error al construir respuesta final: {str(e)}"
+                    "message": f"Error al construir respuesta final: {str(e)}",
+                    "json_saved": True,
+                    "json_path": json_path,
+                    "pdf_generated": True,
+                    "pdf_path": ruta_pdf
                 }
             )
         
+        print("🎉 Análisis completado exitosamente")
         return JSONResponse(content=final_response)
         
     except Exception as e:
-        print(f"Error general en análisis de CV: {e}")
+        print(f"❌ Error general en análisis de CV: {e}")
         return JSONResponse(
             status_code=500,
             content={
@@ -240,39 +286,18 @@ async def test_analizar_cv():
             # Verificar si hay error en la respuesta
             if response_data.get('status') == 'error':
                 print(f"❌ Error en el análisis: {response_data.get('message', 'Error desconocido')}")
-                print("💡 Posibles causas:")
-                print("   - Problemas de conectividad con OpenAI API")
-                print("   - API key inválida o expirada")
-                print("   - Límites de rate limit alcanzados")
-                print("   - Problemas temporales del servicio")
+                # Mostrar información adicional si está disponible
+                if response_data.get('json_saved'):
+                    print(f"📄 JSON guardado en: {response_data.get('json_path')}")
+                if response_data.get('pdf_generated'):
+                    print(f"📋 PDF generado en: {response_data.get('pdf_path')}")
                 return
             
-            # Buscar pdf_url en diferentes ubicaciones posibles
-            pdf_url = None
-            if 'pdf_url' in response_data:
-                pdf_url = response_data['pdf_url']
-            elif 'extractedData' in response_data and 'analysisResults' in response_data['extractedData']:
-                pdf_url = response_data['extractedData']['analysisResults'].get('pdf_url')
-            
-            if pdf_url:
-                print(f"✅ URL del PDF: {pdf_url}")
-            else:
-                print(f"⚠️  Respuesta recibida pero no contiene pdf_url: {response_data}")
         else:
             print(f"⚠️  Respuesta inesperada: {response}")
     
     except Exception as e:
         print(f"❌ ERROR durante la prueba: {e}")
-        print("💡 Detalles del error:")
-        if "502" in str(e):
-            print("   - Error 502: Problema de conectividad con OpenAI API")
-            print("   - Verifica tu conexión a internet")
-            print("   - Intenta nuevamente en unos minutos")
-        elif "Expecting value" in str(e):
-            print("   - Error de parsing JSON: La API no devolvió una respuesta válida")
-            print("   - Posible problema con OpenAI API")
-        import traceback
-        traceback.print_exc()
     
     finally:
         # Mostrar tiempo total siempre
@@ -282,13 +307,13 @@ async def test_analizar_cv():
         print(f"⏱️  Tiempo total de ejecución: {elapsed_time:.2f} segundos")
 
 # Función para ejecutar la prueba
-def run_test():
+async def run_test():
     """
     Ejecuta la prueba del endpoint
     """
-    import asyncio
-    asyncio.run(test_analizar_cv())
+    await test_analizar_cv()
 
 if __name__ == "__main__":
-    run_test()
+    import asyncio
+    asyncio.run(run_test())
 

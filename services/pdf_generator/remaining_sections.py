@@ -2,9 +2,10 @@ from reportlab.lib.colors import Color, HexColor
 
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
 from reportlab.lib.utils import ImageReader
 from .pdf_utils import wrap_text
+from .table_component import create_evaluation_table
 
 
 # Definir colores específicos
@@ -19,8 +20,9 @@ whitesmoke = Color(0.96, 0.96, 0.96)
 
 def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     """4. Sección de nombre de archivo"""
-    archivo = datos_cv.get('filename', {}).get('file', 'File not available')
-    comentario = datos_cv.get('filename', {}).get('comment', 'Comment not available')
+    # Actualizar claves según el nuevo formato
+    archivo = datos_cv.get('filename_analysis', {}).get('filename', 'File not available')
+    comentario = datos_cv.get('filename_analysis', {}).get('ai_feedback', 'Comment not available')
 
     margen_horizontal = 50
     margen_interno = 15
@@ -85,11 +87,40 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
 
 def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     """5. Sección de elementos indispensables"""
-    observacion = datos_cv.get('indispensable', {}).get('indispensable', {}).get('general_comment', 'general_comment not available')
+    # Actualizar claves según el nuevo formato
+    observacion = datos_cv.get('essential_elements', {}).get('ai_feedback', 'general_comment not available')
     margen_horizontal = 50
-    alto_div = 130
     ancho_div = ancho - 2 * margen_horizontal
     x_div = margen_horizontal
+    
+    # Calcular altura dinámicamente
+    evaluacion = datos_cv.get('essential_elements', {}).get('evaluation', [])
+    
+    # Altura base para título y cabecera - más responsive
+    altura_base = 30  # Reducido de 35 a 30pt (Título + cabecera + línea)
+    
+    # Altura para las filas de evaluación - más compacto
+    altura_tabla = len(evaluacion) * 16  # Reducido de 18 a 16pt por fila
+    
+    # Calcular altura para la observación
+    estilo_obs = ParagraphStyle(
+        name="Justificado",
+        fontName="Poppins-Regular",
+        fontSize=9,
+        leading=11,
+        alignment=TA_JUSTIFY,
+        spaceAfter=0,
+        spaceBefore=0,
+    )
+    
+    x_obs = x_div + 290
+    ancho_obs = ancho_div - (x_obs - x_div) - 15
+    par_obs = Paragraph(observacion, estilo_obs)
+    w_obs, h_obs = par_obs.wrap(ancho_obs, 1000)  # Altura máxima para calcular
+    
+    # Altura total del div - más compacto y responsive
+    alto_div = max(80, altura_base + altura_tabla + h_obs + 2)  # Reducido de 5 a 2pt y mínimo de 100 a 80pt
+    
     y_div = y_inicio - alto_div
 
     sombra_expand = 6
@@ -115,10 +146,10 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     # Título "Indispensable"
     c.setFillColor(grey)
     c.setFont("Poppins-SemiBold", 9)
-    c.drawString(x_div + 10, y_div + alto_div - 14, "Indispensable")
+    c.drawString(x_div + 10, y_div + alto_div - 12, "Indispensable")
 
-    # Posición inicial de la tabla
-    y_tabla_inicio = y_div + alto_div - 40
+    # Posición inicial de la tabla - ajustado para nueva altura base
+    y_tabla_inicio = y_div + alto_div - 30
 
     # Cabecera de la tabla
     c.setFont("Poppins-SemiBold", 7)
@@ -127,20 +158,17 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     c.drawString(columnas[0], y_tabla_inicio, "Elemento")
     c.drawString(columnas[1], y_tabla_inicio, "¿Existe?")
     c.drawString(columnas[2], y_tabla_inicio, "¿Bien")
-    c.drawString(columnas[2], y_tabla_inicio - 13, "posicionado?")
+    c.drawString(columnas[2], y_tabla_inicio - 12, "posicionado?")
     c.drawString(columnas[3], y_tabla_inicio, "¿Fácil de")
-    c.drawString(columnas[3], y_tabla_inicio - 13, "distinguir?")
+    c.drawString(columnas[3], y_tabla_inicio - 12, "distinguir?")
 
     # Línea bajo la cabecera
     c.setStrokeColor(HexColor("#B0B0B0"))
     c.setLineWidth(0.7)
-    c.line(columnas[0], y_tabla_inicio - 20, columnas[3] + 30, y_tabla_inicio - 20)
+    c.line(columnas[0], y_tabla_inicio - 18, columnas[3] + 30, y_tabla_inicio - 18)
 
     # Filas de datos
-    evaluacion = datos_cv.get('indispensable', {}) \
-    .get('indispensable', {}) \
-    .get('evaluation', [])
-    y_filas = [y_tabla_inicio - 30 - 15 * i for i in range(len(evaluacion))]
+    y_filas = [y_tabla_inicio - 28 - 16 * i for i in range(len(evaluacion))]
 
     c.setFont("Helvetica", 8)
     check = "✔"
@@ -181,43 +209,36 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
         # Línea separadora
         c.setStrokeColor(HexColor("#B0B0B0"))
         c.setLineWidth(0.5)
-        c.line(columnas[0], y - 5, columnas[3] + 30, y - 5)
+        c.line(columnas[0], y - 4, columnas[3] + 30, y - 4)
 
-    # Título y Observación justificada
+    # Título y Observación justificada - más responsive
     x_obs = x_div + 290
-    y_obs_title = y_div + alto_div - 25
+    y_obs_title = y_div + alto_div - 8  # Reducido de 10 a 8pt
     ancho_obs = ancho_div - (x_obs - x_div) - 15
-    alto_obs = y_obs_title - (y_div + 10)
 
     c.setFont("Poppins-Bold", 9)
     c.setFillColor(red)
     c.drawString(x_obs, y_obs_title, "Observación:")
 
-    estilo_obs = ParagraphStyle(
-        name="Justificado",
-        fontName="Poppins-Regular",
-        fontSize=9,
-        leading=11,
-        alignment=TA_JUSTIFY,
-        spaceAfter=0,
-        spaceBefore=0,
-    )
-
-    par_obs = Paragraph(observacion, estilo_obs)
-    w_com, h_com = par_obs.wrap(ancho_obs, alto_obs)
-    par_obs.drawOn(c, x_obs, y_obs_title - h_com - 4)
+    par_obs.drawOn(c, x_obs, y_obs_title - h_obs - 4)
 
     return alto_div
 
-# Continuar con las demás secciones...
 def seccion_6(c, ancho, alto, y_inicio, datos_cv):
-    """6. Sección de palabras repetidas y relevancia"""
-    palabras_repetidas = [item['word'] for item in datos_cv.get('repeat_words', {}).get('repeated_words', [])]
-    relevance = datos_cv.get('relevance', 'Relevancia no disponible')
+    """6. Sección de palabras clave y sugerencias de keywords"""
+    # Actualizar claves según el nuevo formato
+    keywords_data = datos_cv.get('keywords_analysis', {})
+    found_keywords = keywords_data.get('found_keywords', [])
+    missing_keywords = keywords_data.get('missing_keywords', [])
+    keywords_suggestion = keywords_data.get('ai_feedback', 'No hay sugerencias de keywords disponibles')
+    
+    # Solo mostrar keywords encontradas en la card de palabras clave
+    all_keywords = []
+    for keyword in found_keywords:
+        all_keywords.append({"word": keyword, "found": True})
 
     margen_horizontal = 50
     espacio_entre_divs = 20
-    alto_div = 180
 
     sombra_expand = 8
     sombra_offset_x = 2
@@ -229,6 +250,18 @@ def seccion_6(c, ancho, alto, y_inicio, datos_cv):
 
     x_div1 = margen_horizontal
     x_div2 = margen_horizontal + ancho_div + espacio_entre_divs
+    
+    # Calcular altura dinámicamente para cada card
+    
+    # Card 1: Palabras Clave
+    altura_card1 = calcular_altura_keywords(c, all_keywords, ancho_div)
+    
+    # Card 2: Sugerencias
+    altura_card2 = calcular_altura_sugerencias(c, keywords_suggestion, missing_keywords, ancho_div)
+    
+    # Usar la altura máxima de ambas cards
+    alto_div = max(180, max(altura_card1, altura_card2))
+    
     y_div = y_inicio - alto_div
 
     # Dibujar sombras
@@ -248,63 +281,181 @@ def seccion_6(c, ancho, alto, y_inicio, datos_cv):
     c.roundRect(x_div1, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
     c.roundRect(x_div2, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
 
-    # Primer div: Palabras repetidas
+    # Primer div: Palabras Clave
     c.setFillColor(grey)
     c.setFont("Poppins-Bold", 10)
-    c.drawString(x_div1 + 15, y_div + alto_div - 25, "Palabras repetidas")
+    c.drawString(x_div1 + 15, y_div + alto_div - 25, "Palabras Clave")
 
+    # Configuración de burbujas
     c.setFont("Poppins-Bold", 9)
-    espacio_x = 12
-    espacio_y = 6
-    radio_burbuja = 12
-    color_burbuja = HexColor("#028BBF")
+    espacio_x = 15
+    espacio_y = 8
+    radio_burbuja = 14
+    color_burbuja = HexColor("#007bb6")
     color_texto = white
 
     x_actual = x_div1 + 15
     y_actual = y_div + alto_div - 50
 
-    for palabra in palabras_repetidas:
+    for keyword_data in all_keywords:
+        palabra = keyword_data["word"]
+        
         ancho_palabra = c.stringWidth(palabra, "Poppins-Bold", 9)
-        ancho_burbuja = ancho_palabra + 10
+        ancho_burbuja = ancho_palabra + 16
+        
         if x_actual + ancho_burbuja > x_div1 + ancho_div - 15:
             x_actual = x_div1 + 15
             y_actual -= radio_burbuja * 2 + espacio_y
+        
         c.setFillColor(color_burbuja)
         c.roundRect(x_actual, y_actual - radio_burbuja, ancho_burbuja, radio_burbuja*2, radius=radio_burbuja, fill=1, stroke=0)
         c.setFillColor(color_texto)
-        c.drawString(x_actual + 5, y_actual - radio_burbuja/2 + 3, palabra)
+        c.drawString(x_actual + 8, y_actual - radio_burbuja/2 + 3, palabra)
         x_actual += ancho_burbuja + espacio_x
 
-    # Segundo div: Relevancia justificada
+    # Segundo div: Sugerencias de Keywords
     c.setFillColor(grey)
     c.setFont("Poppins-Bold", 10)
-    c.drawString(x_div2 + 15, y_div + alto_div - 25, "Relevancia")
+    c.drawString(x_div2 + 15, y_div + alto_div - 25, "Sugerencias de Keywords")
 
-    estilo_rel = ParagraphStyle(
-        name="RelJustificado",
+    # Contenido de la sugerencia principal
+    estilo_sug = ParagraphStyle(
+        name="SugerenciaKeywords",
         fontName="Poppins-Regular",
         fontSize=9,
-        leading=10,
+        leading=12,
         alignment=TA_JUSTIFY,
-        spaceBefore=4,
+        spaceBefore=0,
         spaceAfter=0,
     )
 
-    ancho_rel = ancho_div - 30
-    x_rel = x_div2 + 15
-    y_rel_top = y_div + alto_div - 25 - 14
+    ancho_sug = ancho_div - 30
+    x_sug = x_div2 + 15
+    y_sug = y_div + alto_div - 25 - 18
 
-    par_rel = Paragraph(relevance, estilo_rel)
-    par_rel.wrapOn(c, ancho_rel, alto_div)
-    par_rel.drawOn(c, x_rel, y_rel_top - par_rel.height)
+    # Dibujar la sugerencia principal
+    par_sug = Paragraph(keywords_suggestion, estilo_sug)
+    w_sug, h_sug = par_sug.wrap(ancho_sug, alto_div)
+    par_sug.drawOn(c, x_sug, y_sug - h_sug)
+
+    # Dibujar keywords faltantes como badges grises pequeños
+    if missing_keywords:
+        # Subtítulo para keywords faltantes
+        y_faltantes = y_sug - h_sug - 25
+        c.setFillColor(HexColor("#666666"))
+        c.setFont("Poppins-Bold", 8)
+        c.drawString(x_sug, y_faltantes, "Keywords faltantes:")
+
+        # Configuración de badges pequeños
+        c.setFont("Poppins-Bold", 7)
+        espacio_x_peq = 8
+        espacio_y_peq = 6
+        radio_burbuja_peq = 8
+        color_burbuja_faltante = HexColor("#9E9E9E")
+        color_texto_peq = white
+
+        x_actual_peq = x_sug
+        y_actual_peq = y_faltantes - 15
+
+        for keyword in missing_keywords:
+            ancho_palabra_peq = c.stringWidth(keyword, "Poppins-Bold", 7)
+            ancho_burbuja_peq = ancho_palabra_peq + 12
+            
+            if x_actual_peq + ancho_burbuja_peq > x_div2 + ancho_div - 15:
+                x_actual_peq = x_sug
+                y_actual_peq -= radio_burbuja_peq * 2 + espacio_y_peq
+            
+            c.setFillColor(color_burbuja_faltante)
+            c.roundRect(x_actual_peq, y_actual_peq - radio_burbuja_peq, ancho_burbuja_peq, radio_burbuja_peq*2, radius=radio_burbuja_peq, fill=1, stroke=0)
+            c.setFillColor(color_texto_peq)
+            c.drawString(x_actual_peq + 6, y_actual_peq - radio_burbuja_peq/2 + 2, keyword)
+            x_actual_peq += ancho_burbuja_peq + espacio_x_peq
 
     return alto_div
 
-def seccion_7(c, ancho, alto, y_inicio, datos_cv):
-    nivel       = datos_cv.get('impact_verbs', {}).get('level', 0)
-    comentario  = datos_cv.get('impact_verbs', {}).get('comment', 'Comment not available')
-    sugerencias = datos_cv.get('impact_verbs', {}).get('suggestions', ['suggestions not available'])
+def calcular_altura_keywords(c, all_keywords, ancho_div):
+    """Calcula la altura necesaria para mostrar las keywords"""
+    if not all_keywords:
+        return 80  # Altura mínima
+    
+    # Configuración de burbujas
+    espacio_x = 15
+    espacio_y = 8
+    radio_burbuja = 14
+    
+    x_actual = 15
+    y_actual = 25  # Altura del título
+    filas = 1
+    
+    for keyword_data in all_keywords:
+        palabra = keyword_data["word"]
+        ancho_palabra = c.stringWidth(palabra, "Poppins-Bold", 9)
+        ancho_burbuja = ancho_palabra + 16
+        
+        if x_actual + ancho_burbuja > ancho_div - 15:
+            x_actual = 15
+            y_actual -= radio_burbuja * 2 + espacio_y
+            filas += 1
+        
+        x_actual += ancho_burbuja + espacio_x
+    
+    return max(80, 25 + filas * (radio_burbuja * 2 + espacio_y) + 20)
 
+def calcular_altura_sugerencias(c, keywords_suggestion, missing_keywords, ancho_div):
+    """Calcula la altura necesaria para mostrar las sugerencias"""
+    altura_base = 25  # Título
+    
+    # Altura para la sugerencia principal
+    estilo_sug = ParagraphStyle(
+        name="SugerenciaKeywords",
+        fontName="Poppins-Regular",
+        fontSize=9,
+        leading=12,
+        alignment=TA_JUSTIFY,
+        spaceBefore=0,
+        spaceAfter=0,
+    )
+    
+    ancho_sug = ancho_div - 30
+    par_sug = Paragraph(keywords_suggestion, estilo_sug)
+    w_sug, h_sug = par_sug.wrap(ancho_sug, 1000)
+    
+    altura_total = altura_base + h_sug + 20
+    
+    # Altura para keywords faltantes
+    if missing_keywords:
+        altura_total += 25  # Subtítulo
+        
+        espacio_x_peq = 8
+        espacio_y_peq = 6
+        radio_burbuja_peq = 8
+        
+        x_actual_peq = 0
+        y_actual_peq = 0
+        filas_faltantes = 1
+        
+        for keyword in missing_keywords:
+            ancho_palabra_peq = c.stringWidth(keyword, "Poppins-Bold", 7)
+            ancho_burbuja_peq = ancho_palabra_peq + 12
+            
+            if x_actual_peq + ancho_burbuja_peq > ancho_div - 30:
+                x_actual_peq = 0
+                y_actual_peq -= radio_burbuja_peq * 2 + espacio_y_peq
+                filas_faltantes += 1
+            
+            x_actual_peq += ancho_burbuja_peq + espacio_x_peq
+        
+        altura_total += filas_faltantes * (radio_burbuja_peq * 2 + espacio_y_peq) + 20
+    
+    return max(80, altura_total)
+
+def seccion_7(c, ancho, alto, y_inicio, datos_cv):
+    # Actualizar claves según el nuevo formato
+    impact_verbs_data = datos_cv.get('impact_verbs_analysis', {})
+    nivel = impact_verbs_data.get('score', 5)  # Ahora es directamente un número
+    sugerencias = impact_verbs_data.get('ai_feedbacks', ['No hay sugerencias disponibles'])
+    
+    # Asegurar que el nivel esté entre 1 y 10
     nivel = max(1, min(10, nivel))
 
     margen_horizontal = 50
@@ -373,18 +524,6 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
     c.setFont("Helvetica-Bold", 9)
     c.drawCentredString(flecha_x, flecha_y - 23, "Tu nivel")
 
-    # Comentario justificado
-    estilo_com = ParagraphStyle(
-        name="ComentarioJustificado",
-        fontName="Poppins-Regular",
-        fontSize=9,
-        leading=11,
-        alignment=TA_JUSTIFY
-    )
-    par_com = Paragraph(comentario, estilo_com)
-    w_com, h_com = par_com.wrap(ancho_div - 40, barra_y - y_div - 40)
-    par_com.drawOn(c, x_div + 20, barra_y - 40 - h_com)
-
     # Sugerencias con fondo ajustado
     estilo_sug = ParagraphStyle(
         name="SugerenciaJustificada",
@@ -397,8 +536,7 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
     padding_y      = 5
     icon_r         = 7
     text_off       = icon_r*3 + 5
-    adv_x_start    = x_div + padding_x + 10
-    adv_y          = barra_y - 60 - h_com - 20
+    adv_y          = barra_y - 60  # Ajustado sin h_com
     bg_width       = ancho_div - 2 * padding_x - 20  # espacio extra 20 pts
 
     for sugerencia in sugerencias:
@@ -425,17 +563,25 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
         # next block
         adv_y = bg_y - 20
 
-    return alto_div +20
+    return alto_div + 20
 
 # SECCION 8 - JUSTIFICADO
 def seccion_8(c, ancho, alto, y_inicio, datos_cv):
-    actual = datos_cv.get('professional_profile', {}).get('current', 'Current not available')
-    recomendado = datos_cv.get('professional_profile', {}).get('recommended', 'Recommended not available')
+    # Actualizar claves según el nuevo formato
+    executive_summary = datos_cv.get('executive_summary_analysis', {})
+    actual = executive_summary.get('current', '')
+    recomendado = executive_summary.get('recommended', '')
+    
+    # Manejar casos donde los campos están vacíos
+    if not actual or actual.strip() == '':
+        actual = 'Resumen ejecutivo no incluido en el CV'
+    if not recomendado or recomendado.strip() == '':
+        recomendado = 'Recomendación no disponible'
 
     # Título
     c.setFont("Poppins-Bold", 14)
     c.setFillColor(HexColor("#028BBF"))
-    c.drawString(50, y_inicio, "Perfil Profesional")
+    c.drawString(50, y_inicio, "Resumen Ejecutivo")
 
     # Posicionar encabezados
     y = y_inicio - 30
@@ -483,74 +629,60 @@ def seccion_8(c, ancho, alto, y_inicio, datos_cv):
     return 145
 
 def seccion_9(c, ancho, alto, y_inicio, datos_cv):
-    # DEBUG: Logs para sección 9
-    print("=== DEBUG SECCIÓN 9 ===")
-    print(f"datos_cv keys disponibles: {list(datos_cv.keys())}")
-    print(f"datos_cv completo: {datos_cv}")
+    """9. Sección de ajuste al puesto usando el componente reutilizable"""
     
-    # Colores
-    azul_titulo   = HexColor("#028BBF")
-    gris_cabecera = HexColor("#A9A9A9")
-    gris_linea    = HexColor("#B0B0B0")
-    green         = HexColor("#28A745")
-    yellow        = HexColor("#FFC107")
-    red           = HexColor("#DC3545")
-
-    # Título
+    # Colores para estados
+    green = HexColor("#28A745")
+    yellow = HexColor("#FFC107")
+    red = HexColor("#DC3545")
+    
+    # Título de la sección
     c.setFont("Poppins-Bold", 14)
-    c.setFillColor(azul_titulo)
+    c.setFillColor(HexColor("#028BBF"))
     c.drawString(50, y_inicio, "Ajuste al puesto")
-
-    # Div contenedor
-    alto_rect = 300
-    marg_h     = 20
-    pad        = 20
-    x_div      = marg_h + pad
-    y_div      = y_inicio - alto_rect + pad
-    ancho_div  = ancho - 2 * marg_h - 2 * pad
-    alto_div   = alto_rect - 2 * pad
-
-    c.setFillColor(white)
-    c.roundRect(x_div, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
-
-    # Cabeceras
-    y = y_div + alto_div - 20
-    c.setFont("Poppins-SemiBold", 10)
-    c.setFillColor(gris_cabecera)
-
-    col1 = x_div + 10
-    col2 = x_div + ancho_div * 0.2
-    col3 = x_div + ancho_div * 0.5  # reducido de 0.6 a 0.5
-
-    c.drawString(col1, y, "Área")
-    ajuste_cabecera_estado = 50  # Ajusta este valor para mover más o menos
-    c.drawString(col2 + ajuste_cabecera_estado, y, "Estado")
-
-    c.drawString(col3, y, "Acción recomendada")
-
-    c.setStrokeColor(gris_linea)
-    c.setLineWidth(0.7)
-    c.line(col1, y - 5, x_div + ancho_div - 10, y - 5)
-
-    # Preparar datos
-    ajuste = datos_cv.get('position_adjustment', {})  # Cambiado de 'ajuste_puesto' a 'position_adjustment'
-    print(f"DEBUG: ajuste = {ajuste}")
-    print(f"DEBUG: tipo de ajuste = {type(ajuste)}")
     
-    #Mapear en español
+    # Preparar datos - usar role_fit_analysis según el nuevo formato
+    role_fit = datos_cv.get('role_fit_analysis', {})
+    if role_fit:
+        # Crear mapeo basado en la información de role_fit_analysis disponible
+        analysis_skills = role_fit.get('analysis_skills', {})
+        quantifiable_results = role_fit.get('quantifiable_results', {})
+        
+        ajuste = {
+            'analysis_skills': {
+                'level': analysis_skills.get('level', 'Medio'),
+                'action': analysis_skills.get('ai_feedback', 'Revisar sugerencias de mejora en el análisis.')
+            },
+            'quantifiable_results': {
+                'level': quantifiable_results.get('level', 'Medio'),
+                'action': quantifiable_results.get('ai_feedback', 'Añadir métricas cuantificables por proyecto según las sugerencias de mejora.')
+            },
+            'soft_skills': {
+                'level': 'Alto',
+                'action': 'Las habilidades blandas están bien representadas en el CV.'
+            },
+            'technical_language': {
+                'level': 'Alto',
+                'action': 'El lenguaje técnico es apropiado para el puesto.'
+            }
+        }
+    else:
+        ajuste = {}
+    
+    # Mapear en español
     mapping = {
-        'analysis_skills':    'Herramientas de Medición',
-        'quantifiable_results':  'Resultados Cuantificables',
-        'soft_skills':        'Habilidades Blandas',
-        'technical_language':           'Lenguaje Técnico',
+        'analysis_skills': 'Herramientas de Medición',
+        'quantifiable_results': 'Resultados Cuantificables',
+        'soft_skills': 'Habilidades Blandas',
+        'technical_language': 'Lenguaje Técnico',
     }
+    
+    # Preparar datos para el componente
     data = []
     for clave, etiqueta in mapping.items():
         entry = ajuste.get(clave, {})
-        print(f"DEBUG: clave '{clave}' -> entry = {entry}")
         nivel = entry.get('level', 'N/E')
         accion = entry.get('action', '')
-        print(f"DEBUG: nivel = '{nivel}', accion = '{accion}'")
         color_estado = (
             green if nivel.lower() == 'alto' else
             yellow if nivel.lower() == 'medio' else
@@ -559,56 +691,40 @@ def seccion_9(c, ancho, alto, y_inicio, datos_cv):
         )
         data.append((etiqueta, nivel, accion, color_estado))
     
-    print(f"DEBUG: data final = {data}")
-
-    # Estilo justificado
-    estilo_accion = ParagraphStyle(
-        name="AccionJustificado",
-        fontName="Poppins-Regular",
-        fontSize=8,
-        leading=10,
-        alignment=TA_JUSTIFY,
-        spaceBefore=0,
-        spaceAfter=0,
+    # Configuración personalizada para esta sección
+    custom_config = {
+        'container_style': {
+            'margin_horizontal': 20,
+            'padding_internal': 20,
+            'shadow_offset': 5,
+            'border_radius': 15,
+            'shadow_alpha': 0.15
+        },
+        'column_config': {
+            'element_width': 0.2,      # 20% del ancho
+            'status_width': 0.2,       # 20% del ancho
+            'suggestion_width': 0.6    # 60% del ancho
+        },
+        'header_style': {
+            'font_family': 'Poppins-SemiBold',
+            'font_size': 10,
+            'color': HexColor("#A9A9A9"),
+            'line_color': HexColor("#B0B0B0"),
+            'line_width': 0.7
+        }
+    }
+    
+    # Crear tabla usando el componente reutilizable
+    table_height = create_evaluation_table(
+        canvas=c,
+        width=ancho,
+        height=alto,
+        y_start=y_inicio - 40,  # Espacio para el título
+        data=data,
+        custom_config=custom_config
     )
-
-    # Dibujar filas
-    c.setFont("Poppins-Regular", 9)
-    y -= 25
-    max_w_accion = x_div + ancho_div - col3 - 10  # ajustado al nuevo col3
-
-    print(f"DEBUG: Número de elementos a dibujar: {len(data)}")
-    for i, (area, estado, accion, color_estado) in enumerate(data):
-        print(f"DEBUG: Dibujando elemento {i+1}: area='{area}', estado='{estado}', accion='{accion}'")
-        # Área
-        y_text = y
-        c.setFillColor(black)
-        for line in area.split('\n'):
-            c.drawString(col1, y_text, line)
-            y_text -= 12
-
-        # Estado
-        c.setFillColor(color_estado)
-        x_circ = col2 + (ancho_div * 0.2 - 10) / 2
-        c.circle(x_circ, y - 5, 5, fill=1, stroke=0)
-        c.setFillColor(black)
-        c.drawString(x_circ + 10, y - 10, estado)
-
-        # Acción recomendada justificada
-        par_acc = Paragraph(accion or "", estilo_accion)
-        w_acc, h_acc = par_acc.wrap(max_w_accion, alto_div)
-        par_acc.drawOn(c, col3, y - h_acc + 4)
-
-        # Ajuste del siguiente y
-        siguiente_y = min(y_text, y - h_acc) - 20
-        if i < len(data) - 1:
-            c.setStrokeColor(gris_linea)
-            c.setLineWidth(0.5)
-            c.line(col1, siguiente_y + 20, x_div + ancho_div - 10, siguiente_y + 20)
-        y = siguiente_y
-
-    print("DEBUG: Sección 9 completada exitosamente")
-    return alto_rect -20
+    
+    return table_height + 60  # Incluir espacio del título
 
 def seccion_10(c, ancho, alto, y_inicio, datos_cv):
     margen_horizontal = 30
@@ -616,8 +732,8 @@ def seccion_10(c, ancho, alto, y_inicio, datos_cv):
     sombra_offset = 5
     desplazamiento_bajar_div = 30  # Baja el div blanco 30 pts
 
-    # Datos de contenido
-    experiencias = datos_cv.get('work_experience', [])
+    # Actualizar claves según el nuevo formato
+    experiencias = datos_cv.get('work_experience_analysis', [])
 
     # Estilo justificado para "Texto Recomendado"
     estilo_reco = ParagraphStyle(
@@ -645,17 +761,17 @@ def seccion_10(c, ancho, alto, y_inicio, datos_cv):
     alto_rectangulo = 100  # Valor base para el rectángulo
     for exp in experiencias:
         # Empresa con wrap
-        empresa = exp.get('Company', '')
+        empresa = exp.get('company', '')
         max_width_emp = ancho * 0.2 - 10
         lineas_empresa = wrap_text(empresa, max_width_emp, c, "Poppins-Regular", 9)
         
         # Texto Actual con wrap
-        texto_actual = exp.get('Current', '')
+        texto_actual = exp.get('current', '')
         max_width_act = ancho * 0.35 - 10
         lineas_actual = wrap_text(texto_actual, max_width_act, c, "Poppins-Regular", 9)
         
         # Texto Recomendado justificado via Paragraph
-        texto_recomendado = exp.get('Recommended', '')
+        texto_recomendado = exp.get('recommended', '')
         ancho_reco = ancho * 0.4 - 10
         par_reco = Paragraph(texto_recomendado, estilo_reco)
         w_reco, h_reco = par_reco.wrap(ancho_reco, alto)
@@ -714,9 +830,9 @@ def seccion_10(c, ancho, alto, y_inicio, datos_cv):
     y -= 25
 
     for i, exp in enumerate(experiencias):
-        empresa = exp.get('Company', '')
-        texto_actual = exp.get('Current', '')
-        texto_recomendado = exp.get('Recommended', '')
+        empresa = exp.get('company', '')
+        texto_actual = exp.get('current', '')
+        texto_recomendado = exp.get('recommended', '')
 
         # Empresa con wrap
         max_width_emp = ancho_div * 0.2 - 10
@@ -781,91 +897,102 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
     # -------------------------------------------------------------------
     c.setFont("Poppins-Bold", 14)
     c.setFillColor(azul_titulo)
-    c.drawString(margen_izq, y, "Habilidades y")
-    c.drawString(margen_izq, y - 16, "Herramientas")
+    c.drawString(margen_izq, y, "Habilidades y Herramientas")
 
     # Ajuste para comenzar la lista de habilidades y herramientas
     y_hh = y - 40
-    c.setFont("Poppins-Bold", 9)
-    c.setFillColor(black)
-    c.drawString(margen_izq, y_hh, "Organízalas así:")
-
     c.setFont("Poppins-Regular", 9)
-    habilidades = datos_cv.get('skills_tools', [])
+    # Actualizar claves según el nuevo formato
+    skills_tools_data = datos_cv.get('skills_tools_analysis', {})
+    habilidades = skills_tools_data.get('ai_feedback', []) if isinstance(skills_tools_data, dict) else skills_tools_data
     max_width_hh = ancho - margen_izq - margen_der  # Usamos todo el ancho disponible
-    y_hh -= 20
     
     # Formatear habilidades de manera estructurada
-    if isinstance(habilidades, list):
+    if isinstance(habilidades, dict):
+        # Si es un diccionario con la nueva estructura
+        current_skills = habilidades.get('current_skills', '')
+        ai_feedback = habilidades.get('ai_feedback', '')
+        
+        # Mostrar habilidades actuales con subtítulo
+        if current_skills:
+            # Subtítulo "Habilidades Actuales"
+            c.setFont("Poppins-Bold", 11)
+            c.setFillColor(HexColor("#3a3a3a"))
+            c.drawString(margen_izq, y_hh, "Habilidades Actuales:")
+            y_hh -= 18
+            
+            # Contenido de las habilidades actuales
+            c.setFont("Poppins-Regular", 9)
+            c.setFillColor(HexColor("#2c2c2c"))  # Gris oscuro para distinguir del título
+            lineas = wrap_text(current_skills, max_width_hh, c, "Poppins-Regular", 9)
+            for linea in lineas:
+                c.drawString(margen_izq, y_hh, linea)
+                y_hh -= 12
+            y_hh -= 20  # espacio extra después del contenido
+        
+        # Mostrar AI feedback con subtítulo
+        if ai_feedback:
+            # Subtítulo "Recomendaciones"
+            c.setFont("Poppins-Bold", 11)
+            c.setFillColor(HexColor("#3a3a3a"))
+            c.drawString(margen_izq, y_hh, "Recomendaciones:")
+            y_hh -= 18
+            
+            # Contenido de las recomendaciones
+            c.setFont("Poppins-Regular", 9)
+            c.setFillColor(HexColor("#2c2c2c"))  # Gris oscuro para distinguir del título
+            lineas = wrap_text(ai_feedback, max_width_hh, c, "Poppins-Regular", 9)
+            for linea in lineas:
+                c.drawString(margen_izq, y_hh, linea)
+                y_hh -= 12
+            y_hh -= 15  # espacio extra después del contenido
+    elif isinstance(habilidades, list):
+        cv_actual_content = ""
+        recommendations_content = ""
+        
+        # Separar el contenido en CV actual y recomendaciones
         for habilidad in habilidades:
             if isinstance(habilidad, str):
                 texto_habilidad = habilidad.strip()
                 
                 if texto_habilidad.startswith("CV ACTUAL:"):
-                    # Subtítulo "CV Actual"
-                    c.setFont("Poppins-Bold", 11)
-                    c.setFillColor(HexColor("#007bb6"))
-                    c.drawString(margen_izq, y_hh, "CV Actual:")
-                    y_hh -= 18
-                    
-                    # Contenido del CV actual
-                    contenido = texto_habilidad.replace("CV ACTUAL:", "").strip()
-                    c.setFont("Poppins-Regular", 9)
-                    c.setFillColor(black)
-                    lineas = wrap_text(contenido, max_width_hh, c, "Poppins-Regular", 9)
-                    for linea in lineas:
-                        c.drawString(margen_izq, y_hh, linea)
-                        y_hh -= 12
-                    y_hh -= 15  # espacio extra después del contenido
-                    
+                    cv_actual_content = texto_habilidad.replace("CV ACTUAL:", "").strip()
                 elif texto_habilidad.startswith("RECOMMENDATIONS:"):
-                    # Subtítulo "Recomendaciones"
-                    c.setFont("Poppins-Bold", 11)
-                    c.setFillColor(HexColor("#007bb6"))
-                    c.drawString(margen_izq, y_hh, "Recomendaciones:")
-                    y_hh -= 18
-                    
-                    # Contenido de las recomendaciones
-                    contenido = texto_habilidad.replace("RECOMMENDATIONS:", "").strip()
-                    c.setFont("Poppins-Regular", 9)
-                    c.setFillColor(black)
-                    lineas = wrap_text(contenido, max_width_hh, c, "Poppins-Regular", 9)
-                    for linea in lineas:
-                        c.drawString(margen_izq, y_hh, linea)
-                        y_hh -= 12
-                    y_hh -= 15  # espacio extra después del contenido
-                    
-                else:
-                    # Si es otra habilidad normal
-                    c.setFont("Poppins-Regular", 9)
-                    c.setFillColor(black)
-                    c.drawString(margen_izq, y_hh, "•")
-                    lineas = wrap_text(texto_habilidad, max_width_hh - 20, c, "Poppins-Regular", 9)
-                    for i, linea in enumerate(lineas):
-                        if i == 0:
-                            c.drawString(margen_izq + 15, y_hh, linea)
-                        else:
-                            c.drawString(margen_izq + 25, y_hh, linea)  # Indentación para líneas adicionales
-                        y_hh -= 12
-                    y_hh -= 8  # espacio entre ítems
-            elif isinstance(habilidad, dict):
-                # Si es un diccionario, extraer el texto relevante
-                texto = str(habilidad)
-                c.drawString(margen_izq, y_hh, "•")
-                lineas = wrap_text(texto, max_width_hh - 20, c, "Poppins-Regular", 9)
-                for linea in lineas:
-                    c.drawString(margen_izq + 15, y_hh, linea)
-                    y_hh -= 12
-                y_hh -= 8
-    elif isinstance(habilidades, dict):
-        # Si es un diccionario, convertirlo a string
-        texto = str(habilidades)
-        c.drawString(margen_izq, y_hh, "•")
-        lineas = wrap_text(texto, max_width_hh - 20, c, "Poppins-Regular", 9)
-        for linea in lineas:
-            c.drawString(margen_izq + 15, y_hh, linea)
-            y_hh -= 12
-        y_hh -= 8
+                    recommendations_content = texto_habilidad.replace("RECOMMENDATIONS:", "").strip()
+        
+        # Mostrar CV Actual con subtítulo
+        if cv_actual_content:
+            # Subtítulo "Habilidades Actuales"
+            c.setFont("Poppins-Bold", 11)
+            c.setFillColor(HexColor("#3a3a3a"))
+            c.drawString(margen_izq, y_hh, "Habilidades Actuales:")
+            y_hh -= 18
+            
+            # Contenido de las habilidades actuales
+            c.setFont("Poppins-Regular", 9)
+            c.setFillColor(HexColor("#2c2c2c"))  # Gris oscuro para distinguir del título
+            lineas = wrap_text(cv_actual_content, max_width_hh, c, "Poppins-Regular", 9)
+            for linea in lineas:
+                c.drawString(margen_izq, y_hh, linea)
+                y_hh -= 12
+            y_hh -= 20  # espacio extra después del contenido
+        
+        # Mostrar Recomendaciones con subtítulo
+        if recommendations_content:
+            # Subtítulo "Recomendaciones"
+            c.setFont("Poppins-Bold", 11)
+            c.setFillColor(HexColor("#3a3a3a"))
+            c.drawString(margen_izq, y_hh, "Recomendaciones:")
+            y_hh -= 18
+            
+            # Contenido de las recomendaciones
+            c.setFont("Poppins-Regular", 9)
+            c.setFillColor(HexColor("#2c2c2c"))  # Gris oscuro para distinguir del título
+            lineas = wrap_text(recommendations_content, max_width_hh, c, "Poppins-Regular", 9)
+            for linea in lineas:
+                c.drawString(margen_izq, y_hh, linea)
+                y_hh -= 12
+            y_hh -= 15  # espacio extra después del contenido
     else:
         # Si es otro tipo, convertirlo a string
         texto = str(habilidades)
@@ -885,15 +1012,11 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
     c.drawString(margen_izq, y_hh, "Educación")
 
     # Ajuste para Educación
-    y_educ = y_hh - 40
-    c.setFont("Poppins-Bold", 9)
-    c.setFillColor(black)
-    c.drawString(margen_izq, y_educ, "Incluye tus estudios y proyectos destacados:")
+    y_educ = y_hh - 30  # Reducido de 40 a 30 para eliminar el subtítulo confuso
     
     c.setFont("Poppins-Regular", 9)
-    estudios = datos_cv.get('education', [])
+    estudios = datos_cv.get('education_analysis', [])
     max_width_edu = ancho - margen_izq - margen_der  # Usamos todo el ancho disponible
-    y_educ -= 20
     
     # Formatear educación de manera estructurada
     if isinstance(estudios, list):
@@ -902,32 +1025,46 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
                 # Extraer datos del diccionario
                 degree = estudio.get('degree', 'No especificado')
                 institution = estudio.get('institution', 'No especificada')
-                graduation_year = estudio.get('graduationYear', 'No especificado')
+                graduation_year = estudio.get('date', 'No especificado')
+                ai_feedback = estudio.get('ai_feedback', '')
                 
                 # Formatear el título del grado
-                c.setFont("Poppins-Bold", 10)
+                c.setFont("Poppins-Bold", 11)
                 c.setFillColor(HexColor("#007bb6"))  # Azul para el título
-                lineas_degree = wrap_text(degree, max_width_edu, c, "Poppins-Bold", 10)
+                lineas_degree = wrap_text(degree, max_width_edu, c, "Poppins-Bold", 11)
                 for linea in lineas_degree:
                     c.drawString(margen_izq, y_educ, linea)
-                    y_educ -= 14
+                    y_educ -= 15
                 
                 # Formatear la institución
-                c.setFont("Poppins-SemiBold", 9)
+                c.setFont("Poppins-SemiBold", 10)
                 c.setFillColor(black)
-                lineas_institution = wrap_text(institution, max_width_edu, c, "Poppins-SemiBold", 9)
+                lineas_institution = wrap_text(institution, max_width_edu, c, "Poppins-SemiBold", 10)
                 for linea in lineas_institution:
                     c.drawString(margen_izq, y_educ, linea)
-                    y_educ -= 12
+                    y_educ -= 13
                 
                 # Formatear el año de graduación
-                c.setFont("Poppins-Regular", 8)
+                c.setFont("Poppins-Regular", 9)
                 c.setFillColor(grey)
                 c.drawString(margen_izq, y_educ, graduation_year)
                 y_educ -= 15
                 
+                # Mostrar ai_feedback si está disponible (como recomendación)
+                if ai_feedback:
+                    c.setFont("Poppins-Regular", 8)
+                    c.setFillColor(HexColor("#666666"))
+                    c.setFont("Poppins-SemiBold", 8)
+                    c.drawString(margen_izq, y_educ, "Recomendación:")
+                    y_educ -= 12
+                    c.setFont("Poppins-Regular", 8)
+                    lineas_feedback = wrap_text(ai_feedback, max_width_edu, c, "Poppins-Regular", 8)
+                    for linea in lineas_feedback:
+                        c.drawString(margen_izq, y_educ, linea)
+                        y_educ -= 10
+                
                 # Espacio entre estudios
-                y_educ -= 10
+                y_educ -= 15
             else:
                 # Si no es un diccionario, mostrar como texto simple
                 texto = str(estudio)
@@ -940,34 +1077,40 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
         # Si es un solo diccionario, formatearlo
         degree = estudios.get('degree', 'No especificado')
         institution = estudios.get('institution', 'No especificada')
-        graduation_year = estudios.get('graduationYear', 'No especificado')
+        graduation_year = estudios.get('date', 'No especificado')
+        ai_feedback = estudios.get('ai_feedback', '')
         
-        c.setFont("Poppins-Bold", 10)
+        c.setFont("Poppins-Bold", 11)
         c.setFillColor(HexColor("#007bb6"))
-        lineas_degree = wrap_text(degree, max_width_edu, c, "Poppins-Bold", 10)
+        lineas_degree = wrap_text(degree, max_width_edu, c, "Poppins-Bold", 11)
         for linea in lineas_degree:
             c.drawString(margen_izq, y_educ, linea)
-            y_educ -= 14
+            y_educ -= 15
         
-        c.setFont("Poppins-SemiBold", 9)
+        c.setFont("Poppins-SemiBold", 10)
         c.setFillColor(black)
-        lineas_institution = wrap_text(institution, max_width_edu, c, "Poppins-SemiBold", 9)
+        lineas_institution = wrap_text(institution, max_width_edu, c, "Poppins-SemiBold", 10)
         for linea in lineas_institution:
             c.drawString(margen_izq, y_educ, linea)
-            y_educ -= 12
+            y_educ -= 13
         
-        c.setFont("Poppins-Regular", 8)
+        c.setFont("Poppins-Regular", 9)
         c.setFillColor(grey)
         c.drawString(margen_izq, y_educ, graduation_year)
         y_educ -= 15
-    else:
-        # Si es otro tipo, mostrar como texto simple
-        texto = str(estudios)
-        lineas = wrap_text(texto, max_width_edu, c, "Poppins-Regular", 8)
-        for linea in lineas:
-            c.drawString(margen_izq, y_educ, linea)
+        
+        # Mostrar ai_feedback si está disponible (como recomendación)
+        if ai_feedback:
+            c.setFont("Poppins-Regular", 8)
+            c.setFillColor(HexColor("#666666"))
+            c.setFont("Poppins-SemiBold", 8)
+            c.drawString(margen_izq, y_educ, "Recomendación:")
             y_educ -= 12
-        y_educ -= 15
+            c.setFont("Poppins-Regular", 8)
+            lineas_feedback = wrap_text(ai_feedback, max_width_edu, c, "Poppins-Regular", 8)
+            for linea in lineas_feedback:
+                c.drawString(margen_izq, y_educ, linea)
+                y_educ -= 10
 
     # -------------------------------------------------------------------
     # Voluntariado
@@ -992,11 +1135,11 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
     c.line(margen_izq, y_vol, ancho - margen_der, y_vol)
     y_vol -= 20
 
-    voluntariado = datos_cv.get('volunteering', [])
+    voluntariado = datos_cv.get('volunteering_analysis', [])
     for item in voluntariado:
-        org = item.get("Organization", "No disponible") or "No disponible"
-        actual = item.get("Current", "No disponible") or "No disponible"
-        reco = item.get("Recommended", "No disponible") or "No disponible"
+        org = item.get("organization", "No disponible") or "No disponible"
+        actual = item.get("current", "No disponible") or "No disponible"
+        reco = item.get("recommended", "No disponible") or "No disponible"
 
         # Organización
         y_org = y_vol
@@ -1029,19 +1172,12 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
 
 # SECCION 12 - JUSTIFICADO
 def seccion_12(c, ancho, alto, y_inicio, datos_cv):
-    # DEBUG: Logs para sección 12
-    print("=== DEBUG SECCIÓN 12 ===")
-    print(f"datos_cv keys disponibles: {list(datos_cv.keys())}")
-    print(f"datos_cv completo: {datos_cv}")
+    """12. Sección de formato y optimización usando el componente reutilizable"""
     
     # Alturas y márgenes
-    alto_degradado    = 250
-    alto_rectangulo   = 300
+    alto_degradado = 250
     margen_horizontal = 30
-    padding_interno   = 20
-    sombra_offset     = 5
-    bajar_div         = 30
-
+    
     # Fondo degradado
     imagen_fondo = ImageReader('./public/img/fondo2.png')
     c.drawImage(imagen_fondo, 0, y_inicio - alto_degradado,
@@ -1055,131 +1191,80 @@ def seccion_12(c, ancho, alto, y_inicio, datos_cv):
     x_tit = margen_horizontal + (ancho - 2*margen_horizontal - ancho_tit)/2
     c.drawString(x_tit, y_inicio - 40, titulo)
 
-    # Coordenadas del div blanco
-    y_div     = y_inicio - alto_rectangulo + padding_interno - bajar_div
-    x_div     = margen_horizontal + padding_interno
-    ancho_div = ancho - 2*margen_horizontal - 2*padding_interno
-    alto_div  = alto_rectangulo - 2*padding_interno - 20
-
-    # Sombra y fondo blanco
-    c.setFillColorRGB(0,0,0, alpha=0.15)
-    c.roundRect(x_div + sombra_offset, y_div - sombra_offset,
-                ancho_div, alto_div, radius=15, fill=1, stroke=0)
-    c.setFillColor(white)
-    c.roundRect(x_div, y_div, ancho_div, alto_div,
-                radius=15, fill=1, stroke=0)
-
-    # Cabeceras
-    padding_top = 20
-    margen_int  = 10
-    y = y_div + alto_div - padding_top
-
-    c.setFont("Poppins-SemiBold", 10)
-    c.setFillColor(HexColor("#A9A9A9"))
-
-    col1 = x_div + margen_int
-    col2 = x_div + ancho_div * 0.2 + margen_int
-    # Ahora col3 al 48% para acercar más
-    col3 = x_div + ancho_div * 0.48 + margen_int
-
-    # Centrar "Estado"
-    cabe_est = "Estado"
-    w_est = c.stringWidth(cabe_est, "Poppins-SemiBold", 10)
-    x_est = col2 + (ancho_div * 0.2 - w_est)/2
-
-    c.drawString(col1, y, "Elemento")
-    c.drawString(x_est, y, cabe_est)
-    c.drawString(col3, y, "Sugerencia")
-
-    gris = HexColor("#B0B0B0")
-    c.setStrokeColor(gris)
-    c.setLineWidth(0.7)
-    c.line(col1, y-5, x_div + ancho_div - margen_int, y-5)
-
-    # Estilo justificado para "Sugerencia"
-    estilo_sug = ParagraphStyle(
-        name="SugJustificado",
-        fontName="Poppins-Regular",
-        fontSize=8,
-        leading=10,
-        alignment=TA_JUSTIFY,
-        spaceBefore=0,
-        spaceAfter=0,
-    )
-
+    # Colores para estados
+    green = HexColor("#28A745")
+    yellow = HexColor("#FFC107")
+    red = HexColor("#DC3545")
+    
     # Datos dinámicos
     ajuste = datos_cv.get('format_optimization', {})
-    print(f"DEBUG: ajuste = {ajuste}")
-    print(f"DEBUG: tipo de ajuste = {type(ajuste)}")
     
-    #Mapear en español
+    # Mapear en español
     mapping = {
-        'length':          'Longitud',
-        'photo':              'Foto',
-        'keywords':    'Palabras Clave',
-        'impact_verbs': 'Verbos de Impacto',
+        'length': 'Longitud',
+        'photo': 'Foto',
+        'keywords': 'Palabras Clave',
     }
-    green  = HexColor("#28A745")
-    yellow = HexColor("#FFC107")
-    red    = HexColor("#DC3545")
-
+    
+    # Preparar datos para el componente
     data = []
     for key, label in mapping.items():
         ent = ajuste.get(key, {})
-        print(f"DEBUG: clave '{key}' -> ent = {ent}")
-        estado     = ent.get('state', 'N/E')
-        sugerencia = ent.get('suggestion', '')
-        print(f"DEBUG: estado = '{estado}', sugerencia = '{sugerencia}'")
-        nivel = estado.lower()
-        if nivel == 'alto':
-            color = green
-        elif nivel == 'medio':
-            color = yellow
-        elif nivel == 'bajo':
-            color = red
+        estado = ent.get('status', 'N/E')
+        sugerencia = ent.get('ai_feedback', '')
+        
+        # Handle different data types for status
+        if isinstance(estado, str):
+            nivel = estado.lower()
+            if nivel == 'alto':
+                color = green
+            elif nivel == 'medio':
+                color = yellow
+            elif nivel == 'bajo':
+                color = red
+            else:
+                color = black
         else:
             color = black
+            
         data.append((label, estado, sugerencia, color))
     
-    print(f"DEBUG: data final = {data}")
-
-    # Dibujar filas
-    c.setFont("Poppins-Regular", 9)
-    y -= 25
-    # max_w_sug es el espacio restante tras col3
-    max_w_sug = x_div + ancho_div - col3 - margen_int
-
-    print(f"DEBUG: Número de elementos a dibujar: {len(data)}")
-    for i, (elem, est, sug, col) in enumerate(data):
-        print(f"DEBUG: Dibujando elemento {i+1}: elem='{elem}', est='{est}', sug='{sug}'")
-        # Elemento
-        y_text = y
-        for ln in elem.split('\n'):
-            c.setFillColor(black)
-            c.drawString(col1, y_text, ln)
-            y_text -= 12
-
-        # Círculo y texto de estado
-        c.setFillColor(col)
-        x_c = col2 + (ancho_div * 0.2 - 10)/2
-        c.circle(x_c, y - 5, 5, fill=1, stroke=0)
-        c.setFillColor(black)
-        c.drawString(x_c + 10, y - 10, est)
-
-        # Sugerencia justificada
-        par_sug = Paragraph(sug or "", estilo_sug)
-        w_sug, h_sug = par_sug.wrap(max_w_sug, alto_div)
-        par_sug.drawOn(c, col3, y - h_sug + 4)
-
-        # Preparar y de la siguiente fila
-        y = min(y_text, y - h_sug) - 20
-        if i < len(data) - 1:
-            c.setStrokeColor(gris)
-            c.setLineWidth(0.5)
-            c.line(col1, y + 20, x_div + ancho_div - margen_int, y + 20)
-
-    print("DEBUG: Sección 12 completada exitosamente")
-    return alto_rectangulo +20
+    # Configuración personalizada para esta sección
+    custom_config = {
+        'container_style': {
+            'margin_horizontal': 30,
+            'padding_internal': 20,
+            'shadow_offset': 5,
+            'border_radius': 15,
+            'shadow_alpha': 0.15
+        },
+        'column_config': {
+            'element_width': 0.2,      # 20% del ancho
+            'status_width': 0.2,       # 20% del ancho
+            'suggestion_width': 0.6    # 60% del ancho
+        },
+        'header_style': {
+            'font_family': 'Poppins-SemiBold',
+            'font_size': 10,
+            'color': HexColor("#A9A9A9"),
+            'line_color': HexColor("#B0B0B0"),
+            'line_width': 0.7
+        }
+    }
+    
+    # Crear tabla usando el componente reutilizable
+    # Ajustar la posición para que no tape el título
+    table_height = create_evaluation_table(
+        canvas=c,
+        width=ancho,
+        height=alto,
+        y_start=y_inicio - 40,  # Posición base
+        data=data,
+        custom_config=custom_config,
+        title_spacing=40  # Espacio adicional para el título
+    )
+    
+    return table_height + 40  # Incluir espacio del título
 
 def seccion_13(c, ancho, alto, y_inicio, logo_path): 
     # Calcular las dimensiones de la imagen
@@ -1198,3 +1283,107 @@ def seccion_13(c, ancho, alto, y_inicio, logo_path):
     altura_ocupada = imagen_height - 10  # Incluir el espacio para la imagen y un poco de margen
 
     return altura_ocupada -20
+
+def seccion_14(c, ancho, alto, y_inicio, datos_cv):
+    """14. Sección de cumplimiento ATS"""
+    # Obtener datos de ATS compliance
+    ats_data = datos_cv.get('ats_compliance', {})
+    score = ats_data.get('score', 0)
+    issues = ats_data.get('issues', [])
+    ai_feedbacks = ats_data.get('ai_feedbacks', [])
+    
+    # Determinar el estado basado en el score
+    if score >= 71:
+        estado = "Alto"
+        color_estado = HexColor("#28A745")
+    elif score >= 41:
+        estado = "Medio"
+        color_estado = HexColor("#FFC107")
+    else:
+        estado = "Bajo"
+        color_estado = HexColor("#DC3545")
+
+    margen_horizontal = 50
+    alto_div = 200
+    ancho_div = ancho - 2 * margen_horizontal
+    x_div = margen_horizontal
+    y_div = y_inicio - alto_div
+
+    sombra_expand = 8
+    sombra_offset_x = 2
+    sombra_offset_y = -2
+    sombra_alpha = 0.12
+
+    # Sombra
+    c.setFillColorRGB(0, 0, 0, alpha=sombra_alpha)
+    c.roundRect(
+        x_div - sombra_expand / 2 + sombra_offset_x,
+        y_div - sombra_expand / 2 + sombra_offset_y,
+        ancho_div + sombra_expand,
+        alto_div + sombra_expand,
+        radius=15 + sombra_expand / 2,
+        fill=1, stroke=0
+    )
+
+    # Div blanco principal
+    c.setFillColor(white)
+    c.roundRect(x_div, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
+
+    # Título
+    c.setFillColor(grey)
+    c.setFont("Poppins-SemiBold", 9)
+    c.drawString(x_div + 10, y_div + alto_div - 14, "Cumplimiento ATS")
+
+    # Score y estado
+    c.setFillColor(black)
+    c.setFont("Poppins-Bold", 16)
+    score_text = f"{score}/100"
+    ancho_score = c.stringWidth(score_text, "Poppins-Bold", 16)
+    x_score = x_div + (ancho_div - ancho_score) / 2
+    c.drawString(x_score, y_div + alto_div - 40, score_text)
+
+    # Estado con color
+    c.setFillColor(color_estado)
+    c.setFont("Poppins-Bold", 14)
+    ancho_estado = c.stringWidth(estado, "Poppins-Bold", 14)
+    x_estado = x_div + (ancho_div - ancho_estado) / 2
+    c.drawString(x_estado, y_div + alto_div - 60, estado)
+
+    # Issues si existen
+    if issues:
+        c.setFillColor(black)
+        c.setFont("Poppins-Bold", 10)
+        c.drawString(x_div + 10, y_div + alto_div - 85, "Problemas encontrados:")
+        
+        c.setFont("Poppins-Regular", 9)
+        y_issues = y_div + alto_div - 105
+        for issue in issues[:3]:  # Mostrar solo los primeros 3 problemas
+            if y_issues > y_div + 20:  # Asegurar que no se salga del div
+                c.drawString(x_div + 20, y_issues, f"• {issue}")
+                y_issues -= 15
+
+    # AI Feedbacks
+    if ai_feedbacks:
+        c.setFillColor(black)
+        c.setFont("Poppins-Bold", 10)
+        c.drawString(x_div + 10, y_div + 80, "Recomendaciones:")
+        
+        estilo_feedback = ParagraphStyle(
+            name="FeedbackJustificado",
+            fontName="Poppins-Regular",
+            fontSize=9,
+            leading=11,
+            alignment=TA_JUSTIFY,
+            spaceBefore=0,
+            spaceAfter=0,
+        )
+        
+        y_feedback = y_div + 60
+        for feedback in ai_feedbacks[:2]:  # Mostrar solo los primeros 2 feedbacks
+            if y_feedback > y_div + 20:
+                par_feedback = Paragraph(feedback, estilo_feedback)
+                w_feedback, h_feedback = par_feedback.wrap(ancho_div - 20, alto_div)
+                par_feedback.drawOn(c, x_div + 10, y_feedback - h_feedback)
+                y_feedback -= h_feedback + 10
+
+    return alto_div

@@ -6,7 +6,7 @@ from reportlab.lib.units import inch
 from .header_section import seccion_encabezado
 from .main_analysis_section import seccion_2
 from .basic_metrics_section import seccion_3
-from .remaining_sections import seccion_4, seccion_5, seccion_6, seccion_7, seccion_8, seccion_9, seccion_10, seccion_11, seccion_12, seccion_13
+from .remaining_sections import seccion_4, seccion_5, seccion_6, seccion_7, seccion_8, seccion_9, seccion_10, seccion_11, seccion_12, seccion_13, seccion_14
 from .pdf_utils import descargar_imagen
 from reportlab.lib.colors import Color, HexColor
 from reportlab.platypus import Paragraph
@@ -125,6 +125,13 @@ def generar_pdf_con_secciones(datos_cv, nombre_archivo, logo_path, ruta_logo2):
             y_actual -= altura + espacio_entre_secciones
         except Exception as e:
             print(f"Error al renderizar sección 13: {e}")
+            raise e
+
+        try:
+            altura = seccion_14(c, ancho, alto, y_actual, datos_cv)
+            y_actual -= altura + espacio_entre_secciones
+        except Exception as e:
+            print(f"Error al renderizar sección 14: {e}")
             raise e
 
         # Guardar el PDF

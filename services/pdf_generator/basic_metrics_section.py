@@ -13,13 +13,13 @@ blue = Color(0, 0, 1)
 
 def seccion_3(c, ancho, alto, y_inicio, datos_cv):
     """3. Sección de métricas básicas (páginas y ortografía)"""
-    # Asegurarse de que 'pages' sea una cadena
-    paginas = str(datos_cv.get('pagination', {}).get('pages', 'Pages not available'))
-    comentarioPagination = datos_cv.get('pagination', {}).get('comment', 'Comment not available')
+    # Actualizar claves según el nuevo formato
+    paginas = str(datos_cv.get('document_size_analysis', {}).get('total_pages', 'Pages not available'))
+    comentarioPagination = datos_cv.get('document_size_analysis', {}).get('ai_feedback', 'Comment not available')
     
-    errores = str(datos_cv.get('spelling', {}).get('errors', 'Errors not available'))
-    erroresPagination = datos_cv.get('spelling', {}).get('comment', 'Comment not available')
-    detalles_errores = datos_cv.get('spelling', {}).get('error_details', [])
+    errores = str(datos_cv.get('spelling_analysis', {}).get('spelling_errors', 'Errors not available'))
+    erroresPagination = datos_cv.get('spelling_analysis', {}).get('ai_feedback', 'Comment not available')
+    detalles_errores = datos_cv.get('spelling_analysis', {}).get('errors_found', [])
 
     margen_horizontal = 50
     espacio_entre_divs = 20
@@ -149,9 +149,10 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
         c.drawString(x_texto, y_texto, linea)
         y_texto -= 14
 
-    # Mostrar los detalles de los errores con justificación
+    
+    # Definir estilo para los errores
     estilo_errores = ParagraphStyle(
-        name="ErroresJustificados",
+        name="ErroresJustificado",
         fontName="Poppins-Regular",
         fontSize=8,
         leading=10,
@@ -159,21 +160,6 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
         spaceBefore=0,
         spaceAfter=0,
     )
-
-    # Crear un único párrafo con los detalles de los errores separados por comas
-    if detalles_errores is not None:
-        errores_completos = ", ".join([f"{error['original']} → {error['suggestion']}" for error in detalles_errores])
-    else:
-        errores_completos = "No errors found."    
-    par_errores_completos = Paragraph(errores_completos, estilo_errores)
-
-    # Obtener el tamaño del párrafo
-    w_error, h_error = par_errores_completos.wrap(ancho_div - 40, alto_div)
-
-    # Dibujar el párrafo completo en la página
-    par_errores_completos.drawOn(c, x_div2 + 20, y_texto - h_error)
-
-    # Actualizar la posición Y para los siguientes elementos
-    y_texto -= h_error + 5  # Espacio entre los errores
+    
 
     return alto_div
