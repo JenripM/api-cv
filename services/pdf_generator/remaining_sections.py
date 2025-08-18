@@ -96,8 +96,8 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     # Calcular altura dinámicamente
     evaluacion = datos_cv.get('essential_elements', {}).get('evaluation', [])
     
-    # Altura base para título y cabecera - más responsive
-    altura_base = 30  # Reducido de 35 a 30pt (Título + cabecera + línea)
+    # Altura base para título y cabecera - más responsive con mejor padding
+    altura_base = 45  # Aumentado de 30 a 45pt para más padding superior
     
     # Altura para las filas de evaluación - más compacto
     altura_tabla = len(evaluacion) * 16  # Reducido de 18 a 16pt por fila
@@ -118,8 +118,9 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     par_obs = Paragraph(observacion, estilo_obs)
     w_obs, h_obs = par_obs.wrap(ancho_obs, 1000)  # Altura máxima para calcular
     
-    # Altura total del div - más compacto y responsive
-    alto_div = max(80, altura_base + altura_tabla + h_obs + 2)  # Reducido de 5 a 2pt y mínimo de 100 a 80pt
+    # Altura total del div - con padding inferior responsive
+    padding_inferior = max(15, h_obs * 0.1)  # 15pt mínimo o 10% de la altura de la observación
+    alto_div = max(100, altura_base + altura_tabla + h_obs + padding_inferior)
     
     y_div = y_inicio - alto_div
 
@@ -143,13 +144,13 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
     c.setFillColor(white)
     c.roundRect(x_div, y_div, ancho_div, alto_div, radius=12, fill=1, stroke=0)
 
-    # Título "Indispensable"
+    # Título "Indispensable" - con más padding superior
     c.setFillColor(grey)
     c.setFont("Poppins-SemiBold", 9)
-    c.drawString(x_div + 10, y_div + alto_div - 12, "Indispensable")
+    c.drawString(x_div + 10, y_div + alto_div - 20, "Indispensable")
 
     # Posición inicial de la tabla - ajustado para nueva altura base
-    y_tabla_inicio = y_div + alto_div - 30
+    y_tabla_inicio = y_div + alto_div - 40
 
     # Cabecera de la tabla
     c.setFont("Poppins-SemiBold", 7)
@@ -211,18 +212,20 @@ def seccion_5(c, ancho, alto, y_inicio, datos_cv):
         c.setLineWidth(0.5)
         c.line(columnas[0], y - 4, columnas[3] + 30, y - 4)
 
-    # Título y Observación justificada - más responsive
+    # Título y Observación justificada - con mejor padding inferior
     x_obs = x_div + 290
-    y_obs_title = y_div + alto_div - 8  # Reducido de 10 a 8pt
+    y_obs_title = y_div + alto_div - 15  # Aumentado de 8 a 15pt para más padding superior
     ancho_obs = ancho_div - (x_obs - x_div) - 15
 
     c.setFont("Poppins-Bold", 9)
     c.setFillColor(red)
     c.drawString(x_obs, y_obs_title, "Observación:")
 
-    par_obs.drawOn(c, x_obs, y_obs_title - h_obs - 4)
+    par_obs.drawOn(c, x_obs, y_obs_title - h_obs - 8)  # Aumentado de 4 a 8pt para más espacio
 
     return alto_div
+
+
 
 def seccion_6(c, ancho, alto, y_inicio, datos_cv):
     """6. Sección de palabras clave y sugerencias de keywords"""
@@ -904,7 +907,7 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
     c.setFont("Poppins-Regular", 9)
     # Actualizar claves según el nuevo formato
     skills_tools_data = datos_cv.get('skills_tools_analysis', {})
-    habilidades = skills_tools_data.get('ai_feedback', []) if isinstance(skills_tools_data, dict) else skills_tools_data
+    habilidades = skills_tools_data  # Usar todo el objeto, no solo ai_feedback
     max_width_hh = ancho - margen_izq - margen_der  # Usamos todo el ancho disponible
     
     # Formatear habilidades de manera estructurada
@@ -1285,7 +1288,7 @@ def seccion_13(c, ancho, alto, y_inicio, logo_path):
     return altura_ocupada -20
 
 def seccion_14(c, ancho, alto, y_inicio, datos_cv):
-    """14. Sección de cumplimiento ATS"""
+    """14. Sección de cumplimiento ATS - Completamente responsive"""
     # Obtener datos de ATS compliance
     ats_data = datos_cv.get('ats_compliance', {})
     score = ats_data.get('score', 0)
@@ -1304,9 +1307,53 @@ def seccion_14(c, ancho, alto, y_inicio, datos_cv):
         color_estado = HexColor("#DC3545")
 
     margen_horizontal = 50
-    alto_div = 200
     ancho_div = ancho - 2 * margen_horizontal
     x_div = margen_horizontal
+    
+    # Calcular altura dinámicamente
+    altura_base = 50  # Título + score + estado
+    
+    # Calcular altura para issues
+    altura_issues = 0
+    if issues:
+        altura_issues = 20  # Título "Problemas encontrados:"
+        for issue in issues:
+            # Calcular altura del texto con wrap
+            estilo_issue = ParagraphStyle(
+                name="IssueStyle",
+                fontName="Poppins-Regular",
+                fontSize=9,
+                leading=11,
+                alignment=TA_LEFT,
+                spaceBefore=0,
+                spaceAfter=0,
+            )
+            par_issue = Paragraph(f"• {issue}", estilo_issue)
+            w_issue, h_issue = par_issue.wrap(ancho_div - 30, 1000)
+            altura_issues += h_issue + 5
+        altura_issues += 25  # Más espacio extra después de issues para separar secciones
+    
+    # Calcular altura para feedbacks
+    altura_feedbacks = 0
+    if ai_feedbacks:
+        altura_feedbacks = 20  # Título "Recomendaciones:"
+        for feedback in ai_feedbacks:
+            estilo_feedback = ParagraphStyle(
+                name="FeedbackStyle",
+                fontName="Poppins-Regular",
+                fontSize=9,
+                leading=11,
+                alignment=TA_JUSTIFY,
+                spaceBefore=0,
+                spaceAfter=0,
+            )
+            par_feedback = Paragraph(f"• {feedback}", estilo_feedback)  # Añadido bullet point
+            w_feedback, h_feedback = par_feedback.wrap(ancho_div - 30, 1000)  # Ajustado margen para bullet
+            altura_feedbacks += h_feedback + 8
+        altura_feedbacks += 10  # Espacio extra después de feedbacks
+    
+    # Altura total del div
+    alto_div = max(120, altura_base + altura_issues + altura_feedbacks + 20)
     y_div = y_inicio - alto_div
 
     sombra_expand = 8
@@ -1349,41 +1396,52 @@ def seccion_14(c, ancho, alto, y_inicio, datos_cv):
     x_estado = x_div + (ancho_div - ancho_estado) / 2
     c.drawString(x_estado, y_div + alto_div - 60, estado)
 
+    # Posición inicial para contenido dinámico
+    y_contenido = y_div + alto_div - 80
+
     # Issues si existen
     if issues:
         c.setFillColor(black)
         c.setFont("Poppins-Bold", 10)
-        c.drawString(x_div + 10, y_div + alto_div - 85, "Problemas encontrados:")
+        c.drawString(x_div + 10, y_contenido, "Problemas encontrados:")
+        y_contenido -= 20
         
-        c.setFont("Poppins-Regular", 9)
-        y_issues = y_div + alto_div - 105
-        for issue in issues[:3]:  # Mostrar solo los primeros 3 problemas
-            if y_issues > y_div + 20:  # Asegurar que no se salga del div
-                c.drawString(x_div + 20, y_issues, f"• {issue}")
-                y_issues -= 15
+        for issue in issues:
+            estilo_issue = ParagraphStyle(
+                name="IssueStyle",
+                fontName="Poppins-Regular",
+                fontSize=9,
+                leading=11,
+                alignment=TA_LEFT,
+                spaceBefore=0,
+                spaceAfter=0,
+            )
+            par_issue = Paragraph(f"• {issue}", estilo_issue)
+            w_issue, h_issue = par_issue.wrap(ancho_div - 30, 1000)
+            par_issue.drawOn(c, x_div + 10, y_contenido - h_issue)
+            y_contenido -= h_issue + 5
+        y_contenido -= 20  # Más espacio extra después de issues para separar secciones
 
     # AI Feedbacks
     if ai_feedbacks:
         c.setFillColor(black)
         c.setFont("Poppins-Bold", 10)
-        c.drawString(x_div + 10, y_div + 80, "Recomendaciones:")
+        c.drawString(x_div + 10, y_contenido, "Recomendaciones:")
+        y_contenido -= 20
         
-        estilo_feedback = ParagraphStyle(
-            name="FeedbackJustificado",
-            fontName="Poppins-Regular",
-            fontSize=9,
-            leading=11,
-            alignment=TA_JUSTIFY,
-            spaceBefore=0,
-            spaceAfter=0,
-        )
-        
-        y_feedback = y_div + 60
-        for feedback in ai_feedbacks[:2]:  # Mostrar solo los primeros 2 feedbacks
-            if y_feedback > y_div + 20:
-                par_feedback = Paragraph(feedback, estilo_feedback)
-                w_feedback, h_feedback = par_feedback.wrap(ancho_div - 20, alto_div)
-                par_feedback.drawOn(c, x_div + 10, y_feedback - h_feedback)
-                y_feedback -= h_feedback + 10
+        for feedback in ai_feedbacks:
+            estilo_feedback = ParagraphStyle(
+                name="FeedbackStyle",
+                fontName="Poppins-Regular",
+                fontSize=9,
+                leading=11,
+                alignment=TA_LEFT,  # Cambiado de TA_JUSTIFY a TA_LEFT para consistencia
+                spaceBefore=0,
+                spaceAfter=0,
+            )
+            par_feedback = Paragraph(f"• {feedback}", estilo_feedback)  # Añadido bullet point
+            w_feedback, h_feedback = par_feedback.wrap(ancho_div - 30, 1000)  # Ajustado margen para bullet
+            par_feedback.drawOn(c, x_div + 10, y_contenido - h_feedback)
+            y_contenido -= h_feedback + 8
 
     return alto_div
