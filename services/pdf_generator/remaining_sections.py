@@ -609,13 +609,15 @@ def seccion_8(c, ancho, alto, y_inicio, datos_cv):
         spaceBefore=0,
         spaceAfter=0,
     )
+    # Permitir corte por carácter para evitar overflow con palabras largas
+    setattr(estilo_col, 'wordWrap', 'CJK')
 
     # Columnas
     ancho_columna = (ancho / 2) - 60  # deja 50px margen + 10px separación
     x_actual = 50
     x_reco = ancho / 2 + 10
-    # Altura disponible para el texto (hasta  y - margen inferior)
-    alto_disponible = y - 20  # 20pt margen inferior
+    # Altura disponible para el texto (no limitamos para medir correctamente)
+    alto_disponible = alto  # usar alto total para medir
 
     # Crear párrafos
     par_actual = Paragraph(actual, estilo_col)
@@ -629,7 +631,11 @@ def seccion_8(c, ancho, alto, y_inicio, datos_cv):
     w_rec, h_rec = par_reco.wrap(ancho_columna, alto_disponible)
     par_reco.drawOn(c, x_reco, y - h_rec - 5)
 
-    return 145
+    # Altura dinámica: título (30) + línea (5) + altura mayor de columnas + margen inferior
+    altura_contenido = 30 + 5 + max(h_act, h_rec) + 15
+    alto_seccion = max(145, altura_contenido)
+
+    return alto_seccion
 
 def seccion_9(c, ancho, alto, y_inicio, datos_cv):
     """9. Sección de ajuste al puesto usando el componente reutilizable"""

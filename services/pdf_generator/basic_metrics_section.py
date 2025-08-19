@@ -23,7 +23,8 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
 
     margen_horizontal = 50
     espacio_entre_divs = 20
-    alto_div = 160
+    # Altura mínima de las cards
+    altura_minima_div = 160
 
     sombra_expand = 8
     sombra_offset_x = 2
@@ -35,6 +36,38 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
 
     x_div1 = margen_horizontal
     x_div2 = margen_horizontal + ancho_div + espacio_entre_divs
+    # Preparar estilos de párrafo con ajuste automático dentro del ancho disponible
+    estilo_parrafo = ParagraphStyle(
+        name="MetricParagraph",
+        fontName="Poppins-Regular",
+        fontSize=9,
+        leading=11,
+        alignment=TA_JUSTIFY,
+        spaceBefore=0,
+        spaceAfter=0,
+        textColor=black,
+    )
+    # Permitir quiebres por carácter para prevenir overflow con palabras muy largas
+    # (ReportLab respeta 'wordWrap' en estilos de Paragraph)
+    setattr(estilo_parrafo, 'wordWrap', 'CJK')
+
+    # Crear párrafos y calcular alturas requeridas
+    ancho_texto_div = ancho_div - 40
+    parrafo_tamano = Paragraph(comentarioPagination, estilo_parrafo)
+    _, alto_parrafo_tamano = parrafo_tamano.wrap(ancho_texto_div, alto)
+
+    parrafo_errores = Paragraph(erroresPagination, estilo_parrafo)
+    _, alto_parrafo_errores = parrafo_errores.wrap(ancho_texto_div, alto)
+
+    # Cálculo dinámico de altura de cada card
+    separacion_superior_contenido = 70  # espacio desde el borde superior de la card hasta el inicio del texto
+    margen_inferior_contenido = 20
+
+    alto_div_izq = max(altura_minima_div, separacion_superior_contenido + alto_parrafo_tamano + margen_inferior_contenido)
+    alto_div_der = max(altura_minima_div, separacion_superior_contenido + alto_parrafo_errores + margen_inferior_contenido)
+
+    alto_div = max(alto_div_izq, alto_div_der)
+
     y_div = y_inicio - alto_div
 
     # Sombra primer div
@@ -82,32 +115,12 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
     c.setFillColor(green)
     c.drawString(inicio_texto + ancho_texto_1, y_div + alto_div - 40, " Página")
 
-    # Justificación del texto del comentarioPagination
+    # Texto del comentario de tamaño (usa Paragraph para ajuste en el contenedor)
     c.setFillColor(black)
     c.setFont("Poppins-Regular", 9)
-    texto_1 = comentarioPagination
-
-    palabras = texto_1.split()
-    lineas = []
-    linea_actual = ""
-    max_ancho = ancho_div - 40
-
-    for palabra in palabras:
-        prueba_linea = linea_actual + (" " if linea_actual else "") + palabra
-        if c.stringWidth(prueba_linea, "Helvetica", 10) <= max_ancho:
-            linea_actual = prueba_linea
-        else:
-            lineas.append(linea_actual)
-            linea_actual = palabra
-    if linea_actual:
-        lineas.append(linea_actual)
-
-    y_texto = y_div + alto_div - 70
-    for linea in lineas:
-        ancho_linea = c.stringWidth(linea, "Helvetica", 10)
-        x_texto = x_div1 + (ancho_div - ancho_linea) / 2
-        c.drawString(x_texto, y_texto, linea)
-        y_texto -= 14
+    x_texto_izq = x_div1 + 20
+    y_top_izq = y_div + alto_div - separacion_superior_contenido
+    parrafo_tamano.drawOn(c, x_texto_izq, y_top_izq - alto_parrafo_tamano)
 
     # Segundo div: "Errores" en rojo y texto
     c.setFillColor(black)
@@ -122,44 +135,12 @@ def seccion_3(c, ancho, alto, y_inicio, datos_cv):
     c.setFillColor(red)
     c.drawString(inicio_texto + ancho_texto_1, y_div + alto_div - 40, " Errores")
 
-    # Justificación del texto de erroresPagination
+    # Texto del comentario de errores (usa Paragraph para ajuste en el contenedor)
     c.setFillColor(black)
     c.setFont("Poppins-Regular", 9)
-    texto_2 = erroresPagination
-
-    palabras = texto_2.split()
-    lineas = []
-    linea_actual = ""
-    max_ancho = ancho_div - 40
-
-    for palabra in palabras:
-        prueba_linea = linea_actual + (" " if linea_actual else "") + palabra
-        if c.stringWidth(prueba_linea, "Helvetica", 10) <= max_ancho:
-            linea_actual = prueba_linea
-        else:
-            lineas.append(linea_actual)
-            linea_actual = palabra
-    if linea_actual:
-        lineas.append(linea_actual)
-
-    y_texto = y_div + alto_div - 70
-    for linea in lineas:
-        ancho_linea = c.stringWidth(linea, "Helvetica", 10)
-        x_texto = x_div2 + (ancho_div - ancho_linea) / 2
-        c.drawString(x_texto, y_texto, linea)
-        y_texto -= 14
+    x_texto_der = x_div2 + 20
+    y_top_der = y_div + alto_div - separacion_superior_contenido
+    parrafo_errores.drawOn(c, x_texto_der, y_top_der - alto_parrafo_errores)
 
     
-    # Definir estilo para los errores
-    estilo_errores = ParagraphStyle(
-        name="ErroresJustificado",
-        fontName="Poppins-Regular",
-        fontSize=8,
-        leading=10,
-        alignment=TA_JUSTIFY,
-        spaceBefore=0,
-        spaceAfter=0,
-    )
-    
-
     return alto_div

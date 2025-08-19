@@ -298,8 +298,8 @@ async def test_analizar_cv():
     start_time = time.time()
     
     # Datos de prueba
-    pdf_url = "https://pub-a950f98665ac41c49a6bdc63fff76a40.r2.dev/cv_CV_Hector_Zerrillo_1755626792315_b15761.pdf"
-    puesto_postular = "AI ENGINEER INTERN"
+    pdf_url = "https://pub-a950f98665ac41c49a6bdc63fff76a40.r2.dev/cv_cv_1755632096197_7e2fac.pdf"
+    puesto_postular = "Full Stack Intern"
     original_name = "CV_15_ojalaEsteSiFuncione.pdf"
     
     print("Iniciando prueba del endpoint /analizar-cv/")

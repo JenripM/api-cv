@@ -114,6 +114,11 @@ class EvaluationTable:
         
         # Altura para las filas de datos
         row_height = 0
+        container = self.config['container_style']
+        col_config = self.config['column_config']
+        # Ancho real del contenedor (coincide con _calculate_dimensions)
+        container_width = self.width - 2 * container['margin_horizontal'] - 2 * container['padding_internal']
+        suggestion_width_real = container_width * col_config['suggestion_width'] - 10
         for item in self.data:
             element, status, suggestion, color = item
             
@@ -129,10 +134,10 @@ class EvaluationTable:
                 leading=self.config['suggestion_style']['leading'],
                 alignment=self.config['suggestion_style']['alignment']
             )
+            setattr(temp_style, 'wordWrap', 'CJK')
             
             par_suggestion = Paragraph(suggestion or "", temp_style)
-            suggestion_width = self.width * self.config['column_config']['suggestion_width'] - 20
-            w_sug, h_sug = par_suggestion.wrap(suggestion_width, 1000)
+            w_sug, h_sug = par_suggestion.wrap(suggestion_width_real, 1000)
             
             # Altura máxima de la fila
             row_height += max(element_height, h_sug) + self.config['row_style']['row_spacing']
@@ -223,6 +228,7 @@ class EvaluationTable:
             spaceBefore=0,
             spaceAfter=0
         )
+        setattr(par_style, 'wordWrap', 'CJK')
         
         y_current = y_start
         

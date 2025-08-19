@@ -36,7 +36,7 @@ def get_cv_analysis_prompt(puesto: str, filename: str) -> str:
     - ai_feedback (String): Comentario general sobre errores ortográficos y gramaticales
 
     ### essential_elements
-    - evaluation (Array): Evaluación de elementos esenciales (nombre, email, experiencia laboral, educación)
+    - evaluation (Array): Evaluación de exclusivamente los siguientes elementos esenciales: nombre, email, experiencia laboral, educación
     - ai_feedback (String): Comentario general sobre elementos esenciales
 
     ### format_optimization
