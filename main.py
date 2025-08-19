@@ -220,6 +220,8 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
         # PASO 5: Generar el PDF con los resultados
         print("📋 Paso 5: Generando PDF...")
         try:
+            # Agregar el puesto_postular al objeto analysis_results para que esté disponible en el PDF
+            analysis_results['puesto_postular'] = puesto_postular
             ruta_pdf = generar_pdf_con_secciones(analysis_results, nombre_pdf, ruta_logo, ruta_logo2)
             print(f"✅ PDF generado exitosamente: {ruta_pdf}")
         except Exception as e:
@@ -296,8 +298,8 @@ async def test_analizar_cv():
     start_time = time.time()
     
     # Datos de prueba
-    pdf_url = "https://pub-a950f98665ac41c49a6bdc63fff76a40.r2.dev/cv_cv_1755351487038_883b13.pdf"
-    puesto_postular = "AI ENGINEER"
+    pdf_url = "https://pub-a950f98665ac41c49a6bdc63fff76a40.r2.dev/cv_CV_Hector_Zerrillo_1755626792315_b15761.pdf"
+    puesto_postular = "AI ENGINEER INTERN"
     original_name = "CV_15_ojalaEsteSiFuncione.pdf"
     
     print("Iniciando prueba del endpoint /analizar-cv/")
