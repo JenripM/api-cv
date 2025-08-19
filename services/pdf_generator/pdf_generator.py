@@ -14,7 +14,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
 
 # Ruta donde se guardarán los PDFs generados
-CARPETA_PDFS = "output/analisis_pdfs/"
+CARPETA_PDFS = "static/analisis_pdfs/"
 
 # Verificar si la carpeta existe, si no, crearla
 if not os.path.exists(CARPETA_PDFS):
@@ -141,7 +141,7 @@ def generar_pdf_con_secciones(datos_cv, nombre_archivo, logo_path, ruta_logo2):
             print(f"Error al guardar PDF: {e}")
             raise e
             
-        return f"/static/analisis_pdfs/{nombre_archivo}"
+        return f"static/analisis_pdfs/{nombre_archivo}"
         
     except Exception as e:
         print(f"Error general en generar_pdf_con_secciones: {e}")

@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "Hector Zerrillo CV.pdf",
+    "ai_feedback": "El nombre del archivo es claro pero puede mejorarse para reclutamiento y ATS. Recomiendo: 'Hector_Zerrillo_AIEngineer_CV.pdf' o 'Zerrillo_Hector_AI_Engineer_2025.pdf' (Nombre_Posición_Año). Evitar espacios y usar guiones bajos."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "El CV parece de una sola página, lo cual es ideal para un perfil en desarrollo o junior-intermedio. Mantener en 1 página si el candidato tiene menos de 10 años de experiencia; si se añaden más proyectos o detalles técnicos, ampliar a máximo 2 páginas."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Parnert",
+        "recommended": "Partner"
+      },
+      {
+        "current": "x4 AWS Certified Lima, Perú",
+        "recommended": "AWS Certifications (4) — listar cada certificación con fecha"
+      },
+      {
+        "current": "Arwebsystems Sac | IT Operations Automation",
+        "recommended": "Arwebsystems S.A.C. | IT Operations Automation"
+      },
+      {
+        "current": "Bedrock, LangChain, and LangGraph",
+        "recommended": "Bedrock, LangChain y LangGraph (consistencia en idioma) / mantener nombres propios correctos"
+      }
+    ],
+    "spelling_errors": 4,
+    "ai_feedback": "Se detectan errores tipográficos menores y algunas inconsistencias en nombres y formato (por ejemplo 'Parnert', 'Sac' sin puntos). Revisar ortografía, uso de mayúsculas y consistencia en idioma (ES/EN). Estandarizar nombres de empresas y servicios, y detallar fechas y formatos de certificaciones."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "Nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Teléfono",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "LinkedIn/GitHub",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Educación",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Todos los elementos esenciales están presentes y visibles. Recomiendo incluir un título profesional claro (Ej. 'AI Engineer' o 'Machine Learning Engineer'), y añadir ubicación y disponibilidad si aplica. Incluir fechas exactas de certificaciones y estado actual (e.g., 'Expected Graduation: Dec 2027' ya está)."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "La longitud (1 página) es apropiada para el nivel mostrado. Mantener concisión; si se añaden más proyectos técnicos o resultados cuantificables, no exceder 2 páginas."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No hay foto (lo cual es aceptable y recomendable en muchos mercados técnicos). No es necesario añadir una foto para roles de AI Engineer; priorizar contenido técnico y enlaces a portfolio/GitHub."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye varias palabras clave técnicas relevantes (AWS, LangChain, LLMs), pero puede mejorar incorporando términos adicionales buscados por recruiters de AI Engineer: 'model deployment', 'MLOps', 'model evaluation', 'transformers', 'prompt engineering', 'data pipelines'."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 7,
+    "ai_feedbacks": [
+      "Usa buenos verbos de acción (Built, Led, Developed, Achieved, Improved).",
+      "Reemplazar términos genéricos por verbos más orientados a impacto y métricas: 'Reduced latency by...', 'Optimized inference cost by...', 'Deployed and maintained...', 'Improved recall/precision by...'.",
+      "Agregar números y porcentajes vinculados a cada verbo para mayor impacto."
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Alto",
+      "ai_feedback": "El candidato demuestra habilidades técnicas relevantes: experiencia con LLMs, LangChain, AWS (Lambda, S3, RDS, DynamoDB, OpenSearch), integración y despliegue. Mostrar más detalles de arquitectura y contribuciones algorítmicas fortalecería la evaluación."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Hay algunos resultados cuantificables (ej. 700 daily visitors, ganador de challenge) pero faltan métricas en proyectos empresariales (p.ej., mejoras en latencia, reducción de costos, aumento en precisión de modelos, número de usuarios/consultas). Añadir métricas específicas por proyecto."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C. | AWS Parnert",
+      "current": "AI Engineer Sep 2024 – May 2025\n● Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases.\n● Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS.\n● Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "recommended": "AI Engineer (Sep 2024 – May 2025) — Process & Technology Solutions S.A.C.\n- Designed and deployed hybrid RAG systems (AWS Bedrock, LangChain, LangGraph) integrating vector DBs, SQL y NoSQL, mejorando la recuperación de información en X% y reduciendo tiempos de respuesta en Y%. \n- Arquitecté soluciones escalables en AWS (Lambda, S3, RDS, DynamoDB, OpenSearch, SQS) que redujeron costos de inferencia en Z% y soportaron N consultas/mes. \n- Lideré el ciclo completo de proyectos para múltiples clientes, entregando X proyectos a tiempo y mejorando la satisfacción del cliente en Y puntos porcentuales."
+    },
+    {
+      "company": "Arwebsystems Sac | IT Operations Automation",
+      "current": "AI Engineering Intern Mar 2024 – Sep 2024\n● Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually.\n● Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "recommended": "AI Engineering Intern (Mar 2024 – Sep 2024) — Arwebsystems S.A.C.\n- Desarrollé chatbots inteligentes basados en LLMs (GPT-4, Claude) integrados con Google Cloud y AWS para automatizar procesos, logrando reducir tiempo manual en X horas/mes. \n- Implementé APIs con AWS Lambda y API Gateway; desplegué servicios en EC2 y configuré monitoreo con Grafana, Docker y Jenkins, alcanzando disponibilidad del X%."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer (Jun 2023 – Jan 2024) — ENEISOFT\n- Desarrollé el sitio web oficial con React, HTML/CSS y JavaScript, mejorando la visibilidad de la organización y contribuyendo a la captación de inversores y oradores invitados; resultado: X donaciones/participantes o incremento en inscripciones del Y%."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Programming: Python, JavaScript, HTML/CSS, SQL, Node.js, React.js\nTools: AWS, Google Cloud, LangChain, LangGraph, Grafana, Docker, VSCode, Jupyter Notebooks, Git, Github, Agile",
+    "ai_feedback": "Listado sólido y relevante. Recomiendo: separar skills por categorías (ML frameworks, MLOps, Cloud, Infra, Programming), añadir frameworks y librerías (PyTorch, TensorFlow, scikit-learn, Hugging Face Transformers), herramientas de datos (Pandas, NumPy), CI/CD y testing, y nivel de dominio (Avanzado/Intermedio). Incluir ejemplos de uso (p. ej. 'Deployed models with AWS SageMaker / Bedrock')."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer (Jun 2023 – Jan 2024) — ENEISOFT\n- Diseñé y desarrollé el sitio web oficial en React y tecnologías web, incrementando la captación de recursos y la asistencia a eventos en X%; coordiné integración con formularios de donación y panel analítico para seguimiento de métricas."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Bachelor in Software Engineering",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "date": "Expected Graduation, Dec 2027",
+      "ai_feedback": "Carrera relevante y en curso; buena alineación con roles técnicos. Indicar GPA si es alto, proyectos académicos relevantes, cursos clave (ML, Data Science) y mención de actividades extracurriculares relacionadas."
+    },
+    {
+      "degree": "AWS Certifications",
+      "institution": "AWS",
+      "date": "2024 - 2025",
+      "ai_feedback": "Certificaciones relevantes para un AI Engineer (Machine Learning specialty, Solutions Architect, ML Engineer Associate, AI Practitioner). Recomendar listar fechas exactas y niveles, e incluir IDs o enlaces de certificación si es posible."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "AWS",
+      "LangChain",
+      "LangGraph",
+      "LLMs",
+      "GPT-4",
+      "Claude",
+      "S3",
+      "Lambda",
+      "RDS",
+      "DynamoDB",
+      "OpenSearch",
+      "SQS",
+      "Docker",
+      "Grafana",
+      "Jenkins",
+      "Python",
+      "React.js",
+      "SQL"
+    ],
+    "missing_keywords": [
+      "MLOps",
+      "Model deployment",
+      "SageMaker",
+      "PyTorch",
+      "TensorFlow",
+      "Hugging Face",
+      "Prompt engineering",
+      "Model evaluation",
+      "A/B testing",
+      "CI/CD pipelines",
+      "Data pipelines",
+      "Feature engineering"
+    ],
+    "general_skills": [
+      "Programming",
+      "Cloud Architecture",
+      "LLM Integration",
+      "Full-stack Development",
+      "Monitoring",
+      "DevOps basics"
+    ],
+    "ai_feedback": "Buen uso de keywords cloud y LLM. Añadir keywords de MLOps, frameworks ML, y procesos de evaluación/monitorización de modelos para mejorar filtrado ATS y relevancia para AI Engineer."
+  },
+  "executive_summary_analysis": {
+    "current": "",
+    "recommended": "AI Engineer con experiencia práctica en diseño y despliegue de sistemas basados en LLMs y RAG sobre AWS. Experto en integración de LangChain/LangGraph, arquitecturas serverless y soluciones escalables (Lambda, S3, RDS, DynamoDB, OpenSearch). Experiencia liderando equipos y proyectos ganadores de retos de AI; orientado a resultados cuantificables y reducción de costos operativos. Disponible para roles de Machine Learning/AI Engineering."
+  },
+  "ats_compliance": {
+    "score": 78,
+    "issues": [
+      "Uso mixto de idiomas (español/inglés) en secciones que puede confundir ATS si no está consistente.",
+      "Falta de títulos estandarizados en encabezado (ej. 'AI Engineer' como título principal).",
+      "Algunas abreviaturas y nombres de empresas con errores tipográficos ('Parnert') que pueden afectar búsqueda.",
+      "No se listan keywords MLOps y frameworks ML (PyTorch/TensorFlow) esperados por ATS para AI Engineer."
+    ],
+    "ai_feedbacks": [
+      "Unificar idioma principal del CV (preferible inglés para roles internacionales o español si postula localmente).",
+      "Incluir un título profesional en la parte superior y un breve resumen con keywords.",
+      "Estandarizar formato de fechas y nombres; evitar caracteres especiales y líneas no parseables.",
+      "Agregar una sección clara de 'Technologies' con keywords separadas por comas para facilitar parsing por ATS."
+    ]
+  },
+  "main_analysis": {
+    "score": 82,
+    "summary": "Candidato con sólida experiencia práctica en LLMs, LangChain y arquitecturas AWS; adecuado para roles de AI Engineer junior-intermedio. Buen balance entre proyectos, certificaciones y experiencia en nube.",
+    "ai_feedback": "Mejorar la cuantificación de impacto en experiencias laborales, estandarizar formato y corregir errores tipográficos. Añadir frameworks ML (PyTorch/TensorFlow/Hugging Face), MLOps y métricas de rendimiento para elevar relevancia y ATS score."
+  },
+  "common_errors": "Inconsistencias de formato (Sac/ S.a.C.) - Errores tipográficos ('Parnert') - Mezcla de idiomas en contenido - Falta de métricas cuantificadas en experiencias - No especificar fechas exactas de certificaciones",
+  "strengths": "Experiencia práctica con LLMs y RAG - Amplio uso de AWS y servicios serverless - Proyectos relevantes y liderazgo en desafíos (AWS GameDay) - Portafolio con resultados (700 daily visitors) - Certificaciones AWS relevantes"
+}

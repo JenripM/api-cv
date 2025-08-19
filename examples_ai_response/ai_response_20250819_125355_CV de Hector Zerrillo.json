@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "CV de Hector Zerrillo",
+    "ai_feedback": "El nombre del archivo es descriptivo pero puede mejorarse para procesos de selección: usar formato 'Nombre_Apellido_Rol_Año.pdf', por ejemplo 'Hector_Zerrillo_Practicante_Atencion_Clinicas_2025.pdf'. Evitar espacios y caracteres especiales."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "El CV parece compacto (1 página). Para un practicante pre-profesional 1 página es ideal. Mantener concisión y priorizar experiencia relevante."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Parnert",
+        "recommended": "Partner"
+      },
+      {
+        "current": "Arwebsystems Sac",
+        "recommended": "Arwebsystems S.A.C. (revisar formato)"
+      },
+      {
+        "current": "x4 AWS Certified",
+        "recommended": "AWS Certifications (listar individualmente con fechas)"
+      }
+    ],
+    "spelling_errors": 3,
+    "ai_feedback": "Hay pocos errores ortográficos o tipográficos. Revisar nombres de empresas y abreviaturas (Partner, S.A.C.), estandarizar mayúsculas y formato de certificaciones y fechas."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "telefono",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "linkedin",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "resumen ejecutivo",
+        "exists": false,
+        "well_positioned": false,
+        "easily_distinguishable": false
+      },
+      {
+        "element": "experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "educacion",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "habilidades",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Faltaría un resumen ejecutivo breve al inicio que oriente su interés hacia prácticas en atención en clínicas. Datos de contacto están bien. Considerar incluir ubicación actual y disponibilidad. Mantener formato claro para experiencia y educación."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "Longitud adecuada para un perfil de practicante. Mantener en 1 página y priorizar experiencia clínica relevante o habilidades transferibles."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No incluye foto. Para prácticas en atención en clínicas puede ser útil una foto profesional en algunos contextos locales; si se añade, usar imagen profesional y sobria. Si el proceso es ATS internacional, evitar foto."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye palabras técnicas de IA y cloud, pero faltan términos específicos del rol de atención en clínicas (ej. atención al paciente, protocolos clínicos, comunicación empática, historial clínico, trabajo en equipo multidisciplinario). Añadir keywords alineadas al puesto."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 7,
+    "ai_feedbacks": [
+      "Usa varios verbos de acción efectivos (Built, Led, Developed, Improved, Achieved).",
+      "Agregar métricas en cada punto para fortalecer impacto (ej. 'Reducir tiempo X en Y%').",
+      "Variar verbos para roles de atención: 'Coordinated', 'Assisted', 'Monitored', 'Advised' cuando aplique experiencia en atención clínica o con usuarios."
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Medio",
+      "ai_feedback": "Muestra habilidades analíticas técnicas fuertes (ML, arquitectura AWS, desarrollo full-stack). Sin embargo, falta evidencia de análisis aplicado a entornos clínicos o atención al paciente. Resaltar trabajos que impliquen análisis de necesidades de usuarios/pacientes aumentaría ajuste."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Algunos proyectos incluyen métricas cuantitativas (700 visitantes, 100% accuracy). Sería beneficioso añadir más métricas sobre impacto en usuarios, eficiencia o ahorro de costos en proyectos profesionales."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C. | AWS Parnert",
+      "current": "AI Engineer Sep 2024 – May 2025\n● Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases.\n● Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS.\n● Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "recommended": "AI Engineer | Process & Technology Solutions S.A.C. (Partner) — Sep 2024 – May 2025\n- Diseñé e implementé sistemas híbridos RAG que mejoraron la recuperación de información empresarial (indicar % o tiempo de mejora si es posible) usando AWS Bedrock, LangChain y LangGraph con bases vectoriales, SQL y NoSQL.\n- Arquitecté infraestructuras escalables y más económicas en AWS (Lambda, S3, RDS, DynamoDB, OpenSearch, SQS), reduciendo costes/tiempos de despliegue (incluir cifra si aplica).\n- Dirigí el ciclo de vida completo de proyectos para múltiples clientes, cumpliendo plazos y superando expectativas de satisfacción (incluir NPS, % de entregas a tiempo o testimonios si existen)."
+    },
+    {
+      "company": "Arwebsystems Sac | IT Operations Automation",
+      "current": "AI Engineering Intern Mar 2024 – Sep 2024\n● Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually.\n● Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "recommended": "AI Engineering Intern | Arwebsystems S.A.C. — Mar 2024 – Sep 2024\n- Desarrollé chatbots inteligentes con LLMs (GPT-4, Claude) para automatizar procesos manuales, reduciendo tiempos de atención/operación (indicar % o tiempos si es posible).\n- Implementé APIs y despliegue en AWS (Lambda, API Gateway, EC2) y establecí monitoreo con Grafana y contenedores con Docker/Jenkins, garantizando alta disponibilidad y continuidad operativa."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer | ENEISOFT — Jun 2023 – Jan 2024\n- Desarrollé el sitio web oficial (HTML, CSS, JavaScript, React) que facilitó la captación de inversores, donaciones y ponentes, contribuyendo directamente a la entrega de becas y la mejora de la calidad de eventos (indicar métricas de captación o crecimiento de asistencia si existen)."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Programming: Python, JavaScript, HTML/CSS, SQL, Node.js, React.js\nTools: AWS, Google Cloud, LangChain, LangGraph, Grafana, Docker, VSCode, Jupyter Notebooks, Git, Github, Agile",
+    "ai_feedback": "Las habilidades técnicas son sólidas para roles de IA y desarrollo. Para un puesto en atención en clínicas, añadir habilidades transferibles: manejo de datos clínicos, privacidad (HIPAA/GDPR awareness si aplica), comunicación con pacientes, registro y gestión de historias clínicas, trabajo en equipo multidisciplinario y sensibilidad ética. Priorizar habilidades blandas: empatía, comunicación, resolución de conflictos."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024\n● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer | ENEISOFT — Jun 2023 – Jan 2024\n- Creé y mantuve la plataforma web para eventos y captación de fondos utilizando React y tecnologías web, lo que permitió aumentar la financiación y la asistencia a conferencias (especificar % de aumento o número de becas si es posible)."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Bachelor in Software Engineering",
+      "institution": "Universidad Nacional Mayor de San Marcos, Lima, Perú",
+      "date": "Expected Graduation, Dec 2027",
+      "ai_feedback": "Carrera relevante en ingeniería de software. Para el puesto de practicante en atención en clínicas, incluir cursos o proyectos relacionados con salud, bioinformática o prácticas en entornos sanitarios si existen. Indicar promedio (si es competitivo) y cursos relevantes."
+    },
+    {
+      "degree": "AWS Certifications (listado)",
+      "institution": "AWS / x4 AWS Certified",
+      "date": "2024 - 2025 (varias)",
+      "ai_feedback": "Certificaciones técnicas valiosas. Desglosar cada certificación con fecha exacta y nivel. Para atención clínica, resaltar certificaciones en seguridad o manejo de datos si aplica."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "AWS",
+      "Machine Learning",
+      "LLMs",
+      "LangChain",
+      "Docker",
+      "Grafana",
+      "API",
+      "React.js",
+      "Python",
+      "SQL"
+    ],
+    "missing_keywords": [
+      "atención al paciente",
+      "historia clínica",
+      "protocolos clínicos",
+      "evaluación clínica",
+      "comunicación con pacientes",
+      "empatía",
+      "trabajo multidisciplinario",
+      "confidencialidad de datos de salud",
+      "HIPAA",
+      "triage"
+    ],
+    "general_skills": [
+      "Desarrollo full-stack",
+      "Arquitectura en la nube",
+      "Despliegue y monitoreo",
+      "Desarrollo de chatbots/IA",
+      "Liderazgo de equipo",
+      "Automatización de procesos"
+    ],
+    "ai_feedback": "Agregar keywords y frases específicas del área clínica si el objetivo es el rol de práctica en atención en clínicas. Enfatizar habilidades de comunicación, manejo de pacientes, y cumplimiento de normativas de privacidad de datos de salud."
+  },
+  "executive_summary_analysis": {
+    "current": "",
+    "recommended": "Estudiante de Ingeniería de Software con experiencia práctica en IA y arquitecturas cloud (AWS). He liderado proyectos de generación de soluciones AI y automatización, integrando modelos LLM y despliegue en AWS. Busco una práctica pre-profesional en atención en clínicas para aplicar habilidades técnicas en soluciones que mejoren la gestión clínica y la atención al paciente, aportando capacidad analítica, trabajo en equipo y comunicación efectiva."
+  },
+  "ats_compliance": {
+    "score": 78,
+    "issues": [
+      "Uso inconsistente de formatos en nombres de empresas y abreviaturas (S.a.C. vs S.A.C.)",
+      "Falta de secciones estandarizadas (resumen profesional, competencias clave al inicio).",
+      "Posible uso de caracteres especiales en el nombre del archivo.",
+      "No se especifican fechas completas en certificaciones."
+    ],
+    "ai_feedbacks": [
+      "Estandarizar títulos de sección y usar palabras clave del puesto exactas.",
+      "Usar formato cronológico claro y fechas consistentes (mes/año).",
+      "Incluir una sección de 'Skills' con bullets y keywords relevantes para ATS.",
+      "Guardar el archivo en PDF y con nombre sin espacios ni caracteres especiales."
+    ]
+  },
+  "main_analysis": {
+    "score": 78,
+    "summary": "Perfil técnico fuerte en IA y cloud con liderazgo en proyectos y resultados medibles; sin embargo, carece de experiencia y keywords específicas en atención clínica. Con pequeñas adaptaciones (resumen orientado a salud, keywords clínicos, métricas de impacto) es candidato competitivo para prácticas en entornos clínicos técnicos.",
+    "ai_feedback": "Añadir un resumen orientado al puesto, adaptar y priorizar experiencias y habilidades transferibles a atención en clínicas, incluir métricas de impacto en cada logro, estandarizar formato y corregir pequeños errores ortográficos. Agregar evidencia de habilidades blandas y conocimiento de privacidad de datos clínicos."
+  },
+  "common_errors": "Inconsistencia en abreviaturas y nombres de empresas -Falta de resumen ejecutivo específico para el rol -Ausencia de keywords clínicas y términos relacionados con atención al paciente -Pocas métricas cuantificables en experiencia profesional",
+  "strengths": "Sólidas habilidades técnicas en IA y AWS -Experiencia práctica con LLMs y arquitecturas cloud -Liderazgo en proyectos y concursos (Team Lead, ganador) -Proyectos personales con resultados medibles (visitas, accuracy)"
+}

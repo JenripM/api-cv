@@ -79,17 +79,33 @@ class CVProcessor:
             raise
     
     def build_final_response(self, analysis_results, puesto, candidate_name, nombre_pdf, ruta_pdf):
-        """Construye la respuesta final"""
-        return {
-            "status": "success",
-            "message": "Análisis completado exitosamente",
-            "data": {
-                "candidate_name": candidate_name,
-                "position": puesto,
-                "pdf_url": f"/static/analisis_pdfs/{nombre_pdf}",
-                "analysis_results": analysis_results
+        """Construye la respuesta final con el PDF en bytes"""
+        try:
+            # Leer el PDF generado como bytes
+            with open(ruta_pdf, 'rb') as pdf_file:
+                pdf_bytes = pdf_file.read()
+            
+            # Limpiar el archivo temporal después de leerlo
+            try:
+                os.remove(ruta_pdf)
+                print(f"🗑️ Archivo temporal eliminado: {ruta_pdf}")
+            except Exception as e:
+                print(f"⚠️ No se pudo eliminar archivo temporal: {e}")
+            
+            return {
+                "status": "success",
+                "message": "Análisis completado exitosamente",
+                "data": {
+                    "candidate_name": candidate_name,
+                    "position": puesto,
+                    "pdf_filename": nombre_pdf,
+                    "pdf_content": pdf_bytes,
+                    "analysis_results": analysis_results
+                }
             }
-        }
+        except Exception as e:
+            print(f"❌ Error al leer PDF: {e}")
+            raise
 
 # Inicializar servicios después de cargar variables de entorno
 ai_service = AIService(api_key=os.getenv("OPENAI_API_KEY"))
@@ -184,7 +200,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                 }
             )
         
-        candidate_name = analysis_results.get("candidate_name", "Nombre no disponible")
+        candidate_name = analysis_results.get("metadata", {}).get("candidate_name", "Nombre no disponible")
         
         # PASO 4: Preparar logos y generar nombre del PDF
         print("📄 Paso 4: Preparando generación de PDF...")
@@ -218,32 +234,49 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                 }
             )
         
-        # PASO 6: Construir respuesta final
-        print("✅ Paso 6: Construyendo respuesta final...")
+        # PASO 6: Leer PDF y devolver JSON con datos completos
+        print("✅ Paso 6: Preparando respuesta completa...")
         try:
-            final_response = cv_processor.build_final_response(
-                analysis_results=analysis_results,
-                puesto=puesto_postular,
-                candidate_name=candidate_name,
-                nombre_pdf=nombre_pdf,
-                ruta_pdf=ruta_pdf
-            )
+            # Leer el PDF como bytes y convertirlo a base64
+            import base64
+            with open(ruta_pdf, 'rb') as pdf_file:
+                pdf_bytes = pdf_file.read()
+                pdf_base64 = base64.b64encode(pdf_bytes).decode('utf-8')
+            
+            # Limpiar el archivo temporal después de leerlo
+            try:
+                os.remove(ruta_pdf)
+                print(f"🗑️ Archivo temporal eliminado: {ruta_pdf}")
+            except Exception as e:
+                print(f"⚠️ No se pudo eliminar archivo temporal: {e}")
+            
+            # Construir respuesta completa
+            final_response = {
+                "status": "success",
+                "message": "Análisis completado exitosamente",
+                "data": {
+                    "candidate_name": candidate_name,
+                    "position": puesto_postular,
+                    "pdf_filename": nombre_pdf,
+                    "pdf_content_base64": pdf_base64,
+                    "analysis_results": analysis_results
+                }
+            }
+            
+            print("🎉 Análisis completado exitosamente")
+            return JSONResponse(content=final_response)
+            
         except Exception as e:
-            print(f"❌ Error al construir respuesta final: {e}")
+            print(f"❌ Error al preparar respuesta completa: {e}")
             return JSONResponse(
                 status_code=500,
                 content={
                     "status": "error",
-                    "message": f"Error al construir respuesta final: {str(e)}",
+                    "message": f"Error al preparar respuesta completa: {str(e)}",
                     "json_saved": True,
-                    "json_path": json_path,
-                    "pdf_generated": True,
-                    "pdf_path": ruta_pdf
+                    "json_path": json_path
                 }
             )
-        
-        print("🎉 Análisis completado exitosamente")
-        return JSONResponse(content=final_response)
         
     except Exception as e:
         print(f"❌ Error general en análisis de CV: {e}")

@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "candidate_name": "GABRIELA MELGAR GALVAN"
+  },
+  "filename_analysis": {
+    "filename": "CV- Gabriela Melgar Galvan 2025.pdf",
+    "ai_feedback": "El nombre incluye el nombre completo y año; es informativo pero contiene espacios y mayúsculas inconsistentes. Recomiendo un formato más profesional y uniforme: 'Gabriela_Melgar_Galvan_CV_2025.pdf' o 'Gabriela-Melgar-Galvan_Marketing-Ventas_CV_2025.pdf'. Evitar caracteres especiales y mantener consistencia."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "El CV parece tener una sola página, lo cual es apropiado para una candidata en formación/prácticas. Mantener en 1 página es óptimo; si agrega más experiencia relevante puede extenderse a 2 páginas como máximo."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Quinto superior",
+        "recommended": "Quinto superior (o indicar promedio/CUM la posición académica de forma más clara)"
+      },
+      {
+        "current": "Practicante profesional del área Regional Compliance LATAM",
+        "recommended": "Practicante profesional - Área Regional Compliance LATAM"
+      },
+      {
+        "current": "Apoyo en la elaboración y actualización de los mapas de riesgos de los programas de Compliance locales siguiendo la metodología definida por la corporación.",
+        "recommended": "Apoyo en la elaboración y actualización de mapas de riesgo de los programas de Compliance locales, siguiendo la metodología corporativa."
+      },
+      {
+        "current": "Sistema de Prevención de Lavado de Activos y Financiamiento del Terrorismo (SPLAFT).",
+        "recommended": "Sistema de Prevención de Lavado de Activos y Financiamiento del Terrorismo (SPLAFT)"
+      },
+      {
+        "current": "Practicante pre profesional del área de Marketing",
+        "recommended": "Practicante pre-profesional - Área de Marketing"
+      },
+      {
+        "current": "Practicante Pre profesional del Área Comercial.",
+        "recommended": "Practicante pre-profesional - Área Comercial"
+      }
+    ],
+    "spelling_errors": 6,
+    "ai_feedback": "No se detectan faltas ortográficas graves, pero hay inconsistencias en el uso de mayúsculas, guiones y términos compuestos (pre-profesional, áreas). Homogeneizar formato, eliminar puntos innecesarios y mejorar redacción para mayor fluidez."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "Nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Teléfono",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Dirección",
+        "exists": true,
+        "well_positioned": false,
+        "easily_distinguishable": false
+      },
+      {
+        "element": "Experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Educación",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "Habilidades",
+        "exists": true,
+        "well_positioned": false,
+        "easily_distinguishable": false
+      }
+    ],
+    "ai_feedback": "Elementos esenciales presentes: nombre, contacto, educación y experiencia. Reorganizar: añadir una sección clara de perfil/objetivo, destacar email y LinkedIn (si existe) y separar habilidades técnicas y blandas para mayor legibilidad. La dirección puede omitirse o condensarse a ciudad y país."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "Longitud adecuada (1 página) para perfil en formación con experiencia de prácticas. Mantener concisión y priorizar logros cuantificables."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No incluye foto. Para puestos de marketing/ventas no es obligatorio; si se añade, usar foto profesional y coherente con la marca personal. En Perú muchas aplicaciones no requieren foto; priorizar contenido y LinkedIn."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye términos relevantes (marketing, ventas, KPIs, compliance) pero faltan keywords específicas de marketing/ventas (SEO, SEM, CRM, campañas digitales, ROI). Añadir términos según el rol objetivo."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 6,
+    "ai_feedbacks": [
+      "Usa verbos funcionales ('Responsable de', 'Apoyo', 'Encargada'), pero falta variedad y fuerza.",
+      "Reemplazar 'Apoyo' por 'Implementé', 'Desarrollé', 'Optimicé', 'Generé' cuando aplique.",
+      "Cuantificar acciones: 'Incrementó ventas mensuales en X%' en lugar de 'incrementó las ventas mensuales'.",
+      "Comenzar cada viñeta con un verbo de impacto distinto para mayor dinamismo."
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Medio",
+      "ai_feedback": "Muestra capacidad analítica (reportes, análisis de competencia, mapas de riesgo). Para marketing y ventas, fortalecer con ejemplos de análisis de datos, uso de Power BI o métricas de campaña."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Hay alusión a resultados (incremento de ventas mensuales) pero faltan cifras concretas (% crecimiento, montos, KPIs alcanzados). Añadir métricas para elevar impacto."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Repsol",
+      "current": "Practicante profesional del área Regional Compliance LATAM. Coordinación con los 9 países de la regional LATAM para el desarrollo y ejecución del plan anual de Formación y Comunicación de Compliance, asegurando el cumplimiento de KPIs corporativos. Apoyo en la elaboración y actualización de los mapas de riesgos... Encargada de gestionar y monitorear los controles desplegados en Perú... Apoyo al Oficial de Cumplimiento en la elaboración de reportes dirigidos a los directores y a las autoridades según regulación.",
+      "recommended": "Practicante Regional Compliance LATAM: Coordiné la implementación del plan anual de Formación y Comunicación en 9 países LATAM, alcanzando los KPIs corporativos establecidos. Actualicé mapas de riesgo y evalué procesos críticos, proponiendo y monitoreando medidas de mitigación que redujeron brechas operativas. Gestioné controles locales en Perú y preparé reportes regulatorios para la dirección."
+    },
+    {
+      "company": "Océano Seafood",
+      "current": "Practicante pre profesional del área de Marketing. Responsable de elaborar reportes y análisis que ayudaron a la gerencia a tomar decisiones efectivas. Creación de un canal de venta corporativo que incrementó las ventas mensuales, mejorando la rentabilidad del negocio. Apoyo en ferias y eventos internacionales... Encargada de cotizar, elaborar diseños y presupuestar el material POP y su distribución a nivel nacional.",
+      "recommended": "Practicante de Marketing: Elaboré reportes y análisis comerciales que guiaron la toma de decisiones gerenciales. Implementé un canal de ventas corporativo que aumentó las ventas mensuales en X% y mejoró la rentabilidad. Coordiné la participación en ferias internacionales, y gestioné diseño, presupuesto y distribución de material POP a nivel nacional."
+    },
+    {
+      "company": "Sin Envolturas",
+      "current": "Practicante Pre profesional del Área Comercial. Responsable de coordinar con los proveedores para garantizar la entrega puntual de pedidos a nivel nacional, asesoramiento a clientes y proveedores sobre los servicios de la plataforma, análisis de la competencia y evaluación de mercado para definir estrategias de expansión. Optimización del flujo de pagos y coordinación con proveedores para asegurar la rentabilidad de la plataforma.",
+      "recommended": "Practicante Comercial: Coordiné proveedores y logística para entregas nacionales, mejorando tiempos de entrega y satisfacción del cliente. Asesoré clientes y optimicé la experiencia de la plataforma, realicé análisis competitivo y evaluaciones de mercado que soportaron estrategias de expansión. Optimicé flujos de pago para mejorar la rentabilidad de la plataforma."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Idiomas: Inglés (Intermedio-Avanzado), Español (Nativo). Informática: Microsoft Office (Word, PowerPoint, Excel) - Intermedio/Avanzado, Adobe Illustrator y Photoshop - Intermedio, Power BI - Intermedio, SAP y CONCUR. Certificados: TOEFL ITP.",
+    "ai_feedback": "Separar habilidades técnicas y blandas; especificar nivel de herramientas (ej. Excel: tablas dinámicas, VLOOKUP; Power BI: dashboards, modelado de datos). Añadir herramientas de marketing digital (Google Analytics, CRM, email marketing, redes sociales) si las conoce. Incluir nivel CEFR para inglés si es posible."
+  },
+  "volunteering_analysis": [],
+  "education_analysis": [
+    {
+      "degree": "Carrera en Administración de Empresas (estudiante)",
+      "institution": "Universidad de Lima",
+      "date": "2020 – 2025",
+      "ai_feedback": "Indicar estado actual (eg. en curso, fecha esperada de graduación, promedio si es alto). Es relevante mostrar cursos relevantes (marketing digital, análisis de datos) y proyectos universitarios."
+    },
+    {
+      "degree": "Educación Primaria y Secundaria",
+      "institution": "Colegio Villa María",
+      "date": "2006 – 2019",
+      "ai_feedback": "No es necesario detallar la educación secundaria en un CV profesional; mantener solo si hay logros relevantes o espacio suficiente."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "Marketing",
+      "Ventas",
+      "KPIs",
+      "reportes",
+      "análisis",
+      "Power BI",
+      "Adobe Illustrator",
+      "Adobe Photoshop",
+      "SAP"
+    ],
+    "missing_keywords": [
+      "SEO",
+      "SEM",
+      "CRM",
+      "Google Analytics",
+      "Email Marketing",
+      "ROI",
+      "Conversion Rate",
+      "Lead generation",
+      "Social Media Management",
+      "Campaign management"
+    ],
+    "general_skills": [
+      "Análisis de datos",
+      "Coordinación",
+      "Comunicación",
+      "Gestión de proveedores",
+      "Diseño y presupuesto de material POP"
+    ],
+    "ai_feedback": "Agregar keywords específicas de marketing y ventas según la vacante objetivo (CRM, Google Analytics, campañas digitales, métricas ROI/CPA). Incluir herramientas concretas y resultados cuantificados para mejorar coincidencia con ATS y reclutadores."
+  },
+  "executive_summary_analysis": {
+    "current": "",
+    "recommended": "Estudiante de Administración de Empresas en la Universidad de Lima con experiencia en marketing y comercio en empresas B2B y B2C. He liderado la creación de canales de venta y realizado análisis comerciales y de mercado que contribuyeron a aumentar ventas y optimizar procesos. Competente en Power BI, Excel y herramientas de diseño; orientada a resultados y con capacidad para coordinar proyectos regionales."
+  },
+  "ats_compliance": {
+    "score": 70,
+    "issues": [
+      "Falta de sección de perfil/summary que incluya keywords del puesto.",
+      "Uso inconsistente de formatos (mayúsculas, guiones, puntos) que puede afectar parsing.",
+      "Falta de cifras cuantificables y métricas en la experiencia.",
+      "No incluye LinkedIn ni URL profesional.",
+      "Algunas frases largas en viñetas que dificultan extracción de datos."
+    ],
+    "ai_feedbacks": [
+      "Incluir un resumen profesional con keywords relevantes y experiencia clave.",
+      "Usar formato consistente: títulos de secciones en mayúsculas uniformes, fechas en formato estándar (Mes Año – Mes Año).",
+      "Añadir números y porcentajes en logros concretos para ATS y reclutadores.",
+      "Agregar LinkedIn y normalizar el contacto (email profesional ya está bien)."
+    ]
+  },
+  "main_analysis": {
+    "score": 78,
+    "summary": "Candidata en formación con experiencia práctica en marketing y comercial, además de experiencia en compliance regional. Buen manejo de herramientas básicas y capacidad de coordinación. Falta cuantificar logros y añadir keywords específicas de marketing digital.",
+    "ai_feedback": "Mejorar el CV enfatizando logros cuantificables, usar verbos de impacto, añadir un resumen profesional y listar herramientas y certificaciones relevantes. Incluir LinkedIn y homogeneizar formato para mejorar ATS y legibilidad."
+  },
+  "common_errors": "Inconsistencia en uso de mayúsculas y guiones - Falta de cifras y métricas en logros - Ausencia de un resumen ejecutivo - No se especifican niveles detallados en herramientas (ej. Excel avanzado: tablas dinámicas) - Omisión de LinkedIn o perfil profesional",
+  "strengths": "Experiencia práctica en marketing y comercial - Coordinación regional en Repsol (LATAM) - Conocimientos en Power BI y Adobe - Capacidad para gestionar proveedores y logística - Idioma inglés (nivel intermedio-avanzado)"
+}
