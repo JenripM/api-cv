@@ -62,7 +62,7 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     # Nombre de archivo con wrapping responsive
     ancho_archivo = ancho_div - 2 * margen_interno
     x_archivo = x_div + margen_interno
-    y_archivo = y_nombre - 25
+    y_archivo = y_nombre - 15  # Reducido de 25 a 15 para evitar superposición
     
     # Estilo para el nombre del archivo con wrapping
     estilo_archivo = ParagraphStyle(
@@ -81,7 +81,7 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     w_archivo, h_archivo = par_archivo.wrapOn(c, ancho_archivo, alto_div)
     par_archivo.drawOn(c, x_archivo, y_archivo)
 
-    # Comentario justificado - ajustar posición basada en la altura del archivo
+    # Comentario justificado - posicionar directamente debajo del archivo
     estilo_coment = ParagraphStyle(
         name="ComentarioJustificado",
         fontName="Poppins-Regular",
@@ -99,7 +99,10 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     
     par_com = Paragraph(comentario, estilo_coment)
     w_com, h_com = par_com.wrapOn(c, ancho_com, espacio_disponible)
-    par_com.drawOn(c, x_com, y_archivo - h_archivo - h_com - 5)
+    
+    # Posicionar el comentario directamente debajo del archivo (como en JavaScript)
+    y_comentario = y_archivo - h_archivo - 10  # 10 puntos de separación
+    par_com.drawOn(c, x_com, y_comentario)
 
     return alto_div
 
