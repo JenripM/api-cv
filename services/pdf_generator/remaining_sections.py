@@ -59,14 +59,29 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     y_nombre = y_div + alto_div - 20
     c.drawString(x_nombre, y_nombre, "Nombre")
 
-    # Nombre de archivo
-    c.setFillColor(HexColor("#007bb6"))
-    c.setFont("Poppins-Bold", 14)
-    x_titulo = x_div + margen_interno
-    y_titulo = y_nombre - 25
-    c.drawString(x_titulo, y_titulo, archivo)
+    # Nombre de archivo con wrapping responsive
+    ancho_archivo = ancho_div - 2 * margen_interno
+    x_archivo = x_div + margen_interno
+    y_archivo = y_nombre - 25
+    
+    # Estilo para el nombre del archivo con wrapping
+    estilo_archivo = ParagraphStyle(
+        name="ArchivoWrapping",
+        fontName="Poppins-Bold",
+        fontSize=14,
+        leading=16,
+        alignment=TA_LEFT,
+        spaceBefore=0,
+        spaceAfter=0,
+        textColor=HexColor("#007bb6"),
+    )
+    
+    # Crear paragraph para el nombre del archivo
+    par_archivo = Paragraph(archivo, estilo_archivo)
+    w_archivo, h_archivo = par_archivo.wrapOn(c, ancho_archivo, alto_div)
+    par_archivo.drawOn(c, x_archivo, y_archivo)
 
-    # Comentario justificado
+    # Comentario justificado - ajustar posición basada en la altura del archivo
     estilo_coment = ParagraphStyle(
         name="ComentarioJustificado",
         fontName="Poppins-Regular",
@@ -78,10 +93,13 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     )
     ancho_com = ancho_div - 2 * margen_interno
     x_com = x_div + margen_interno
-
+    
+    # Calcular espacio disponible para el comentario
+    espacio_disponible = y_archivo - y_div - margen_interno  # Desde la posición del archivo hasta el borde inferior
+    
     par_com = Paragraph(comentario, estilo_coment)
-    w_com, h_com = par_com.wrapOn(c, ancho_com, alto_div)
-    par_com.drawOn(c, x_com, y_titulo - h_com - 5)
+    w_com, h_com = par_com.wrapOn(c, ancho_com, espacio_disponible)
+    par_com.drawOn(c, x_com, y_archivo - h_archivo - h_com - 5)
 
     return alto_div
 
