@@ -20,7 +20,7 @@ import requests
 white = Color(1, 1, 1)
 black = Color(0, 0, 0)
 grey = Color(0.5, 0.5, 0.5)
-green = HexColor('#0c846c')
+green = HexColor('#008000')
 red = Color(1, 0, 0)
 orange = Color(1, 0.5, 0)
 yellow = Color(1, 1, 0)

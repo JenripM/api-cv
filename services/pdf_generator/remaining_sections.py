@@ -12,7 +12,7 @@ from .table_component import create_evaluation_table
 white = Color(1, 1, 1)
 black = Color(0, 0, 0)
 grey = Color(0.5, 0.5, 0.5)
-green = HexColor('#0c846c')
+green = HexColor('#008000')
 red = Color(1, 0, 0)
 blue = Color(0, 0, 1)
 lightgrey = Color(0.9, 0.9, 0.9)
@@ -641,7 +641,7 @@ def seccion_9(c, ancho, alto, y_inicio, datos_cv):
     """9. Sección de ajuste al puesto usando el componente reutilizable"""
     
     # Colores para estados
-    green = HexColor("#0c846c")
+    green = HexColor("#008000")
     yellow = HexColor("#FFC107")
     red = HexColor("#DC3545")
     
@@ -1201,7 +1201,7 @@ def seccion_12(c, ancho, alto, y_inicio, datos_cv):
     c.drawString(x_tit, y_inicio - 40, titulo)
 
     # Colores para estados
-    green = HexColor("#0c846c")
+    green = HexColor("#008000")
     yellow = HexColor("#FFC107")
     red = HexColor("#DC3545")
     
