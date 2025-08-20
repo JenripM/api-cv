@@ -12,7 +12,7 @@ from .table_component import create_evaluation_table
 white = Color(1, 1, 1)
 black = Color(0, 0, 0)
 grey = Color(0.5, 0.5, 0.5)
-green = Color(0, 1, 0)
+green = HexColor('#14b48b')
 red = Color(1, 0, 0)
 blue = Color(0, 0, 1)
 lightgrey = Color(0.9, 0.9, 0.9)

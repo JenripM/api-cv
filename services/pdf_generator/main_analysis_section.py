@@ -11,7 +11,7 @@ black = Color(0, 0, 0)
 grey = Color(0.5, 0.5, 0.5)
 red = Color(1, 0, 0)
 orange = Color(1, 0.5, 0)
-green = Color(0, 1, 0)
+green = HexColor('#14b48b')
 
 def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     """2. Sección de análisis principal con velocímetro"""
