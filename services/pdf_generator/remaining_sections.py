@@ -26,8 +26,6 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
 
     margen_horizontal = 50
     margen_interno = 15
-    alto_div = 130
-
     sombra_expand = 8
     sombra_offset_x = 2
     sombra_offset_y = -2
@@ -35,6 +33,59 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
 
     ancho_div = ancho - 2 * margen_horizontal
     x_div = margen_horizontal
+    ancho_contenido = ancho_div - 2 * margen_interno
+
+    # Estilos
+    estilo_titulo = ParagraphStyle(
+        name="TituloSeccion",
+        fontName="Poppins-SemiBold",
+        fontSize=9,
+        leading=12,
+        alignment=TA_LEFT,
+        spaceBefore=0,
+        spaceAfter=0,
+        textColor=grey,
+    )
+    
+    estilo_archivo = ParagraphStyle(
+        name="ArchivoWrapping",
+        fontName="Poppins-Bold",
+        fontSize=14,
+        leading=16,
+        alignment=TA_LEFT,
+        spaceBefore=0,
+        spaceAfter=0,
+        textColor=HexColor("#007bb6"),
+    )
+    
+    estilo_coment = ParagraphStyle(
+        name="ComentarioJustificado",
+        fontName="Poppins-Regular",
+        fontSize=9,
+        leading=12,
+        alignment=TA_JUSTIFY,
+        spaceBefore=0,
+        spaceAfter=0,
+    )
+
+    # Crear paragraphs y calcular alturas
+    par_titulo = Paragraph("Nombre", estilo_titulo)
+    par_archivo = Paragraph(archivo, estilo_archivo)
+    par_coment = Paragraph(comentario, estilo_coment)
+
+    # Calcular alturas de cada elemento
+    w_titulo, h_titulo = par_titulo.wrapOn(c, ancho_contenido, 1000)
+    w_archivo, h_archivo = par_archivo.wrapOn(c, ancho_contenido, 1000)
+    w_coment, h_coment = par_coment.wrapOn(c, ancho_contenido, 1000)
+
+    # Calcular altura total necesaria
+    separacion_elementos = 10  # Espacio entre elementos
+    altura_total = h_titulo + separacion_elementos + h_archivo + separacion_elementos + h_coment + margen_interno * 2
+    
+    # Asegurar altura mínima
+    alto_div = max(130, altura_total)
+    
+    # Posición Y del div
     y_div = y_inicio - alto_div
 
     # Sombra
@@ -52,57 +103,42 @@ def seccion_4(c, ancho, alto, y_inicio, datos_cv):
     c.setFillColor(white)
     c.roundRect(x_div, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
 
-    # Título "Nombre"
-    c.setFillColor(grey)
-    c.setFont("Poppins-SemiBold", 9)
-    x_nombre = x_div + margen_interno
-    y_nombre = y_div + alto_div - 20
-    c.drawString(x_nombre, y_nombre, "Nombre")
+    # Posiciones Y calculadas dinámicamente
+    y_titulo = y_div + alto_div - margen_interno - h_titulo
+    y_archivo = y_titulo - separacion_elementos - h_archivo
+    y_coment = y_archivo - separacion_elementos - h_coment
 
-    # Nombre de archivo con wrapping responsive
-    ancho_archivo = ancho_div - 2 * margen_interno
-    x_archivo = x_div + margen_interno
-    y_archivo = y_nombre - 15  # Reducido de 25 a 15 para evitar superposición
-    
-    # Estilo para el nombre del archivo con wrapping
-    estilo_archivo = ParagraphStyle(
-        name="ArchivoWrapping",
-        fontName="Poppins-Bold",
-        fontSize=14,
-        leading=16,
-        alignment=TA_LEFT,
-        spaceBefore=0,
-        spaceAfter=0,
-        textColor=HexColor("#007bb6"),
-    )
-    
-    # Crear paragraph para el nombre del archivo
-    par_archivo = Paragraph(archivo, estilo_archivo)
-    w_archivo, h_archivo = par_archivo.wrapOn(c, ancho_archivo, alto_div)
-    par_archivo.drawOn(c, x_archivo, y_archivo)
+    # Verificación final: asegurar que el comentario no se salga del borde inferior
+    y_coment_minima = y_div + margen_interno
+    if y_coment < y_coment_minima:
+        # Si el comentario se sale, ajustar la altura del div
+        alto_div_ajustado = alto_div + (y_coment_minima - y_coment)
+        y_div = y_inicio - alto_div_ajustado
+        
+        # Recalcular posiciones con la nueva altura
+        y_titulo = y_div + alto_div_ajustado - margen_interno - h_titulo
+        y_archivo = y_titulo - separacion_elementos - h_archivo
+        y_coment = y_archivo - separacion_elementos - h_coment
+        
+        # Redibujar el contenedor con la altura ajustada
+        c.setFillColorRGB(0, 0, 0, alpha=sombra_alpha)
+        c.roundRect(
+            x_div - sombra_expand / 2 + sombra_offset_x,
+            y_div - sombra_expand / 2 + sombra_offset_y,
+            ancho_div + sombra_expand,
+            alto_div_ajustado + sombra_expand,
+            radius=15 + sombra_expand / 2,
+            fill=1, stroke=0
+        )
+        c.setFillColor(white)
+        c.roundRect(x_div, y_div, ancho_div, alto_div_ajustado, radius=15, fill=1, stroke=0)
+        
+        alto_div = alto_div_ajustado
 
-    # Comentario justificado - posicionar directamente debajo del archivo
-    estilo_coment = ParagraphStyle(
-        name="ComentarioJustificado",
-        fontName="Poppins-Regular",
-        fontSize=9,
-        leading=12,
-        alignment=TA_JUSTIFY,
-        spaceBefore=0,
-        spaceAfter=0,
-    )
-    ancho_com = ancho_div - 2 * margen_interno
-    x_com = x_div + margen_interno
-    
-    # Calcular espacio disponible para el comentario
-    espacio_disponible = y_archivo - y_div - margen_interno  # Desde la posición del archivo hasta el borde inferior
-    
-    par_com = Paragraph(comentario, estilo_coment)
-    w_com, h_com = par_com.wrapOn(c, ancho_com, espacio_disponible)
-    
-    # Posicionar el comentario directamente debajo del archivo (como en JavaScript)
-    y_comentario = y_archivo - h_archivo - 10  # 10 puntos de separación
-    par_com.drawOn(c, x_com, y_comentario)
+    # Dibujar elementos
+    par_titulo.drawOn(c, x_div + margen_interno, y_titulo)
+    par_archivo.drawOn(c, x_div + margen_interno, y_archivo)
+    par_coment.drawOn(c, x_div + margen_interno, y_coment)
 
     return alto_div
 
