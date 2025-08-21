@@ -1,0 +1,198 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "CV adaptado para Practicante pre-profesional de Atención en Clínicas - SANNA",
+    "ai_feedback": "El nombre es descriptivo pero demasiado largo. Recomiendo un formato más sencillo: 'Hector_Zerrillo_CV_Practicante_Atencion_Clinicas.pdf'. Incluir el puesto objetivo y la versión (ej. v1) puede ayudar: 'Hector_Zerrillo_CV_Practicante_Atencion_Clinicas_v1.pdf'. Evitar caracteres especiales y espacios."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "El CV parece caber en una sola página (recomendado para practicantes). Si el documento real supera 2 páginas, reduzca la información a lo esencial: experiencia relevante, educación, habilidades y proyectos clave."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "hect or -z errillo",
+        "recommended": "hectorzerrillo (o 'Hector Zerrillo')"
+      },
+      {
+        "current": "Process & Technology Solutions S.a.C.",
+        "recommended": "Process & Technology Solutions S.A.C."
+      },
+      {
+        "current": "Arwebsystems Sac",
+        "recommended": "Arwebsystems S.A.C. (o Arwebsystems SAC)"
+      },
+      {
+        "current": "ENEISOFT",
+        "recommended": "ENEISOFT (verificar si requiere formato oficial)"
+      },
+      {
+        "current": "reports",
+        "recommended": "reportes (o 'reports' si se mantiene en inglés, usar consistencia)"
+      }
+    ],
+    "spelling_errors": 5,
+    "ai_feedback": "Se observan errores menores y inconsistencias en nombres y formato (mayúsculas y uso de puntos en S.A.C.). Corregir tipografías del nombre, nombres de empresas e inconsistencias de idioma (español/inglés). Revisar espacios y guiones en el contacto."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "educación",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Todos los elementos esenciales están presentes y visibles. Mejorar formato de contacto (eliminar texto confuso como 'hect or -z errillo') y añadir sección de perfil/resumen más focalizada al puesto en clínica (mencionar atención al paciente, métricas de calidad y experiencia práctica en ambientes de salud si existe)."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "La longitud es adecuada para un practicante pre-profesional: concisa y enfocada. Mantener en una página si es posible. Si se añade información, limitar a 2 páginas máximo."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "No se incluye foto. Para practicante en clínicas puede ser útil una foto profesional opcional según políticas de la institución. Si se añade, usar foto profesional, fondo neutro y vestimenta formal."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye varias palabras clave relevantes (SQL, Power BI, métricas de atención) pero falta vocabulario clínico específico (triage, atención primaria, registros clínicos, manejo de pacientes). Añadir keywords relacionadas a clínicas y atención al paciente."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 7,
+    "ai_feedbacks": [
+      "Buen uso de verbos como 'Mejoré', 'Arquitecté', 'Desarrollé' y 'Lideré'.",
+      "Agregar resultados cuantificables asociados a cada verbo (por ejemplo, % mejora, reducción en tiempos de atención, número de usuarios atendidos).",
+      "Variar verbos con términos orientados a procesos de atención: 'optimicé', 'facilité', 'coordine', 'gestione'."
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Medio",
+      "ai_feedback": "Muestra habilidades analíticas técnicas (SQL, dashboards, análisis de datos) aplicables a la atención en clínicas. Para subir a 'Alto', incluir ejemplos de análisis orientados a atención (ej. análisis de TMO, tasa de abandono, indicadoras de calidad)."
+    },
+    "quantifiable_results": {
+      "level": "Bajo",
+      "ai_feedback": "Existen logros pero escasean métricas concretas (porcentajes, tiempos, volúmenes). Añadir resultados cuantificables por proyecto/rol (ej. reduje TMO en X%, aumenté satisfacción en Y puntos)."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C.",
+      "current": "Diseño e implementación de soluciones basadas en datos y arquitectura cloud para optimizar procesos de negocio. Extracción, tratamiento y análisis de datos para reports y dashboards; integración de servicios para automatización. AI Engineer - 09/2024 – 05/2025\n• Mejoré la recuperación de información mediante sistemas RAG híbridos con integración de bases vectoriales, SQL y NoSQL.\n• Arquitecté infraestructura escalable en AWS (Lambda, S3, RDS, DynamoDB, OpenSearch) para soluciones analíticas y de atención.\n• Elaboré presentaciones ejecutivas y dashboards para stakeholders que facilitaron decisiones operativas.",
+      "recommended": "AI Engineer (09/2024 – 05/2025) — Process & Technology Solutions S.A.C.: Diseñé e implementé soluciones de datos y arquitectura cloud para optimizar procesos operativos. Implementé sistemas RAG híbridos integrando bases vectoriales, SQL y NoSQL, mejorando la recuperación de información en un X% y reduciendo tiempos de búsqueda en Y%. Arquitecté infraestructura en AWS (Lambda, S3, RDS, DynamoDB, OpenSearch) que soportó procesos analíticos y de atención, aumentando la disponibilidad en Z%. Creé dashboards y presentaciones ejecutivas que facilitaron la toma de decisiones operativas."
+    },
+    {
+      "company": "Arwebsystems Sac",
+      "current": "Desarrollo e integración de chatbots y pipelines de datos para automatizar flujos de atención. Participación en diseño de APIs y monitoreo de servicios. AI Engineering Intern - 03/2024 – 09/2024\n• Desarrollé chatbots con LLMs que automatizaron procesos manuales, mejorando tiempos de respuesta.\n• Implementé y desplegué APIs y servicios en AWS, estableciendo monitoreo con Grafana y contenedores Docker.",
+      "recommended": "AI Engineering Intern (03/2024 – 09/2024) — Arwebsystems S.A.C.: Desarrollé chatbots basados en LLMs que automatizaron procesos de atención, reduciendo tiempos de respuesta en X% y disminuyendo la carga de consultas repetitivas en Y%. Implementé y desplegué APIs y servicios en AWS, configuré monitoreo con Grafana y contenedores Docker, mejorando la estabilidad y tiempo medio entre fallos."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Desarrollo web para eventos y comunicación, enfocando en experiencia de usuario y métricas de tráfico. Full Stack Volunteer - 06/2023 – 01/2024\n• Desarrollé el sitio oficial con HTML, CSS, JavaScript y React; contribuyó a atraer inversores y aumentar la asistencia a eventos.",
+      "recommended": "Full Stack Volunteer (06/2023 – 01/2024) — ENEISOFT: Desarrollé el sitio oficial usando HTML, CSS, JavaScript y React, optimizando la experiencia de usuario y las métricas de tráfico, lo que ayudó a atraer inversores y aumentar la asistencia a eventos en X%."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "SQL (Avanzado), Power BI (Avanzado), Excel (Avanzado), Google Data Studio (Intermedio), PowerPoint (Avanzado), Python (Intermedio), Análisis de datos y visualización (Avanzado), Uso de herramientas de IA (Copilot, LLMs) (Intermedio), AWS (Intermedio), Google Cloud (Básico)",
+    "ai_feedback": "Buen conjunto técnico para analítica y automatización. Para el rol en clínicas, agregar habilidades y herramientas específicas: manejo de indicadores de atención (TMO, nivel de servicio, tasa de abandono), sistemas de historia clínica electrónica (si aplica), protocolos de privacidad y seguridad de datos (HIPAA o normativa local), y soft skills: comunicación con pacientes, trabajo en equipo multidisciplinario. Ordenar por relevancia y generar una sección 'Habilidades clave para atención en clínicas'."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer - 06/2023 – 01/2024\n• Desarrollé el sitio oficial con HTML, CSS, JavaScript y React; contribuyó a atraer inversores y aumentar la asistencia a eventos.",
+      "recommended": "Voluntario Full Stack (06/2023 – 01/2024) — ENEISOFT: Desarrollé y mantuve el sitio web oficial, mejorando la experiencia de usuario y optimizando métricas de tráfico. Resultado: aumento de asistencia a eventos en X% y mayor captación de inversores."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Software Engineering (Estudiante)",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "date": "01/2024 – Actualidad",
+      "ai_feedback": "Educación en curso relevante para funciones técnicas. Incluir cursos o proyectos específicos relacionados con salud, análisis de servicios o atención clínica si existen. Añadir promedio (si es alto) y fecha estimada de graduación."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "SQL",
+      "Power BI",
+      "Excel",
+      "PowerPoint",
+      "TMO",
+      "nivel de servicio",
+      "AWS",
+      "LLMs",
+      "automatización",
+      "dashboards",
+      "análisis de datos"
+    ],
+    "missing_keywords": [
+      "paciente",
+      "historia clínica",
+      "triage",
+      "atención al paciente",
+      "protocolos clínicos",
+      "HIPAA",
+      "CRM de salud",
+      "control de infecciones",
+      "calidad asistencial",
+      "registro clínico electrónico"
+    ],
+    "general_skills": [
+      "Análisis de datos",
+      "Visualización",
+      "Automatización",
+      "Arquitectura cloud",
+      "Desarrollo de chatbots",
+      "Despliegue y monitoreo"
+    ],
+    "ai_feedback": "Buen uso de keywords técnicos. Para optimizar para Practicante en Clínicas, incorporar términos del ámbito sanitario y de atención al paciente, además de métricas de servicio y calidad asistencial."
+  },
+  "executive_summary_analysis": {
+    "current": "Estudiante de Ingeniería de Software (ciclo actual) con experiencia práctica en análisis de datos, automatización y soluciones cloud. Habilidades avanzadas en SQL, Excel, Power BI, PowerPoint y Google Data Studio; familiaridad con métricas de atención (TMO, nivel de servicio) y operaciones de call center. Orientado a resultados, proactivo y con uso de herramientas de IA como Copilot para optimizar procesos y reportes.",
+    "recommended": "Estudiante de Ingeniería de Software con experiencia en análisis de datos y automatización aplicada a servicios de atención. Experiencia en medición y optimización de métricas de atención (TMO, nivel de servicio) y en el diseño de dashboards y chatbots que mejoran la experiencia del usuario. Competencias técnicas: SQL, Power BI, Excel, AWS y uso de LLMs. Busco practicantado pre-profesional en clínicas para aplicar análisis de datos y soluciones digitales que optimicen procesos de atención y calidad asistencial."
+  },
+  "ats_compliance": {
+    "score": 75,
+    "issues": [
+      "Uso mixto de idiomas (español/inglés) puede confundir ATS si se buscan keywords en español.",
+      "Algunas empresas y acrónimos mal formateados (S.a.C., Sac) pueden afectar búsqueda.",
+      "Falta de sección de 'objetivo' o 'puesto deseado' con keywords exactas del rol clínico.",
+      "Contacto con formato extraño ('hect or -z errillo') podría romper parsers."
+    ],
+    "ai_feedbacks": [
+      "Usar un solo idioma principal (preferentemente español para aplicaciones locales) y repetir keywords clave en esa lengua.",
+      "Estandarizar nombres propios y abreviaturas (S.A.C.).",
+      "Incluir un título claro arriba: 'Practicante pre-profesional de Atención en Clínicas' y un breve objetivo con keywords.",
+      "Asegurar que el archivo sea PDF o DOCX sin tablas complejas, evitar encabezados/footers con información crítica."
+    ]
+  },
+  "main_analysis": {
+    "score": 78,
+    "summary": "Candidato con sólida base técnica en análisis de datos, automatización y cloud; experiencia práctica en chatbots y dashboards. Buena aptitud para métricas de atención, pero requiere adaptar lenguaje y logros hacia contexto clínico y añadir resultados cuantificables.",
+    "ai_feedback": "Reorientar CV hacia atención en clínicas: incluir objetivo claro, añadir keywords sanitarias, cuantificar logros (reducción de TMO, mejora de SLA), corregir inconsistencias de formato y mejorar cumplimiento ATS. Mantener la sección técnica pero destacar experiencia aplicable al entorno clínico y habilidades interpersonales."
+  },
+  "common_errors": "Inconsistencias en nombres y acrónimos -Formato de contacto con espacios y guiones extraños -Uso mixto de inglés y español -Falta de métricas cuantificables -Ausencia de keywords clínicos",
+  "strengths": "Sólidas habilidades técnicas en análisis de datos y cloud -Experiencia práctica con LLMs y chatbots -Proyectos relevantes y liderazgo en retos (AWS GameDay) -Certificaciones AWS que respaldan conocimientos"
+}
