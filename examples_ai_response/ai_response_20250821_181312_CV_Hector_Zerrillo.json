@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "CV_Hector_Zerrillo.pdf",
+    "ai_feedback": "El nombre del archivo es claro y contiene el nombre del candidato. Recomendación: incluir la posición objetivo y fecha, por ejemplo 'Hector_Zerrillo_CV_AtencionCliente_2025.pdf' para facilitar búsqueda y filtrado."
+  },
+  "document_size_analysis": {
+    "total_pages": 2,
+    "ai_feedback": "El CV tiene 2 páginas, adecuado para un perfil técnico y en transición a roles de atención al cliente. Si se desea un CV más enfocado para Atención al Cliente, condensar a 1 página resaltando experiencia relevante de servicio, comunicación y soporte."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "hect or -z errillo",
+        "recommended": "hector-zerrillo"
+      },
+      {
+        "current": "Process & Technology Solutions S.a.C.",
+        "recommended": "Process & Technology Solutions S.A.C."
+      },
+      {
+        "current": "Arwebsystems Sac",
+        "recommended": "Arwebsystems S.A.C."
+      },
+      {
+        "current": "ENEISOFT",
+        "recommended": "ENEISOFT"
+      }
+    ],
+    "spelling_errors": 3,
+    "ai_feedback": "Se observan inconsistencias en el uso de mayúsculas y siglas de empresas (S.a.C. vs S.A.C.), y un nombre de contacto separado por espacios y guiones que parece mal formateado. Revisar formato de correo, nombre y nombres de empresas para consistencia. No se aprecian errores ortográficos en el texto descriptivo principal."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "educación",
+        "exists": true,
+        "well_positioned": false,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Todos los elementos esenciales están presentes. La sección de educación podría indicar carrera y fecha esperada de graduación con más claridad. Para Atención al Cliente, incluir experiencia específica en soporte, atención directa, métricas de satisfacción o roles orientados al usuario mejoraría relevancia."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "La longitud es adecuada (2 páginas). Para aplicar a Atención al Cliente, puede resumirse a 1 página si se prioriza experiencia y habilidades interpersonales relevantes."
+    },
+    "photo": {
+      "status": "Bajo",
+      "ai_feedback": "Para puestos de atención al cliente la foto es importante según las reglas indicadas. El CV no incluye foto; se recomienda añadir una foto profesional y neutra, fondo claro y vestimenta formal-casual para mejorar presentación."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "Incluye muchas keywords técnicas relevantes para roles tech (AWS, LLMs, Docker) pero faltan keywords específicas de Atención al Cliente como 'satisfacción del cliente', 'servicio al cliente', 'CRM', 'atención telefónica'. Ajustar perfil y experiencia para incluir términos orientados al cliente."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 6,
+    "ai_feedbacks": [
+      "Cambia 'Mejoré' por 'lideré', ejemplo: 'Lideré el rendimiento de recuperación de información empresarial diseñando e implementando sistemas híbridos RAG con AWS Bedrock, LangChain y LangGraph usando bases de datos vectoriales, SQL y NoSQL.'",
+      "Cambia 'Implementé' por 'diseñé y optimicé', ejemplo: 'Diseñé y optimicé infraestructura escalable y costo-eficiente con AWS Lambda, S3, RDS, DynamoDB, OpenSearch y SQS.'",
+      "Cambia 'Gestioné' por 'coordiné', ejemplo: 'Cooradiné el ciclo de vida de proyectos múltiples, asegurando entregas oportunas y alta satisfacción del cliente.'",
+      "Cambia 'Desarrollé' por 'construí', ejemplo: 'Construí chatbots inteligentes con LLMs (GPT-4, Claude) e integraciones con Google Cloud y AWS, automatizando procesos manuales.'",
+      "Cambia 'Lideré' por 'capacité y dirigí', ejemplo: 'Capacité y dirigí equipo ganador en reto AWS centrado en problemas de IA generativa empleando AWS PartyRock.'"
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Medio",
+      "ai_feedback": "Presenta habilidades de análisis técnico y resolución de problemas (modelado, IA, despliegue). Para Atención al Cliente, destacar análisis de requerimientos del cliente, manejo de feedback y resolución de incidencias mejoraría el ajuste."
+    },
+    "quantifiable_results": {
+      "level": "Bajo",
+      "ai_feedback": "Faltan métricas cuantificables concretas (porcentaje de reducción de tiempos, satisfacción del cliente, SLAs cumplidos). Incluir números refuerza adecuación al puesto de Atención al Cliente."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C.",
+      "current": "Diseño y despliegue de soluciones de IA y arquitectura en la nube para clientes empresariales. Trabajo en ciclo completo de proyectos, desde levantamiento de requisitos hasta puesta en producción y monitoreo. AI Engineer 09/2024 – 05/2025 • Mejoré el rendimiento de recuperación de información empresarial diseñando e implementando sistemas híbridos RAG con AWS Bedrock, LangChain y LangGraph usando bases de datos vectoriales, SQL y NoSQL. • Implementé infraestructura escalable y costo-eficiente con AWS Lambda, S3, RDS, DynamoDB, OpenSearch y SQS. • Gestioné el ciclo de vida de proyectos múltiples, asegurando entregas oportunas y alta satisfacción del cliente.",
+      "recommended": "Coordiné y lideré el diseño y despliegue de soluciones de IA y arquitectura en la nube para clientes empresariales, gestionando el ciclo completo desde el levantamiento de requerimientos hasta puesta en producción y monitoreo. Lideré la implementación de sistemas híbridos RAG con AWS Bedrock, LangChain y LangGraph, mejorando la recuperación de información empresarial en X% mediante bases de datos vectoriales, SQL y NoSQL. Diseñé infraestructura escalable y costo-eficiente con AWS Lambda, S3, RDS, DynamoDB, OpenSearch y SQS, reduciendo costos de operación en Y% y asegurando entregas dentro de SLA con alta satisfacción del cliente."
+    },
+    {
+      "company": "Arwebsystems Sac",
+      "current": "Desarrollo e integración de chatbots inteligentes y APIs; despliegue y monitoreo de servicios en la nube. AI Engineering Intern 03/2024 – 09/2024 • Desarrollé chatbots inteligentes con LLMs (GPT-4, Claude) e integraciones con Google Cloud y AWS, automatizando procesos manuales. • Implementé APIs con AWS Lambda y API Gateway y desplegué servicios en EC2, estableciendo infraestructura desde cero y configurando monitoreo con Grafana y Docker.",
+      "recommended": "Construí chatbots inteligentes con LLMs (GPT-4, Claude) e integraciones con Google Cloud y AWS, automatizando procesos manuales y reduciendo tiempo de atención en X%. Implementé APIs con AWS Lambda y API Gateway y desplegué servicios en EC2, estableciendo infraestructura desde cero y configurando monitoreo con Grafana y Docker para mejorar la disponibilidad y tiempos de respuesta."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Desarrollo de sitio web oficial y soporte técnico para eventos y difusión. Full Stack Volunteer 06/2023 – 01/2024 • Desarrollé el sitio web oficial usando HTML, CSS, JavaScript y React, contribuyendo a la atracción de inversores, donaciones y ponentes.",
+      "recommended": "Desarrollé y mantuve el sitio web oficial con HTML, CSS, JavaScript y React, mejorando la experiencia de usuario y aumentando la visibilidad que contribuyó a un incremento de X% en donaciones y asistentes a eventos."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Python, Power BI, Excel, Power Automate, Power Apps, Agents, Notion, Project, SQL, AWS, JavaScript, React.js, HTML/CSS, Git/GitHub, Google Cloud, Docker; Certificaciones AWS; Español nativo, Inglés intermedio.",
+    "ai_feedback": "Buen repertorio técnico para roles híbridos. Para Atención al Cliente, resaltar habilidades en CRM, manejo de tickets, comunicación telefónica y herramientas de soporte (por ejemplo Zendesk, Freshdesk, Salesforce) y soft skills como empatía, gestión de quejas, y comunicación en inglés. Añadir experiencia con métricas de CSAT o resolución en primer contacto si las hay."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Desarrollo de sitio web oficial y soporte técnico para eventos y difusión. Full Stack Volunteer 06/2023 – 01/2024 • Desarrollé el sitio web oficial usando HTML, CSS, JavaScript y React, contribuyendo a la atracción de inversores, donaciones y ponentes.",
+      "recommended": "Desarrollé y gestioné el sitio web oficial, ofrecí soporte técnico durante eventos y atención a colaboradores, mejorando comunicación con stakeholders y contribuyendo a un aumento en donaciones y participación."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Ingeniería de Software (estudiante avanzado)",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "date": "01/2024 – Actualidad",
+      "ai_feedback": "Indicar año de inicio de la carrera y fecha estimada de graduación. Para roles de Atención al Cliente, incluir cursos relevantes (comunicación, atención al cliente, niveles de inglés) si aplica."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "Python",
+      "AWS",
+      "Docker",
+      "SQL",
+      "NoSQL",
+      "React.js",
+      "JavaScript",
+      "OpenAI",
+      "Grafana",
+      "Lambda"
+    ],
+    "missing_keywords": [
+      "servicio al cliente",
+      "atención al cliente",
+      "CRM",
+      "Zendesk",
+      "Freshdesk",
+      "CSAT",
+      "resolución de incidencias",
+      "atención telefónica"
+    ],
+    "general_skills": [
+      "comunicación",
+      "trabajo en equipo",
+      "gestión de proyectos",
+      "automatización",
+      "análisis de datos"
+    ],
+    "ai_feedback": "Incluya keywords específicas de Atención al Cliente (CRM, servicio al cliente, CSAT, soporte técnico) en secciones de experiencia y habilidades para mejorar coincidencia con vacantes de atención al cliente."
+  },
+  "executive_summary_analysis": {
+    "current": "Estudiante universitario avanzado en Ingeniería de Software con experiencia práctica en proyectos de inteligencia artificial, desarrollo full-stack e implementación de soluciones en la nube. Interés marcado en tecnologías de automatización, Power Platform y análisis de datos; acostumbrado a trabajo colaborativo, comunicación con stakeholders y coordinación internacional en inglés. Busco aportar en iniciativas de innovación, soporte en investigación y apoyo en la gestión y diseño de proyectos tecnológicos",
+    "recommended": "Profesional en Ingeniería de Software con experiencia en atención a clientes internos y externos en proyectos tecnológicos. Capacidad demostrada para traducir requerimientos del cliente en soluciones técnicas, comunicar resultados a stakeholders y coordinar entregas. Habilidades en resolución de incidencias, automatización de procesos y uso de herramientas en la nube. Inglés intermedio y orientación al cliente; objetivo: posición en Atención al Cliente tecnológica o soporte técnico."
+  },
+  "ats_compliance": {
+    "score": 72,
+    "issues": [
+      "Falta de keywords técnicas centradas en Atención al Cliente (CRM, CSAT, tickets)",
+      "Formato del nombre de contacto irregular (puede afectar extracción automática)"
+    ],
+    "ai_feedbacks": [
+      "Agregar keywords técnicas críticas como 'CRM', 'CSAT', 'ticketing system', 'soporte técnico' en secciones de experiencia y habilidades.",
+      "Normalizar el campo de contacto (nombre y teléfono) para evitar errores en parsing ATS."
+    ]
+  },
+  "main_analysis": {
+    "ai_feedback": "Perfil técnico sólido pero orientado a IA y cloud; para Atención al Cliente debe enfatizar experiencia en soporte, comunicación, manejo de stakeholders y herramientas CRM, añadir métricas y foto profesional.",
+    "summary": "Ingeniero de Software con fuerte experiencia técnica en IA y nube, buen manejo de proyectos y comunicación con stakeholders; necesita adaptar lenguaje y evidencia de soporte al cliente para roles de Atención al Cliente.",
+    "score": 76
+  },
+  "common_errors": "Inconsistencia en mayúsculas y siglas de empresas - Formato irregular del nombre de contacto - Falta de métricas cuantificables",
+  "strengths": "Sólida experiencia técnica en IA y AWS - Variedad de proyectos prácticos y competitivos - Certificaciones AWS relevantes - Buen manejo de herramientas modernas y habilidades de comunicación"
+}

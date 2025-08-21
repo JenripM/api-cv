@@ -87,15 +87,18 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     espacio_despues_velocimetro = 30
 
     # Determinar palabra clave y color según valor
-    if valor < 4:
-        palabra_estado = "desaprobado!"
-        color_estado = red
-    elif valor < 7:
-        palabra_estado = "observado!"
+    if valor >= 7:
+        palabra_estado = "EXCELENTE!"
+        color_estado = green
+    elif valor >= 5:
+        palabra_estado = "BUENO!"
+        color_estado = HexColor('#4CAF50')  # Verde claro
+    elif valor >= 3:
+        palabra_estado = "REGULAR!"
         color_estado = orange
     else:
-        palabra_estado = "aprobado!"
-        color_estado = green
+        palabra_estado = "PÉSIMO!"
+        color_estado = red
 
     texto_base = "Tu CV está "
     fuente = "Poppins-Bold"

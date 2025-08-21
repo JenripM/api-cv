@@ -517,9 +517,13 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
     
     # Asegurar que el nivel esté entre 1 y 10
     nivel = max(1, min(10, nivel))
+    
+    # Determinar cuántas sugerencias mostrar según la puntuación
+    # Fórmula: 10 - score = número máximo de feedbacks
+    max_feedbacks = 10 - nivel
+    sugerencias_mostrar = sugerencias[:max_feedbacks]
 
     margen_horizontal = 50
-    alto_div          = 330
     sombra_expand     = 8
     sombra_offset_x   = 2
     sombra_offset_y   = -2
@@ -527,7 +531,45 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
 
     ancho_div = ancho - 2 * margen_horizontal
     x_div     = margen_horizontal
-    y_div     = y_inicio - alto_div
+    
+    # Altura base para título y barra
+    altura_base = 100  # Título + barra + numeración + flecha
+    
+    # Calcular altura necesaria para las sugerencias
+    estilo_sug = ParagraphStyle(
+        name="SugerenciaJustificada",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=10,
+        alignment=TA_JUSTIFY
+    )
+    
+    padding_x = 10
+    padding_y = 5
+    icon_r = 7
+    text_off = icon_r*3 + 5
+    bg_width = ancho_div - 2 * padding_x - 20
+    
+    # Calcular altura total necesaria para las sugerencias seleccionadas
+    altura_sugerencias = 0
+    sugerencias_que_caben = []
+    
+    for sugerencia in sugerencias_mostrar:
+        par_sug = Paragraph(sugerencia, estilo_sug)
+        wrap_w, wrap_h = par_sug.wrap(bg_width - text_off - padding_x, 1000)
+        altura_sugerencia = wrap_h + 2 * padding_y + 20  # altura del bg + margen
+        
+        # Verificar si cabe en el espacio disponible
+        if altura_base + altura_sugerencias + altura_sugerencia + 40 <= alto - 100:  # 100 de margen de seguridad
+            altura_sugerencias += altura_sugerencia
+            sugerencias_que_caben.append(sugerencia)
+        else:
+            break
+    
+    # Calcular altura total de la sección
+    alto_div = altura_base + altura_sugerencias + 40  # 40 de margen extra
+    
+    y_div = y_inicio - alto_div
 
     # Sombra y fondo
     c.setFillColorRGB(0, 0, 0, alpha=sombra_alpha)
@@ -584,30 +626,21 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
     c.setFont("Helvetica-Bold", 9)
     c.drawCentredString(flecha_x, flecha_y - 23, "Tu nivel")
 
-    # Sugerencias con fondo ajustado
-    estilo_sug = ParagraphStyle(
-        name="SugerenciaJustificada",
-        fontName="Helvetica",
-        fontSize=9,
-        leading=10,
-        alignment=TA_JUSTIFY
-    )
-    padding_x      = 10
-    padding_y      = 5
-    icon_r         = 7
-    text_off       = icon_r*3 + 5
-    adv_y          = barra_y - 60  # Ajustado sin h_com
-    bg_width       = ancho_div - 2 * padding_x - 20  # espacio extra 20 pts
+    # Sugerencias con altura calculada dinámicamente
+    adv_y = barra_y - 60
 
-    for sugerencia in sugerencias:
+    for sugerencia in sugerencias_que_caben:
         par_sug = Paragraph(sugerencia, estilo_sug)
-        wrap_w, wrap_h = par_sug.wrap(bg_width - text_off - padding_x, alto_div)
+        wrap_w, wrap_h = par_sug.wrap(bg_width - text_off - padding_x, 1000)
+        
         # bg position and size
         bg_x = x_div + padding_x
         bg_y = adv_y - wrap_h - padding_y
         bg_h = wrap_h + 2 * padding_y
+        
         c.setFillColor(whitesmoke)
         c.roundRect(bg_x, bg_y, bg_width, bg_h, radius=10, fill=1, stroke=0)
+        
         # bullet icon
         icon_x = bg_x + padding_x
         icon_y = bg_y + bg_h - padding_y - icon_r
@@ -618,12 +651,15 @@ def seccion_7(c, ancho, alto, y_inicio, datos_cv):
         c.setFillColor(red)
         c.setFont("Helvetica-Bold", 12)
         c.drawCentredString(icon_x, icon_y - 5, "!")
+        
         # draw text
         par_sug.drawOn(c, bg_x + text_off, bg_y + padding_y)
+        
         # next block
         adv_y = bg_y - 20
 
-    return alto_div + 20
+    # Retornar la altura real utilizada + separación adicional entre secciones
+    return alto_div + 30  # 30 puntos de separación adicional
 
 # SECCION 8 - JUSTIFICADO
 def seccion_8(c, ancho, alto, y_inicio, datos_cv):
@@ -1406,7 +1442,7 @@ def seccion_14(c, ancho, alto, y_inicio, datos_cv):
                 fontName="Poppins-Regular",
                 fontSize=9,
                 leading=11,
-                alignment=TA_JUSTIFY,
+                alignment=TA_LEFT,  # Cambiado de TA_JUSTIFY a TA_LEFT para consistencia
                 spaceBefore=0,
                 spaceAfter=0,
             )

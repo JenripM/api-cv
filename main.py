@@ -17,6 +17,8 @@ import zipfile
 import io
 import time
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Optional
 
 
 # Importar servicios reorganizados
@@ -26,6 +28,17 @@ from services.pdf_generator.pdf_utils import descargar_imagen
 from services.ai_service import AIService
 
 load_dotenv()
+
+# Modelos de datos para el request
+class JobPosition(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+class CVAnalysisRequest(BaseModel):
+    pdf_url: str
+    filename: str
+    position: JobPosition
+    match_score: Optional[float] = None
 
 # Clase simple para manejar funciones de CV
 class CVProcessor:
@@ -140,8 +153,8 @@ async def backup_static():
     zip_buffer.seek(0)
     return StreamingResponse(zip_buffer, media_type="application/zip", headers={"Content-Disposition": "attachment; filename=static_backup.zip"})
 
-@app.get("/analizar-cv/")
-async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
+@app.post("/analizar-cv/")
+async def analizar_cv(request: CVAnalysisRequest):
     """
     Endpoint principal para analizar CV usando la nueva tecnología de OpenAI para leer archivos directamente desde URL
     """
@@ -149,13 +162,13 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
         # PASO 1: Verificar que la URL del PDF sea accesible
         print("🔍 Paso 1: Verificando URL del PDF...")
         try:
-            response = requests.head(pdf_url, timeout=10)
+            response = requests.head(request.pdf_url, timeout=10)
             if response.status_code != 200:
                 return JSONResponse(
                     status_code=400,
                     content={
                         "status": "error",
-                        "message": f"No se puede acceder al PDF en la URL: {pdf_url}"
+                        "message": f"No se puede acceder al PDF en la URL: {request.pdf_url}"
                     }
                 )
         except Exception as e:
@@ -172,9 +185,11 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
         print("🤖 Paso 2: Realizando análisis de IA...")
         try:
             analysis_results = ai_service.analyze_cv_complete(
-                file_url=pdf_url,
-                puesto=puesto_postular,
-                filename=original_name
+                file_url=request.pdf_url,
+                puesto=request.position.title,
+                filename=request.filename,
+                descripcion_puesto=request.position.description,
+                match_score=request.match_score
             )
         except Exception as e:
             print(f"❌ Error al realizar análisis de IA: {e}")
@@ -189,7 +204,7 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
         # PASO 3: Guardar JSON del análisis de IA (INMEDIATAMENTE después del análisis)
         print("💾 Paso 3: Guardando análisis de IA en JSON...")
         try:
-            json_path = cv_processor.save_analysis_json(analysis_results, original_name)
+            json_path = cv_processor.save_analysis_json(analysis_results, request.filename)
         except Exception as e:
             print(f"❌ Error al guardar JSON: {e}")
             return JSONResponse(
@@ -220,8 +235,10 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
         # PASO 5: Generar el PDF con los resultados
         print("📋 Paso 5: Generando PDF...")
         try:
-            # Agregar el puesto_postular al objeto analysis_results para que esté disponible en el PDF
-            analysis_results['puesto_postular'] = puesto_postular
+            # Agregar el puesto_postular y descripcion_puesto al objeto analysis_results para que esté disponible en el PDF
+            analysis_results['puesto_postular'] = request.position.title
+            if request.position.description:
+                analysis_results['descripcion_puesto'] = request.position.description
             ruta_pdf = generar_pdf_con_secciones(analysis_results, nombre_pdf, ruta_logo, ruta_logo2)
             print(f"✅ PDF generado exitosamente: {ruta_pdf}")
         except Exception as e:
@@ -258,12 +275,26 @@ async def analizar_cv(pdf_url: str, puesto_postular: str, original_name: str):
                 "message": "Análisis completado exitosamente",
                 "data": {
                     "candidate_name": candidate_name,
-                    "position": puesto_postular,
+                    "position": request.position.title,
                     "pdf_filename": nombre_pdf,
                     "pdf_content_base64": pdf_base64,
                     "analysis_results": analysis_results
                 }
             }
+            
+            # Agregar información sobre si se usó descripción del puesto
+            if request.position.description:
+                final_response["data"]["used_job_description"] = True
+                final_response["data"]["job_description_length"] = len(request.position.description)
+            else:
+                final_response["data"]["used_job_description"] = False
+            
+            # Agregar información sobre el match_score si fue proporcionado
+            if request.match_score is not None:
+                final_response["data"]["used_match_score"] = True
+                final_response["data"]["match_score"] = request.match_score
+            else:
+                final_response["data"]["used_match_score"] = False
             
             print("🎉 Análisis completado exitosamente")
             return JSONResponse(content=final_response)
@@ -299,18 +330,74 @@ async def test_analizar_cv():
     
     # Datos de prueba
     pdf_url = "https://pub-a950f98665ac41c49a6bdc63fff76a40.r2.dev/cv_cv_1755632096197_7e2fac.pdf"
-    puesto_postular = "Full Stack Intern"
-    original_name = "CV_15_ojalaEsteSiFuncione.pdf"
+    filename = "CV_15_ojalaEsteSiFuncione.pdf"
+    
+    # Posición de trabajo con descripción opcional
+    position = JobPosition(
+        title="Full Stack Intern",
+        description="""
+        Buscamos un Full Stack Intern para unirse a nuestro equipo de desarrollo.
+        
+        Responsabilidades:
+        - Desarrollar aplicaciones web usando React, Node.js y Python
+        - Colaborar con el equipo en el diseño y implementación de nuevas funcionalidades
+        - Participar en code reviews y debugging
+        - Aprender y aplicar mejores prácticas de desarrollo
+        
+        Requisitos:
+        - Conocimientos básicos de JavaScript/TypeScript
+        - Familiaridad con React o frameworks similares
+        - Conocimientos básicos de Python
+        - Experiencia con bases de datos SQL
+        - Conocimientos de Git y control de versiones
+        - Capacidad de trabajar en equipo y aprender rápidamente
+        
+        Habilidades deseables:
+        - Experiencia con APIs REST
+        - Conocimientos de Docker
+        - Familiaridad con metodologías ágiles
+        - Experiencia con testing automatizado
+        """
+    )
+    
+    # Ejemplo 1: Con match_score
+    print("=== PRUEBA 1: Con match_score ===")
+    request_with_score = CVAnalysisRequest(
+        pdf_url=pdf_url,
+        filename=filename,
+        position=position,
+        match_score=75.5  # Ejemplo de score ATS
+    )
+    
+    # Ejemplo 2: Sin match_score (funcionamiento original)
+    print("=== PRUEBA 2: Sin match_score ===")
+    request_without_score = CVAnalysisRequest(
+        pdf_url=pdf_url,
+        filename=filename,
+        position=position
+        # match_score=None (por defecto)
+    )
+    
+    # Usar el primer ejemplo para la prueba
+    request = request_with_score
     
     print("Iniciando prueba del endpoint /analizar-cv/")
     print(f"PDF URL: {pdf_url}")
-    print(f"Puesto: {puesto_postular}")
-    print(f"Nombre original: {original_name}")
+    print(f"Filename: {filename}")
+    print(f"Position: {position.title}")
+    if position.description:
+        print(f"Job description: {len(position.description)} characters")
+    else:
+        print("No job description provided (generic analysis)")
+    if request.match_score is not None:
+        print(f"Match score (ATS): {request.match_score}")
+    else:
+        print("No match score provided")
     print("-" * 50)
     
     try:
         # Llamar directamente a la función del endpoint
-        response = await analizar_cv(pdf_url, puesto_postular, original_name)
+        response = await analizar_cv(request)
         
         # Extraer la URL del PDF generado de la respuesta
         if hasattr(response, 'body'):
@@ -327,7 +414,18 @@ async def test_analizar_cv():
                 if response_data.get('pdf_generated'):
                     print(f"📋 PDF generado en: {response_data.get('pdf_path')}")
                 return
-            
+            else:
+                # Mostrar información de éxito
+                data = response_data.get('data', {})
+                print(f"✅ Análisis completado exitosamente")
+                print(f"📄 Nombre del candidato: {data.get('candidate_name', 'No disponible')}")
+                print(f"📋 PDF generado: {data.get('pdf_filename', 'No disponible')}")
+                print(f"🔍 Usó descripción del puesto: {data.get('used_job_description', False)}")
+                if data.get('used_job_description'):
+                    print(f"📝 Longitud de descripción: {data.get('job_description_length', 0)} caracteres")
+                print(f"🎯 Usó match score: {data.get('used_match_score', False)}")
+                if data.get('used_match_score'):
+                    print(f"📊 Match score (ATS): {data.get('match_score', 'No disponible')}")
         else:
             print(f"⚠️  Respuesta inesperada: {response}")
     

@@ -1,0 +1,193 @@
+{
+  "metadata": {
+    "candidate_name": "Hector Zerrillo"
+  },
+  "filename_analysis": {
+    "filename": "CV de Hector Zerrillo",
+    "ai_feedback": "El nombre del archivo es claro pero puede mejorarse para ATS: usar formato 'Hector_Zerrillo_CV_Practicante_Sistemas.pdf' e incluir el puesto deseado y año. Evitar espacios y caracteres especiales."
+  },
+  "document_size_analysis": {
+    "total_pages": 1,
+    "ai_feedback": "Una sola página es apropiada para un practicante; mantiene foco y legibilidad. Conserva una página si la información se concentra en lo relevante."
+  },
+  "spelling_analysis": {
+    "errors_found": [
+      {
+        "current": "Ing. de Sistmas",
+        "recommended": "Ing. de Sistemas"
+      },
+      {
+        "current": "Parnert",
+        "recommended": "Partner"
+      },
+      {
+        "current": "Arwebsystems Sac",
+        "recommended": "Arwebsystems S.A.C."
+      },
+      {
+        "current": "x4 AWS Certified",
+        "recommended": "AWS Certifications (4) -- listar certificados correctamente"
+      }
+    ],
+    "spelling_errors": 4,
+    "ai_feedback": "Se encontraron errores tipográficos y de formato en nombres y títulos (p. ej. 'Sistmas', 'Parnert'). Revisar nombres de empresas, abreviaturas y títulos de certificaciones para consistencia y corrección. Usar mayúsculas y puntuación estándar en siglas y entidades (S.A.C., AWS Certified)."
+  },
+  "essential_elements": {
+    "evaluation": [
+      {
+        "element": "nombre",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "email",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "experiencia laboral",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      },
+      {
+        "element": "educación",
+        "exists": true,
+        "well_positioned": true,
+        "easily_distinguishable": true
+      }
+    ],
+    "ai_feedback": "Todos los elementos esenciales están presentes y visibles. Se recomienda añadir fechas precisas de inicio/fin de estudios (inicio año) y formato consistente en nombres de empresas y roles."
+  },
+  "format_optimization": {
+    "length": {
+      "status": "Alto",
+      "ai_feedback": "La longitud (1 página) es adecuada para un practicante. Mantener resumen conciso y priorizar experiencia y habilidades relevantes al puesto."
+    },
+    "photo": {
+      "status": "Alto",
+      "ai_feedback": "No se requiere foto para un practicante de sistemas; la ausencia es apropiada."
+    },
+    "keywords": {
+      "status": "Medio",
+      "ai_feedback": "El CV incluye varias tecnologías relevantes (SQL, Visual Studio no aparece). Falta específicamente 'Visual Studio NET' y 'Microsoft Office' que son requeridas por la oferta. Añadir esas keywords y enfatizar experiencia en pruebas, documentación y gestión de tickets."
+    }
+  },
+  "impact_verbs_analysis": {
+    "score": 6,
+    "ai_feedbacks": [
+      "Cambia 'Developed' por 'Implemented', ejemplo: 'I implemented intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services...' ",
+      "Cambia 'Built' por 'Engineered', ejemplo: 'I engineered a full-stack platform where users iteratively prompt robot designs and receive 3D models, circuit diagrams, Arduino code...' ",
+      "Cambia 'Led' por 'Directed', ejemplo: 'I directed my team to win an AWS-hosted challenge by solving generative AI problems using AWS PartyRock...' "
+    ]
+  },
+  "role_fit_analysis": {
+    "analysis_skills": {
+      "level": "Alto",
+      "ai_feedback": "El candidato demuestra fuerte capacidad de análisis técnico mediante diseño de sistemas RAG, modelado y resolución de problemas complejos. Mencionar explícitamente 'pruebas de sistemas' y 'análisis de tickets' aumentará la alineación."
+    },
+    "quantifiable_results": {
+      "level": "Medio",
+      "ai_feedback": "Hay resultados cuantificables en proyectos (p. ej. 700 visitantes diarios, ganador de desafío). Faltan métricas específicas relacionadas con pruebas, tiempos de resolución de tickets o mejoras en rendimiento medibles para roles operativos."
+    }
+  },
+  "work_experience_analysis": [
+    {
+      "company": "Process & Technology Solutions S.a.C.",
+      "current": "AI Engineer Sep 2024 – May 2025 ● Improved enterprise information retrieval performance by designing and deploying hybrid RAG systems using AWS Bedrock, LangChain, and LangGraph with vector, SQL, and NoSQL databases. ● Enabled scalable and cost-efficient AI solutions by architecting cloud infrastructure with AWS Lambda, S3, RDS, DynamoDB, OpenSearch, and SQS. ● Managed full project lifecycle—from requirement gathering to deployment—for multiple clients, ensuring timely delivery and high client satisfaction.",
+      "recommended": "AI Engineer Sep 2024 – May 2025 ● Designed and deployed hybrid RAG systems (AWS Bedrock, LangChain, LangGraph) improving retrieval latency and accuracy by X% using vector, SQL y NoSQL bases. ● Architected scalable cloud infra (Lambda, S3, RDS, DynamoDB, OpenSearch, SQS) reduciendo costos operativos y permitiendo despliegues automatizados. ● Led ciclo completo de proyectos, documentando procesos y realizando pruebas funcionales y de integración para asegurar la calidad del sistema."
+    },
+    {
+      "company": "Arwebsystems Sac",
+      "current": "AI Engineering Intern Mar 2024 – Sep 2024 ● Developed intelligent chatbots using LLMs (GPT-4, Claude) and integrated them with Google Cloud and AWS services, automating key processes and workflows that were previously performed manually. ● Implemented APIs with AWS Lambda and API Gateway, and deployed services on AWS EC2, establishing the infrastructure from scratch for hosting our applications and ensuring continuous operation through monitoring (Grafana, Docker, Jenkins).",
+      "recommended": "AI Engineering Intern Mar 2024 – Sep 2024 ● Implemented chatbots con LLMs integrados a Google Cloud y AWS, automatizando procesos y reduciendo tareas manuales. ● Desarrollé y documenté APIs (Lambda, API Gateway) y gestioné despliegues en EC2; configuré monitoreo con Grafana y pipelines con Docker y Jenkins; realicé pruebas y resolví incidentes/tickets."
+    },
+    {
+      "company": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Developed sitio web con HTML, CSS, JavaScript y React para promover eventos; documenté funcionalidad y apoyé en soporte técnico, contribuyendo a aumentar donaciones y participación en conferencias."
+    }
+  ],
+  "skills_tools_analysis": {
+    "current_skills": "Programming: Python, JavaScript, HTML/CSS, SQL, Node.js, React.js Tools: AWS, Google Cloud, LangChain, LangGraph, Grafana, Docker, VSCode, Jupyter Notebooks, Git, Github, Agile",
+    "ai_feedback": "Agregar explícitamente 'Visual Studio .NET' y 'Microsoft Office' (Word, Excel). Detallar experiencia con 'SQL Server' (versión si aplica). Indicar pruebas (unitarias, funcionales), documentación de procesos y gestión de tickets (herramientas: Jira, ServiceNow) si las ha utilizado."
+  },
+  "volunteering_analysis": [
+    {
+      "organization": "ENEISOFT",
+      "current": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Accomplished the attraction of investors, donations, and guest speakers, as measured by the scholarships awarded and quality conferences delivered, by developing the official website using HTML, CSS, JavaScript and React.",
+      "recommended": "Full Stack Volunteer Jun 2023 – Jan 2024 ● Developed y mantuve el sitio web con HTML, CSS, JavaScript y React; documenté procesos y ofrecí soporte técnico a usuarios y organizadores, facilitando la atracción de inversores y conferencistas."
+    }
+  ],
+  "education_analysis": [
+    {
+      "degree": "Bachelor in Software Engineering",
+      "institution": "Universidad Nacional Mayor de San Marcos",
+      "date": "Expected Graduation, Dec 2027",
+      "ai_feedback": "La educación está presente con fecha esperada de graduación. Añadir fecha de inicio, ciclo actual (últimos ciclos) y promedio si es competitivo. Indicar 'Estudiante de últimos ciclos' para alinear con requisito."
+    },
+    {
+      "degree": "AWS Certifications (4)",
+      "institution": "AWS",
+      "date": "2024 - 2025",
+      "ai_feedback": "Listar cada certificación con el nombre exacto y fecha de obtención para claridad (p. ej. 'AWS Certified Solutions Architect – Associate, 2024')."
+    }
+  ],
+  "keywords_analysis": {
+    "found_keywords": [
+      "SQL",
+      "AWS",
+      "Docker",
+      "Grafana",
+      "Python",
+      "JavaScript",
+      "React",
+      "Git"
+    ],
+    "missing_keywords": [
+      "Visual Studio NET",
+      "SQL Server",
+      "Microsoft Office",
+      "pruebas",
+      "documentar",
+      "tickets"
+    ],
+    "general_skills": [
+      "programación",
+      "desarrollo",
+      "arquitectura cloud",
+      "integración",
+      "monitoring"
+    ],
+    "ai_feedback": "Falta incluir keywords críticas solicitadas: 'Visual Studio NET', 'SQL Server' y 'Microsoft Office'. Además, agregar términos funcionales solicitados como 'pruebas', 'documentación' y 'tickets' mejorará la concordancia con la vacante."
+  },
+  "executive_summary_analysis": {
+    "current": "",
+    "recommended": "Estudiante avanzado de Ingeniería de Software con experiencia práctica en desarrollo e integración en AWS, manejo de SQL y desarrollo full-stack. Experiencia en pruebas, documentación de procesos y resolución de tickets. Busco practicantado en Sistemas para aplicar conocimientos en Visual Studio .NET, SQL Server y Microsoft Office, contribuyendo en pruebas, documentación y pequeños desarrollos."
+  },
+  "ats_compliance": {
+    "score": 34,
+    "issues": [
+      "Ausencia de 'Visual Studio NET'",
+      "No se menciona 'SQL Server' explícitamente",
+      "No se menciona 'Microsoft Office' (Excel/Word)",
+      "Falta de palabras clave funcionales 'pruebas', 'documentar', 'tickets'",
+      "Formato y nombres inconsistentes (puede confundir extracción ATS)"
+    ],
+    "ai_feedbacks": [
+      "Agregar exactamente los términos técnicos de la descripción: 'Visual Studio NET', 'SQL Server', 'Microsoft Office'.",
+      "Incluir palabras funcionales clave: 'pruebas', 'documentación', 'gestión de tickets', 'ticketing'.",
+      "Estandarizar nombres de empresas y formato de fechas para mejorar parsing ATS.",
+      "Usar sección 'Skills' con listado simple y separado por comas de tecnologías solicitadas para maximizar matching."
+    ]
+  },
+  "main_analysis": {
+    "ai_feedback": "El ATS devolvió un score de 34 porque faltan keywords técnicas críticas de la oferta (Visual Studio NET, SQL Server, Microsoft Office) y faltan términos funcionales clave (pruebas, documentar, tickets); además hay pequeñas inconsistencias de formato y tipográficas que afectan la extracción. Para mejorar: añadir exactamente las palabras requeridas en Skills y en descripciones de experiencia, documentar experiencia con SQL Server y Visual Studio .NET, y corregir errores ortográficos y formateo.",
+    "summary": "Buen candidato técnico con fuerte experiencia en AWS y desarrollo AI, pero falta alineación con requisitos específicos del practicante: no menciona Visual Studio .NET, SQL Server ni Microsoft Office ni actividades de pruebas/documentación/tickets.",
+    "score": 34
+  },
+  "common_errors": "Falta de keywords técnicas específicas -Errores tipográficos en nombres y títulos -Ausencia de mención a pruebas y documentación -No especifica SQL Server ni Visual Studio .NET -Formato inconsistente en nombres de empresas y certificaciones",
+  "strengths": "Fuerte experiencia en AWS y soluciones AI -Proyectos relevantes con métricas (ganador AWS GameDay, 700 visitantes diarios) -Variedad de tecnologías modernas (LangChain, LangGraph, Docker) -Educación en curso y certificaciones AWS"
+}
