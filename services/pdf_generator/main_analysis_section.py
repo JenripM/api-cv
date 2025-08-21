@@ -97,7 +97,7 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
         palabra_estado = "REGULAR!"
         color_estado = orange
     else:
-        palabra_estado = "PÉSIMO!"
+        palabra_estado = "BAJO!"
         color_estado = red
 
     texto_base = "Tu CV está "

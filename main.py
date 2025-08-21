@@ -68,8 +68,12 @@ class CVProcessor:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         return f"analisis_cv_{timestamp}.pdf"
     
-    def save_analysis_json(self, analysis_results, original_name):
-        """Guarda el análisis de IA en un archivo JSON"""
+    def save_analysis_json(self, analysis_results, original_name, debug_mode=False):
+        """Guarda el análisis de IA en un archivo JSON (solo en modo debug)"""
+        if not debug_mode:
+            print("📝 Modo producción: JSON no guardado (para evitar saturar el deployment)")
+            return None
+            
         try:
             # Crear carpeta examples_ai_response si no existe
             examples_folder = "examples_ai_response"
@@ -201,19 +205,19 @@ async def analizar_cv(request: CVAnalysisRequest):
                 }
             )
         
-        # PASO 3: Guardar JSON del análisis de IA (INMEDIATAMENTE después del análisis)
-        print("💾 Paso 3: Guardando análisis de IA en JSON...")
+        # PASO 3: Guardar JSON del análisis de IA (solo en modo debug)
+        print("💾 Paso 3: Verificando si guardar JSON (modo debug)...")
+        json_path = None
         try:
-            json_path = cv_processor.save_analysis_json(analysis_results, request.filename)
+            # Solo guardar JSON si está en modo debug (variable de entorno DEBUG_MODE=true)
+            debug_mode = os.getenv("DEBUG_MODE", "false").lower() == "true"
+            if debug_mode:
+                json_path = cv_processor.save_analysis_json(analysis_results, request.filename, debug_mode=True)
+            else:
+                print("📝 Modo producción: JSON no guardado")
         except Exception as e:
-            print(f"❌ Error al guardar JSON: {e}")
-            return JSONResponse(
-                status_code=500,
-                content={
-                    "status": "error",
-                    "message": f"Error al guardar análisis JSON: {str(e)}"
-                }
-            )
+            print(f"⚠️ Error al guardar JSON (no crítico): {e}")
+            # No fallar el proceso por error al guardar JSON
         
         candidate_name = analysis_results.get("metadata", {}).get("candidate_name", "Nombre no disponible")
         
@@ -243,15 +247,15 @@ async def analizar_cv(request: CVAnalysisRequest):
             print(f"✅ PDF generado exitosamente: {ruta_pdf}")
         except Exception as e:
             print(f"❌ Error al generar PDF: {e}")
-            return JSONResponse(
-                status_code=500,
-                content={
-                    "status": "error",
-                    "message": f"Error al generar PDF: {str(e)}",
-                    "json_saved": True,
-                    "json_path": json_path
-                }
-            )
+            error_response = {
+                "status": "error",
+                "message": f"Error al generar PDF: {str(e)}"
+            }
+            # Solo agregar información del JSON si fue guardado
+            if json_path:
+                error_response["json_saved"] = True
+                error_response["json_path"] = json_path
+            return JSONResponse(status_code=500, content=error_response)
         
         # PASO 6: Leer PDF y devolver JSON con datos completos
         print("✅ Paso 6: Preparando respuesta completa...")
@@ -301,15 +305,15 @@ async def analizar_cv(request: CVAnalysisRequest):
             
         except Exception as e:
             print(f"❌ Error al preparar respuesta completa: {e}")
-            return JSONResponse(
-                status_code=500,
-                content={
-                    "status": "error",
-                    "message": f"Error al preparar respuesta completa: {str(e)}",
-                    "json_saved": True,
-                    "json_path": json_path
-                }
-            )
+            error_response = {
+                "status": "error",
+                "message": f"Error al preparar respuesta completa: {str(e)}"
+            }
+            # Solo agregar información del JSON si fue guardado
+            if json_path:
+                error_response["json_saved"] = True
+                error_response["json_path"] = json_path
+            return JSONResponse(status_code=500, content=error_response)
         
     except Exception as e:
         print(f"❌ Error general en análisis de CV: {e}")
