@@ -162,6 +162,9 @@ async def analizar_cv(request: CVAnalysisRequest):
     """
             Endpoint principal para analizar CV usando la nueva tecnología de Gemini para leer archivos directamente desde URL
     """
+    import time
+    start_time = time.time()
+    
     try:
         # PASO 1: Verificar que la URL del PDF sea accesible
         print("🔍 Paso 1: Verificando URL del PDF...")
@@ -176,7 +179,10 @@ async def analizar_cv(request: CVAnalysisRequest):
                     }
                 )
         except Exception as e:
+            end_time = time.time()
+            elapsed_time = end_time - start_time
             print(f"❌ Error al verificar URL del PDF: {e}")
+            print(f"⏱️ Tiempo total: {elapsed_time:.2f} segundos")
             return JSONResponse(
                 status_code=400,
                 content={
@@ -196,7 +202,10 @@ async def analizar_cv(request: CVAnalysisRequest):
                 match_score=request.match_score
             )
         except Exception as e:
+            end_time = time.time()
+            elapsed_time = end_time - start_time
             print(f"❌ Error al realizar análisis de IA: {e}")
+            print(f"⏱️ Tiempo total: {elapsed_time:.2f} segundos")
             return JSONResponse(
                 status_code=500,
                 content={
@@ -300,7 +309,12 @@ async def analizar_cv(request: CVAnalysisRequest):
             else:
                 final_response["data"]["used_match_score"] = False
             
+            # Calcular tiempo total
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            
             print("🎉 Análisis completado exitosamente")
+            print(f"⏱️ Tiempo total: {elapsed_time:.2f} segundos")
             return JSONResponse(content=final_response)
             
         except Exception as e:
@@ -316,7 +330,10 @@ async def analizar_cv(request: CVAnalysisRequest):
             return JSONResponse(status_code=500, content=error_response)
         
     except Exception as e:
+        end_time = time.time()
+        elapsed_time = end_time - start_time
         print(f"❌ Error general en análisis de CV: {e}")
+        print(f"⏱️ Tiempo total: {elapsed_time:.2f} segundos")
         return JSONResponse(
             status_code=500,
             content={

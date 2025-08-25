@@ -13,6 +13,7 @@ import tempfile
 import os
 from io import BytesIO
 from .prompts.cv_analysis_prompts import get_cv_analysis_prompt
+from .cv_analysis_schema import CVAnalysisResult
 
 
 class AIService:
@@ -57,21 +58,26 @@ class AIService:
             else:
                 raise Exception(f"Error al procesar el PDF: {str(e)}")
 
-    def call_gemini(self, prompt: str, file_url: str) -> str:
+    def call_gemini(self, prompt: str, file_url: str) -> CVAnalysisResult:
         """
-        Realiza una llamada síncrona a Gemini usando la nueva API
+        Realiza una llamada síncrona a Gemini usando la nueva API con responseSchema
         """
         try:
             # Realizar la llamada a Gemini directamente con la URL del PDF
             response = self.client.models.generate_content(
                 model=self.model,
                 contents=[prompt, file_url],
+                config={
+                    "response_mime_type": "application/json",
+                    "response_schema": CVAnalysisResult,
+                },
             )
             
-            return response.text
+            # Retornar el objeto parseado directamente
+            return response.parsed
         except Exception as e:
             print(f"Error en llamada a Gemini: {e}")
-            return ""
+            raise e
 
     def _call_gemini_thread(self, prompt: str, file_url: str, result_container: list, index: int):
         """
@@ -79,48 +85,12 @@ class AIService:
         """
         try:
             response = self.call_gemini(prompt, file_url)
-            if response and response.strip():
+            if response:
                 result_container[index] = response
         except Exception as e:
             print(f"Error en thread {index}: {e}")
 
-    def _extract_json_from_response(self, response: str) -> Dict[str, Any]:
-        """
-        Extrae y valida JSON de la respuesta de la IA
-        """
-        if not response or response.strip() == "":
-            raise Exception("Respuesta vacía de Gemini")
-        
-        # Limpiar la respuesta para extraer solo el JSON
-        response_clean = response.strip()
-        
-        # Buscar el inicio del JSON
-        start_idx = response_clean.find('{')
-        if start_idx == -1:
-            raise Exception("No se encontró JSON válido en la respuesta")
-        
-        # Buscar el final del JSON (última llave de cierre)
-        brace_count = 0
-        end_idx = -1
-        for i in range(start_idx, len(response_clean)):
-            if response_clean[i] == '{':
-                brace_count += 1
-            elif response_clean[i] == '}':
-                brace_count -= 1
-                if brace_count == 0:
-                    end_idx = i
-                    break
-        
-        if end_idx == -1:
-            raise Exception("JSON incompleto en la respuesta")
-        
-        json_str = response_clean[start_idx:end_idx + 1]
-        
-        try:
-            result = json.loads(json_str)
-            return result
-        except json.JSONDecodeError as e:
-            raise Exception(f"JSON inválido: {str(e)}")
+
 
     def _patch_response_with_match_score(self, analysis_result: Dict[str, Any], match_score: float) -> Dict[str, Any]:
         """
@@ -201,7 +171,8 @@ class AIService:
                 for i, result in enumerate(results):
                     if result is not None:
                         try:
-                            valid_result = self._extract_json_from_response(result)
+                            # Convertir el objeto Pydantic a diccionario
+                            valid_result = result.model_dump()
                             print(f"Respuesta válida obtenida del thread {i}")
                             break
                         except Exception as e:
@@ -211,7 +182,7 @@ class AIService:
                 # Verificar si algún thread terminó
                 for i, thread in enumerate(threads):
                     if not thread.is_alive() and results[i] is None:
-                        results[i] = ""  # Marcar como completado pero vacío
+                        results[i] = None  # Marcar como completado pero vacío
                         completed_threads += 1
                 
                 if valid_result is None:
@@ -224,9 +195,10 @@ class AIService:
                 
                 # Intentar procesar cualquier respuesta restante
                 for i, result in enumerate(results):
-                    if result and result.strip():
+                    if result:
                         try:
-                            valid_result = self._extract_json_from_response(result)
+                            # Convertir el objeto Pydantic a diccionario
+                            valid_result = result.model_dump()
                             print(f"Respuesta válida obtenida del thread {i} después de esperar")
                             break
                         except Exception as e:

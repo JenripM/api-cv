@@ -72,6 +72,7 @@ pip install -r requirements.txt
 3. **Costos Optimizados**: Mejor relación costo-beneficio
 4. **Integración Google**: Mejor integración con el ecosistema de Google
 5. **Capacidades Multimodales**: Mejor manejo de diferentes tipos de contenido
+6. **ResponseSchema**: Validación automática de JSON con Pydantic
 
 ## Estructura del Código
 
@@ -90,18 +91,40 @@ class AIService:
 
 ### Procesamiento de Archivos
 ```python
-# Descargar el PDF
-response = requests.get(file_url, timeout=30)
-response.raise_for_status()
-
-# Subir a Gemini
-sample_pdf = self.client.files.upload(file=response.content, mime_type="application/pdf")
-
-# Llamar al modelo
+# Llamar al modelo directamente con la URL del PDF
 response = self.client.models.generate_content(
     model=self.model,
-    contents=[prompt, sample_pdf],
+    contents=[prompt, file_url],
+    config={
+        "response_mime_type": "application/json",
+        "response_schema": CVAnalysisResult,
+    },
 )
+
+# Usar el objeto parseado directamente
+result = response.parsed
+```
+
+## ResponseSchema con Pydantic
+
+### Validación Automática
+- **Antes**: Procesamiento manual de JSON con extracción y validación
+- **Después**: Validación automática con Pydantic y `responseSchema`
+
+### Beneficios
+1. **Validación Automática**: Gemini garantiza que la respuesta cumple con el esquema
+2. **Menos Código**: Eliminación del procesamiento manual de JSON
+3. **Mejor Tipado**: Objetos Pydantic con tipos definidos
+4. **Manejo de Errores**: Errores de validación más claros
+5. **Serialización**: Conversión automática a diccionario con `model_dump()`
+
+### Estructura del Schema
+```python
+class CVAnalysisResult(BaseModel):
+    metadata: Metadata
+    filename_analysis: FilenameAnalysis
+    document_size_analysis: DocumentSizeAnalysis
+    # ... todos los campos del análisis
 ```
 
 ## Compatibilidad
