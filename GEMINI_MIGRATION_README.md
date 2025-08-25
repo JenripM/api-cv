@@ -105,6 +105,39 @@ response = self.client.models.generate_content(
 result = response.parsed
 ```
 
+## Procesamiento Paralelo Optimizado
+
+### División del Análisis
+El análisis se divide en **dos partes** que se ejecutan en paralelo para reducir el tiempo de respuesta:
+
+#### **Parte 1: Análisis Básico** (Formato, Ortografía, Elementos Esenciales)
+- `metadata` - Información del candidato
+- `filename_analysis` - Análisis del nombre del archivo
+- `document_size_analysis` - Evaluación de paginación
+- `spelling_analysis` - Errores ortográficos y gramaticales
+- `essential_elements` - Elementos esenciales del CV
+- `format_optimization` - Optimización de formato (longitud, foto, keywords)
+- `impact_verbs_analysis` - Análisis de verbos de impacto
+- `role_fit_analysis` - Análisis de ajuste al rol
+- `ats_compliance` - Cumplimiento ATS
+- `main_analysis` - Análisis principal con score
+- `common_errors` - Errores comunes
+- `strengths` - Fortalezas
+
+#### **Parte 2: Análisis Detallado** (Experiencia, Educación, Keywords)
+- `work_experience_analysis` - Análisis de experiencia laboral
+- `skills_tools_analysis` - Análisis de habilidades y herramientas
+- `volunteering_analysis` - Análisis de voluntariado
+- `education_analysis` - Análisis de educación
+- `keywords_analysis` - Análisis de palabras clave
+- `executive_summary_analysis` - Análisis del resumen ejecutivo
+
+### Beneficios del Procesamiento Paralelo
+1. **Reducción de Tiempo**: ~50% menos tiempo de respuesta
+2. **Mejor Distribución**: Carga equilibrada entre análisis básico y detallado
+3. **Mantenimiento de Calidad**: Cada parte se especializa en su dominio
+4. **Escalabilidad**: Fácil de extender a más partes si es necesario
+
 ## ResponseSchema con Pydantic
 
 ### Validación Automática
@@ -120,11 +153,20 @@ result = response.parsed
 
 ### Estructura del Schema
 ```python
-class CVAnalysisResult(BaseModel):
+# Esquemas separados para cada parte
+class CVAnalysisBasic(BaseModel):
     metadata: Metadata
     filename_analysis: FilenameAnalysis
-    document_size_analysis: DocumentSizeAnalysis
-    # ... todos los campos del análisis
+    # ... campos del análisis básico
+
+class CVAnalysisDetailed(BaseModel):
+    work_experience_analysis: List[WorkExperience]
+    skills_tools_analysis: SkillsToolsAnalysis
+    # ... campos del análisis detallado
+
+# Esquema completo para el resultado final
+class CVAnalysisResult(BaseModel):
+    # Combina todos los campos de ambos esquemas
 ```
 
 ## Compatibilidad

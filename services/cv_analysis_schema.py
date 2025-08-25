@@ -1,10 +1,13 @@
 """
 Esquemas Pydantic para el análisis de CV usando Gemini
+Dividido en dos partes para procesamiento paralelo
 """
 from pydantic import BaseModel
 from typing import List, Optional, Union
 
 
+# ===== ESQUEMA PARTE 1: ANÁLISIS BÁSICO =====
+# Campos que requieren análisis general del CV y formato
 class Metadata(BaseModel):
     candidate_name: str
 
@@ -68,6 +71,35 @@ class RoleFitAnalysis(BaseModel):
     quantifiable_results: RoleFitItem
 
 
+class ATSCompliance(BaseModel):
+    score: int
+    issues: List[str]
+    ai_feedbacks: List[str]
+
+
+class MainAnalysis(BaseModel):
+    score: int
+    ai_feedback: str
+
+
+# Esquema para la Parte 1: Análisis Básico (formato, ortografía, elementos esenciales)
+class CVAnalysisBasic(BaseModel):
+    metadata: Metadata
+    filename_analysis: FilenameAnalysis
+    document_size_analysis: DocumentSizeAnalysis
+    spelling_analysis: SpellingAnalysis
+    essential_elements: EssentialElements
+    format_optimization: FormatOptimization
+    impact_verbs_analysis: ImpactVerbsAnalysis
+    role_fit_analysis: RoleFitAnalysis
+    ats_compliance: ATSCompliance
+    main_analysis: MainAnalysis
+    common_errors: str
+    strengths: str
+
+
+# ===== ESQUEMA PARTE 2: ANÁLISIS DETALLADO =====
+# Campos que requieren análisis profundo de contenido específico
 class WorkExperience(BaseModel):
     company: str
     current: str
@@ -104,18 +136,17 @@ class ExecutiveSummaryAnalysis(BaseModel):
     recommended: str
 
 
-class ATSCompliance(BaseModel):
-    score: int
-    issues: List[str]
-    ai_feedbacks: List[str]
+# Esquema para la Parte 2: Análisis Detallado (experiencia, educación, keywords)
+class CVAnalysisDetailed(BaseModel):
+    work_experience_analysis: List[WorkExperience]
+    skills_tools_analysis: SkillsToolsAnalysis
+    volunteering_analysis: List[Volunteering]
+    education_analysis: List[Education]
+    keywords_analysis: KeywordsAnalysis
+    executive_summary_analysis: ExecutiveSummaryAnalysis
 
 
-class MainAnalysis(BaseModel):
-    score: int
-    summary: str
-    ai_feedback: str
-
-
+# ===== ESQUEMA COMPLETO (resultado final) =====
 class CVAnalysisResult(BaseModel):
     metadata: Metadata
     filename_analysis: FilenameAnalysis

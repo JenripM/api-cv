@@ -1,10 +1,11 @@
 """
 Prompts para el análisis de CV usando Google Gemini
+Dividido en dos partes para procesamiento paralelo
 """
 
 def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str = None, page_count: int = 1, match_score: float = None) -> str:
     """
-    Genera el prompt comprehensivo para el análisis de CV
+    Genera el prompt comprehensivo para el análisis de CV (versión completa)
     """
     # Construir el contexto del puesto
     puesto_context = f"puesto de {puesto}"
@@ -134,24 +135,23 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
 
     ### keywords_analysis
     - found_keywords (Array): Palabras clave del puesto que SÍ aparecen en el CV (solo palabras específicas, sin explicaciones)
-    - missing_keywords (Array): Palabras clave del puesto que NO aparecen en el CV{" (debe ser específicas de la descripción del puesto proporcionada)" if descripcion_puesto else " (pueden ser genéricas del tipo de puesto)"}
+    - missing_keywords (Array): Palabras clave del puesto que NO aparecen en el CV{" (SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del puesto proporcionada)" if descripcion_puesto else " (pueden ser genéricas del tipo de puesto)"}
     - general_skills (Array): Habilidades generales identificadas
     - ai_feedback (String): Sugerencias sobre keywords
 
     IMPORTANTE PARA KEYWORDS:
     - Las keywords deben ser palabras individuales o términos técnicos específicos
     - found_keywords: SOLO palabras que aparecen en el CV (no en la descripción del trabajo)
-    - missing_keywords: palabras que aparecen en la descripción del trabajo pero NO en el CV
-    - Si la descripción menciona "contenedores", incluir "contenedores", "Docker", "Kubernetes"
-    - Si la descripción menciona "automatización", incluir "automatización", "Ansible", "Jenkins"
-    - Ser específico pero no demasiado atrevido en las inferencias
+    - missing_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del trabajo pero NO en el CV
+    - NO inferir keywords adicionales que no estén explícitamente mencionadas en la descripción del puesto
+    - NO forzar el incremento artificial del número de keywords
     - Sin explicaciones largas, sin paréntesis, sin contexto adicional
 
     ESPECIALMENTE PARA MISSING_KEYWORDS:
-    - Deben ser palabras o tecnologías específicas que faltan en el CV
-    - Si la descripción menciona "contenedores" y el CV solo tiene "Docker", incluir "contenedores" y "Kubernetes"
-    - Si la descripción menciona "automatización" y el CV no la menciona, incluir "automatización", "Ansible", "Jenkins"
-    - Ser directo y específico: "Ansible", "GitLab", "Microsoft Office"
+    - SOLO incluir palabras que aparecen EXPLÍCITAMENTE en la descripción del puesto
+    - NO inferir tecnologías relacionadas o similares que no estén mencionadas
+    - NO agregar keywords adicionales por similitud o contexto
+    - Ser directo y específico: solo palabras exactas de la descripción
 
     ### executive_summary_analysis
     - current (String): Resumen ejecutivo actual del CV
@@ -175,22 +175,18 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
 
     ### main_analysis
     - score (Integer): Puntuación del 0 al 100 que representa la calificación general del CV para el puesto
-    - summary (String): Análisis del perfil del candidato, máximo 100 palabras
-    - ai_feedback (String): Feedback general del CV, teniendo en cuenta todos los puntos anteriores
+    - ai_feedback (String): Feedback general conciso del CV (máximo 80 palabras). SIEMPRE empezar con algo positivo, luego mencionar áreas de mejora de forma general sin ser específico sobre qué cambiar o qué falta. Enfoque constructivo y motivacional.
 
     IMPORTANTE PARA MAIN_ANALYSIS SCORE:
-    - Si se proporcionó una descripción específica del puesto, SOLO las keywords TÉCNICAS faltantes afectan significativamente el score
-    - Keywords técnicas incluyen: tecnologías, herramientas, lenguajes, frameworks, metodologías técnicas, certificaciones técnicas
-    - Keywords blandas (liderazgo, comunicación, trabajo en equipo, etc.) NO penalizan el score
-    - Para keywords técnicas, acepta sinónimos y términos similares (ej: "pruebas funcionales" = "pruebas de funcionalidad", "Excel" = "Microsoft Excel")
-    - Si faltan 1-2 keywords técnicas importantes: score máximo 75-85
-    - Si faltan 3+ keywords técnicas importantes: score máximo 60-75
-    - Si NO faltan keywords técnicas importantes: considerar otros factores para score alto (80-100)
-    - En el ai_feedback, enfatiza solo keywords técnicas faltantes críticas
-    - El score final no puede ser menor a 0
-    {"- IMPORTANTE: Si se proporcionó un match_score, DEBES usar ese valor como el score principal en main_analysis.score" if match_score is not None else ""}
-    {"- El match_score proporcionado ({match_score}) debe ser el score principal SIN MODIFICAR. NO lo ajustes basándote en otros factores del CV" if match_score is not None else ""}
-    {"- En el ai_feedback de main_analysis, explica por qué el candidato obtuvo ese score específico y qué puede hacer para mejorarlo" if match_score is not None else ""}
+    {"- IMPORTANTE: Se proporcionó un match_score de {match_score}. DEBES usar EXACTAMENTE este valor como main_analysis.score SIN MODIFICAR" if match_score is not None else "- Si se proporcionó una descripción específica del puesto, SOLO las keywords TÉCNICAS faltantes afectan significativamente el score"}
+    {"- NO calcules el score basándote en otros factores del CV" if match_score is not None else "- Keywords técnicas incluyen: tecnologías, herramientas, lenguajes, frameworks, metodologías técnicas, certificaciones técnicas"}
+    {"- NO ajustes el score por keywords faltantes, formato, o cualquier otro factor" if match_score is not None else "- Keywords blandas (liderazgo, comunicación, trabajo en equipo, etc.) NO penalizan el score"}
+    {"- El score debe ser exactamente {match_score}" if match_score is not None else "- Para keywords técnicas, acepta sinónimos y términos similares"}
+    {"- En el ai_feedback de main_analysis, explica por qué el candidato obtuvo ese score específico y qué puede hacer para mejorarlo" if match_score is not None else "- Si faltan 1-2 keywords técnicas importantes: score máximo 75-85"}
+    {"- El score final no puede ser menor a 0" if match_score is not None else "- Si faltan 3+ keywords técnicas importantes: score máximo 60-75"}
+    {"- Si NO faltan keywords técnicas importantes: considerar otros factores para score alto (80-100)" if match_score is not None else ""}
+    {"- En el ai_feedback, enfatiza solo keywords técnicas faltantes críticas" if match_score is not None else ""}
+    {"- El score final no puede ser menor a 0" if match_score is not None else ""}
 
     ### common_errors (String): Lista de errores comunes separados por guiones (-)
     ### strengths (String): Lista de fortalezas separadas por guiones (-)
@@ -300,9 +296,8 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
             "ai_feedbacks": ["String"]
         }},
         "main_analysis": {{
-            "ai_feedback": "String"
-            "summary": "String",
-            "score": "Integer (0-100)",
+            "ai_feedback": "String",
+            "score": "Integer (0-100)"
         }},
         "common_errors": "String",
         "strengths": "String"
@@ -353,4 +348,350 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     - Los scores finales no pueden ser menores a 0
 
     Responde ÚNICAMENTE con el JSON completo, sin texto adicional.
+    """
+
+
+def get_cv_analysis_basic_prompt(puesto: str, filename: str, descripcion_puesto: str = None, page_count: int = 1, match_score: float = None) -> str:
+    """
+    Genera el prompt para la PARTE 1: Análisis Básico (formato, ortografía, elementos esenciales)
+    Esta parte se ejecuta en paralelo con el análisis detallado para optimizar tiempo de respuesta.
+    """
+    # Construir el contexto del puesto
+    puesto_context = f"puesto de {puesto}"
+    if descripcion_puesto:
+        puesto_context += f" con la siguiente descripción:\n\n{descripcion_puesto}\n\n"
+        puesto_context += "IMPORTANTE: Basa todo tu análisis en esta descripción específica del puesto."
+    else:
+        puesto_context += " (descripción genérica del puesto)"
+    
+    # Información sobre el número de páginas
+    page_info = f"El PDF tiene {page_count} página{'s' if page_count > 1 else ''}."
+    
+    # Información sobre el match_score si está disponible
+    match_score_info = ""
+    if match_score is not None:
+        match_score_info = f"""
+    
+    INFORMACIÓN ADICIONAL IMPORTANTE:
+    El candidato ha obtenido un score de {match_score} en un sistema ATS (Applicant Tracking System).
+    Este score indica qué tan bien el CV coincide con los requisitos del puesto según el sistema ATS.
+    """
+    
+    return f"""
+    Eres un experto analista de CVs especializado en análisis de FORMATO, ORTOGRAFÍA y ELEMENTOS ESENCIALES.
+    
+    Tu tarea es analizar la PARTE BÁSICA de un CV para el {puesto_context} y generar un análisis en formato JSON.
+    El nombre del archivo es "{filename}". {page_info}{match_score_info}
+    
+    IMPORTANTE: 
+    - Responde ÚNICAMENTE con un objeto JSON válido
+    - No incluyas texto adicional fuera del JSON
+    - Usa las claves exactas especificadas en la estructura
+    - Esta es la PARTE 1 de 2 del análisis completo (se ejecuta en paralelo)
+    - Usa el número de páginas proporcionado: {page_count}
+
+    ## CAMPOS A ANALIZAR (PARTE 1 - ANÁLISIS BÁSICO):
+
+    ### metadata
+    - candidate_name (String): Nombre completo del candidato extraído del CV
+
+    ### filename_analysis
+    - filename (String): Nombre actual del archivo
+    - ai_feedback (String): Análisis del nombre del archivo y recomendaciones para mejorarlo
+
+    ### document_size_analysis
+    - total_pages (Integer): Número de páginas del PDF: {page_count}
+    - ai_feedback (String): Evaluación de la paginación. Si tiene muchas páginas, recomiendale al usuario que lo reduzca a una sola página o máximo 2 páginas.
+
+    ### spelling_analysis
+    - errors_found (Array): Lista de errores ortográficos encontrados
+    - spelling_errors (Integer): Número total de errores ortográficos
+    - ai_feedback (String): Comentario general sobre errores ortográficos y gramaticales
+
+    ### essential_elements
+    - evaluation (Array): Evaluación de exclusivamente los siguientes elementos esenciales: nombre, email, experiencia laboral, educación
+    - ai_feedback (String): Comentario general sobre elementos esenciales
+
+    ### format_optimization
+    - length (Object): Evaluación de la longitud del CV
+      - status (String): "Alto" si la longitud es apropiada para el puesto, "Medio" si es aceptable pero podría mejorarse, "Bajo" si es muy corto o muy largo
+      - ai_feedback (String): Recomendaciones específicas sobre la longitud
+    - photo (Object): Evaluación de la foto del candidato
+      - status (String): "Alto" si tiene foto apropiada para el puesto O si no tiene foto pero no es necesaria para el puesto, "Medio" si tiene foto pero podría mejorarse, "Bajo" si no tiene foto cuando es obligatoria para el puesto
+      - ai_feedback (String): Recomendaciones sobre la foto según el tipo de puesto
+    - keywords (Object): Evaluación del uso de palabras clave
+      - status (String): "Alto" si usa palabras clave relevantes para el puesto, "Medio" si usa algunas, "Bajo" si no usa palabras clave relevantes
+      - ai_feedback (String): Recomendaciones sobre palabras clave específicas para el puesto
+
+    ### impact_verbs_analysis
+    - score (Integer): Puntuación del 1 al 10 sobre el uso de verbos de impacto
+    - ai_feedbacks (Array): Lista de sugerencias específicas para mejorar verbos de impacto con ejemplos completos del CV actual
+
+    ### role_fit_analysis
+    - analysis_skills (Object): Evaluación de habilidades de análisis
+      - level (String): "Alto", "Medio", "Bajo" según las habilidades de análisis mostradas
+      - ai_feedback (String): Comentarios sobre habilidades de análisis
+    - quantifiable_results (Object): Evaluación de resultados cuantificables
+      - level (String): "Alto", "Medio", "Bajo" según la cantidad de resultados cuantificables
+      - ai_feedback (String): Comentarios sobre resultados cuantificables
+
+    ### ats_compliance
+    - score (Integer): Puntuación del 0 al 100 sobre cumplimiento ATS
+    - issues (Array): Problemas identificados con ATS
+    - ai_feedbacks (Array): Recomendaciones para mejorar cumplimiento ATS
+
+    ### main_analysis
+    - score (Integer): Puntuación del 0 al 100 que representa la calificación general del CV para el puesto
+    - ai_feedback (String): Feedback general conciso del CV (máximo 80 palabras). SIEMPRE empezar con algo positivo, luego mencionar áreas de mejora de forma general sin ser específico sobre qué cambiar o qué falta. Enfoque constructivo y motivacional.
+
+    ### common_errors (String): Lista de errores comunes separados por guiones (-)
+    ### strengths (String): Lista de fortalezas separadas por guiones (-)
+
+    ## FORMATO JSON ESPERADO (PARTE 1):
+
+    {{
+        "metadata": {{
+            "candidate_name": "String"
+        }},
+        "filename_analysis": {{
+            "filename": "String",
+            "ai_feedback": "String"
+        }},
+        "document_size_analysis": {{
+            "total_pages": {page_count},
+            "ai_feedback": "String"
+        }},
+        "spelling_analysis": {{
+            "errors_found": [
+                {{
+                    "current": "String",
+                    "recommended": "String"
+                }}
+            ],
+            "spelling_errors": "Integer",
+            "ai_feedback": "String"
+        }},
+        "essential_elements": {{
+            "evaluation": [
+                {{
+                    "element": "String",
+                    "exists": "Boolean",
+                    "well_positioned": "Boolean",
+                    "easily_distinguishable": "Boolean"
+                }}
+            ],
+            "ai_feedback": "String"
+        }},
+        "format_optimization": {{
+            "length": {{
+                "status": "String (Alto/Medio/Bajo)",
+                "ai_feedback": "String"
+            }},
+            "photo": {{
+                "status": "String (Alto/Medio/Bajo)",
+                "ai_feedback": "String"
+            }},
+            "keywords": {{
+                "status": "String (Alto/Medio/Bajo)",
+                "ai_feedback": "String"
+            }}
+        }},
+        "impact_verbs_analysis": {{
+            "score": "Integer (1-10)",
+            "ai_feedbacks": ["String"]
+        }},
+        "role_fit_analysis": {{
+            "analysis_skills": {{
+                "level": "String (Alto/Medio/Bajo)",
+                "ai_feedback": "String"
+            }},
+            "quantifiable_results": {{
+                "level": "String (Alto/Medio/Bajo)",
+                "ai_feedback": "String"
+            }}
+        }},
+        "ats_compliance": {{
+            "score": "Integer (0-100)",
+            "issues": ["String"],
+            "ai_feedbacks": ["String"]
+        }},
+        "main_analysis": {{
+            "score": "Integer (0-100)",
+            "ai_feedback": "String"
+        }},
+        "common_errors": "String",
+        "strengths": "String"
+    }}
+
+    REGLAS ESPECÍFICAS PARA EVALUACIÓN DE FOTO:
+    - Para puestos técnicos, de desarrollo, o practicantes: la foto NO es obligatoria
+    - Para puestos de atención al cliente, ventas, o ejecutivos: la foto SÍ es importante
+    - Si el puesto NO requiere foto y el CV no la tiene: status "Alto"
+    - Si el puesto requiere foto y el CV no la tiene: status "Bajo"
+    - Si tiene foto pero no es apropiada para el puesto: status "Medio"
+    - Si tiene foto apropiada para el puesto: status "Alto"
+
+    REGLAS ESPECÍFICAS PARA IMPACT_VERBS_ANALYSIS:
+    - Los ai_feedbacks deben incluir ejemplos completos del CV actual
+    - Formato: "Cambia 'verbo_actual' por 'verbo_impacto', ejemplo: 'oración_completa_con_verbo_reemplazado'"
+    - IMPORTANTE: 'verbo_actual' debe ser SOLO el verbo, no toda la oración
+    - Incluir la oración completa donde aparece el verbo, pero con el verbo reemplazado
+    - Si la oración es muy larga, cortar con "..."
+    - SOLO sugerir cambios que representen una mejora significativa de impacto
+    - NO sugerir sinónimos menores, SÍ cambios que muestren mayor responsabilidad o liderazgo
+
+    REGLAS CRÍTICAS PARA SCORING:
+    {"- IMPORTANTE: Se proporcionó un match_score de {match_score}. DEBES usar EXACTAMENTE este valor como main_analysis.score SIN MODIFICAR" if match_score is not None else "- Si se proporcionó una descripción específica del puesto, SOLO las keywords TÉCNICAS faltantes afectan significativamente el score"}
+    {"- NO calcules el score basándote en otros factores del CV" if match_score is not None else "- Keywords técnicas: tecnologías, herramientas, lenguajes, frameworks, metodologías técnicas, certificaciones"}
+    {"- NO ajustes el score por keywords faltantes, formato, o cualquier otro factor" if match_score is not None else "- Keywords blandas (liderazgo, comunicación, trabajo en equipo) NO penalizan"}
+    {"- El score debe ser exactamente {match_score}" if match_score is not None else "- MAIN_ANALYSIS: 1-2 keywords técnicas faltantes (75-85), 3+ keywords técnicas (60-75)"}
+    {"- ATS_COMPLIANCE: usar el mismo score {match_score}" if match_score is not None else "- ATS_COMPLIANCE: 1-2 keywords técnicas faltantes (65-75), 3+ keywords técnicas (50-65)"}
+    {"- Los scores finales no pueden ser menores a 0" if match_score is not None else "- Los scores finales no pueden ser menores a 0"}
+
+    Responde ÚNICAMENTE con el JSON de la PARTE 1, sin texto adicional.
+    """
+
+
+def get_cv_analysis_detailed_prompt(puesto: str, filename: str, descripcion_puesto: str = None, page_count: int = 1, match_score: float = None) -> str:
+    """
+    Genera el prompt para la PARTE 2: Análisis Detallado (experiencia, educación, keywords)
+    Esta parte se ejecuta en paralelo con el análisis básico para optimizar tiempo de respuesta.
+    """
+    # Construir el contexto del puesto
+    puesto_context = f"puesto de {puesto}"
+    if descripcion_puesto:
+        puesto_context += f" con la siguiente descripción:\n\n{descripcion_puesto}\n\n"
+        puesto_context += "IMPORTANTE: Basa todo tu análisis en esta descripción específica del puesto. "
+        puesto_context += "Las palabras clave faltantes deben ser específicas de esta descripción, no genéricas."
+    else:
+        puesto_context += " (descripción genérica del puesto)"
+    
+    # Información sobre el número de páginas
+    page_info = f"El PDF tiene {page_count} página{'s' if page_count > 1 else ''}."
+    
+    return f"""
+    Eres un experto analista de CVs especializado en análisis de CONTENIDO DETALLADO, EXPERIENCIA LABORAL y KEYWORDS.
+    
+    Tu tarea es analizar la PARTE DETALLADA de un CV para el {puesto_context} y generar un análisis en formato JSON.
+    El nombre del archivo es "{filename}". {page_info}
+    
+    IMPORTANTE: 
+    - Responde ÚNICAMENTE con un objeto JSON válido
+    - No incluyas texto adicional fuera del JSON
+    - Usa las claves exactas especificadas en la estructura
+    - Esta es la PARTE 2 de 2 del análisis completo (se ejecuta en paralelo)
+    - Usa el número de páginas proporcionado: {page_count}
+
+    ## CAMPOS A ANALIZAR (PARTE 2 - ANÁLISIS DETALLADO):
+
+    ### work_experience_analysis
+    - Array de objetos con:
+      - company (String): Nombre de la empresa
+      - current (String): Descripción actual tal como aparece en el CV
+      - recommended (String): Versión mejorada con verbos de impacto y resultados
+
+    ### skills_tools_analysis
+    - current_skills (String): Descripción actual de habilidades
+    - ai_feedback (String): Recomendaciones específicas para el puesto
+
+    ### volunteering_analysis
+    - Array de objetos con:
+      - organization (String): Nombre de la organización
+      - current (String): Descripción actual del voluntariado
+      - recommended (String): Versión mejorada del voluntariado
+
+    ### education_analysis
+    - Array de objetos con:
+      - degree (String): Título obtenido
+      - institution (String): Institución educativa
+      - date (String): Fecha de graduación
+      - ai_feedback (String): Comentario sobre la educación
+
+    ### keywords_analysis
+    - found_keywords (Array): Palabras clave del puesto que SÍ aparecen en el CV (solo palabras específicas, sin explicaciones)
+    - missing_keywords (Array): Palabras clave del puesto que NO aparecen en el CV{" (SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del puesto proporcionada)" if descripcion_puesto else " (pueden ser genéricas del tipo de puesto)"}
+    - general_skills (Array): Habilidades generales identificadas
+    - ai_feedback (String): Sugerencias sobre keywords
+
+    ### executive_summary_analysis
+    - current (String): Resumen ejecutivo actual del CV
+    - recommended (String): Versión mejorada del resumen ejecutivo
+
+    ## FORMATO JSON ESPERADO (PARTE 2):
+
+    {{
+        "work_experience_analysis": [
+            {{
+                "company": "String",
+                "current": "String",
+                "recommended": "String"
+            }}
+        ],
+        "skills_tools_analysis": {{
+            "current_skills": "String",
+            "ai_feedback": "String"
+        }},
+        "volunteering_analysis": [
+            {{
+                "organization": "String",
+                "current": "String",
+                "recommended": "String"
+            }}
+        ],
+        "education_analysis": [
+            {{
+                "degree": "String",
+                "institution": "String",
+                "date": "String",
+                "ai_feedback": "String"
+            }}
+        ],
+        "keywords_analysis": {{
+            "found_keywords": ["String"],
+            "missing_keywords": ["String"],
+            "general_skills": ["String"],
+            "ai_feedback": "String"
+        }},
+        "executive_summary_analysis": {{
+            "current": "String",
+            "recommended": "String"
+        }}
+    }}
+
+    REGLAS ESPECÍFICAS PARA KEYWORDS:
+    - found_keywords: SOLO palabras que aparecen en el CV (no en la descripción del trabajo)
+    - missing_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del trabajo pero NO en el CV
+    - Las keywords deben ser palabras individuales o términos técnicos específicos
+    - NO inferir keywords adicionales que no estén explícitamente mencionadas en la descripción del puesto
+    - NO forzar el incremento artificial del número de keywords
+    - Sin explicaciones largas, sin paréntesis, sin contexto adicional
+
+    ESPECIALMENTE PARA MISSING_KEYWORDS:
+    - SOLO incluir palabras que aparecen EXPLÍCITAMENTE en la descripción del puesto
+    - NO inferir tecnologías relacionadas o similares que no estén mencionadas
+    - NO agregar keywords adicionales por similitud o contexto
+    - Ser directo y específico: solo palabras exactas de la descripción
+
+    REGLAS ESPECÍFICAS PARA WORK_EXPERIENCE_ANALYSIS:
+    - Analiza cada experiencia laboral encontrada en el CV
+    - La descripción "current" debe ser exactamente como aparece en el CV
+    - La descripción "recommended" debe ser una versión mejorada con verbos de impacto y resultados cuantificables
+    - Enfócate en mejorar la claridad y el impacto de las descripciones
+
+    REGLAS ESPECÍFICAS PARA VOLUNTEERING_ANALYSIS:
+    - Analiza cada experiencia de voluntariado encontrada en el CV
+    - Aplica las mismas reglas que para work_experience_analysis
+    - Enfócate en mostrar el impacto y las habilidades desarrolladas
+
+    REGLAS ESPECÍFICAS PARA EDUCATION_ANALYSIS:
+    - Analiza cada título educativo encontrado en el CV
+    - Incluye comentarios sobre la relevancia de la educación para el puesto
+    - Considera la calidad de la institución y la fecha de graduación
+
+    REGLAS ESPECÍFICAS PARA EXECUTIVE_SUMMARY_ANALYSIS:
+    - El "current" debe ser el resumen ejecutivo actual del CV
+    - El "recommended" debe ser una versión mejorada que destaque las fortalezas principales
+    - Enfócate en hacer el resumen más impactante y relevante para el puesto
+
+    Responde ÚNICAMENTE con el JSON de la PARTE 2, sin texto adicional.
     """
