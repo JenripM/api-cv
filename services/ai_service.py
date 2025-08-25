@@ -1,22 +1,25 @@
 """
-Servicio para manejar las llamadas a OpenAI usando la nueva API
+Servicio para manejar las llamadas a Google Gemini usando la nueva API
 """
 import asyncio
-from openai import OpenAI
+from google import genai
 import json
 from typing import Dict, Any
 import threading
 import time
 import fitz  # PyMuPDF
 import requests
+import tempfile
+import os
+from io import BytesIO
 from .prompts.cv_analysis_prompts import get_cv_analysis_prompt
 
 
 class AIService:
     def __init__(self, api_key: str):
         """Inicializa el servicio de IA con la API key"""
-        self.client = OpenAI(api_key=api_key)
-        self.model = "gpt-5-mini"
+        self.client = genai.Client(api_key=api_key)
+        self.model = "gemini-2.5-flash"
 
     def get_pdf_page_count(self, file_url: str) -> int:
         """
@@ -54,47 +57,28 @@ class AIService:
             else:
                 raise Exception(f"Error al procesar el PDF: {str(e)}")
 
-    def call_openai(self, prompt: str, file_url: str) -> str:
+    def call_gemini(self, prompt: str, file_url: str) -> str:
         """
-        Realiza una llamada síncrona a OpenAI usando la nueva API
+        Realiza una llamada síncrona a Gemini usando la nueva API
         """
         try:
-            content = [
-                {
-                    "type": "input_text",
-                    "text": prompt
-                },
-                {
-                    "type": "input_file",
-                    "file_url": file_url
-                }
-            ]
+            # Realizar la llamada a Gemini directamente con la URL del PDF
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=[prompt, file_url],
+            )
             
-            params = {
-                "model": self.model,
-                "input": [{
-                    "role": "user",
-                    "content": content
-                }],
-                "reasoning": {
-                    "effort": "minimal"
-                }
-            }
-            
-            # Usar la versión síncrona del cliente OpenAI
-            response = self.client.responses.create(**params)
-            
-            return response.output_text
+            return response.text
         except Exception as e:
-            print(f"Error en llamada a OpenAI: {e}")
+            print(f"Error en llamada a Gemini: {e}")
             return ""
 
-    def _call_openai_thread(self, prompt: str, file_url: str, result_container: list, index: int):
+    def _call_gemini_thread(self, prompt: str, file_url: str, result_container: list, index: int):
         """
         Función auxiliar para llamadas en thread
         """
         try:
-            response = self.call_openai(prompt, file_url)
+            response = self.call_gemini(prompt, file_url)
             if response and response.strip():
                 result_container[index] = response
         except Exception as e:
@@ -105,7 +89,7 @@ class AIService:
         Extrae y valida JSON de la respuesta de la IA
         """
         if not response or response.strip() == "":
-            raise Exception("Respuesta vacía de OpenAI")
+            raise Exception("Respuesta vacía de Gemini")
         
         # Limpiar la respuesta para extraer solo el JSON
         response_clean = response.strip()
@@ -203,7 +187,7 @@ class AIService:
             # Crear dos threads para llamadas paralelas
             for i in range(2):
                 thread = threading.Thread(
-                    target=self._call_openai_thread,
+                    target=self._call_gemini_thread,
                     args=(comprehensive_prompt, file_url, results, i)
                 )
                 threads.append(thread)

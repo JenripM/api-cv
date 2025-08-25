@@ -1,5 +1,5 @@
 """
-Prompts para el análisis de CV usando OpenAI
+Prompts para el análisis de CV usando Google Gemini
 """
 
 def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str = None, page_count: int = 1, match_score: float = None) -> str:

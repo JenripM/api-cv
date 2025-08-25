@@ -2,7 +2,7 @@ from io import BytesIO
 import requests
 import re
 from fastapi import FastAPI, UploadFile, File
-from openai import OpenAI
+from google import genai
 import os
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
@@ -125,7 +125,7 @@ class CVProcessor:
             raise
 
 # Inicializar servicios después de cargar variables de entorno
-ai_service = AIService(api_key=os.getenv("OPENAI_API_KEY"))
+ai_service = AIService(api_key=os.getenv("GEMINI_API_KEY"))
 cv_processor = CVProcessor()
 
 app = FastAPI()
@@ -160,7 +160,7 @@ async def backup_static():
 @app.post("/analizar-cv/")
 async def analizar_cv(request: CVAnalysisRequest):
     """
-    Endpoint principal para analizar CV usando la nueva tecnología de OpenAI para leer archivos directamente desde URL
+            Endpoint principal para analizar CV usando la nueva tecnología de Gemini para leer archivos directamente desde URL
     """
     try:
         # PASO 1: Verificar que la URL del PDF sea accesible
@@ -185,7 +185,7 @@ async def analizar_cv(request: CVAnalysisRequest):
                 }
             )
         
-        # PASO 2: Realizar análisis completo usando la nueva API de OpenAI para archivos
+        # PASO 2: Realizar análisis completo usando la nueva API de Gemini para archivos
         print("🤖 Paso 2: Realizando análisis de IA...")
         try:
             analysis_results = ai_service.analyze_cv_complete(
