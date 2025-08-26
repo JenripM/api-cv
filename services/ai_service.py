@@ -73,7 +73,7 @@ class AIService:
                 config={
                     "response_mime_type": "application/json",
                     "response_schema": CVAnalysisResult,
-                    "temperature": 0.0,  # Configuración para análisis completo (fallback)
+                    "temperature": 1,  # Configuración para análisis completo (fallback)
                 },
             )
             

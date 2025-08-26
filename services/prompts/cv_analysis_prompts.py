@@ -11,9 +11,8 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     puesto_context = f"puesto de {puesto}"
     if descripcion_puesto:
         puesto_context += f" con la siguiente descripción:\n\n{descripcion_puesto}\n\n"
-        puesto_context += "IMPORTANTE: Basa todo tu análisis en esta descripción específica del puesto. "
-        puesto_context += "Las palabras clave faltantes deben ser específicas de esta descripción, no genéricas. "
-        puesto_context += "Los requisitos y habilidades evaluadas deben alinearse directamente con lo que se solicita en esta descripción."
+        puesto_context += "IMPORTANTE: La descripción del puesto se usa SOLO para evaluar keywords faltantes y relevancia general. "
+        puesto_context += "NO uses esta descripción para inferir información que no esté explícitamente en el CV."
     else:
         puesto_context += " (descripción genérica del puesto)"
     
@@ -43,22 +42,34 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     """
     
     return f"""
-    Eres un experto analista de CVs con amplia experiencia en reclutamiento. Tu tarea es analizar completamente un CV para el {puesto_context} y generar un análisis exhaustivo en formato JSON.
+    CONTEXTO Y PROPÓSITO:
+    Eres un experto analista de CVs con amplia experiencia en reclutamiento y recursos humanos. Tu función es analizar CVs de candidatos para ayudar a evaluar su idoneidad para puestos específicos. El usuario te proporciona un CV y una descripción del puesto para que puedas hacer un análisis comprehensivo que incluya evaluación de formato, contenido, relevancia y cumplimiento con estándares ATS.
+
+    Tu análisis debe ser objetivo, basado únicamente en la información explícita del CV, y debe proporcionar insights valiosos tanto para el candidato (para mejorar su CV) como para el reclutador (para evaluar la candidatura).
+
+    TAREA ACTUAL:
+    Analizar completamente un CV para el {puesto_context} y generar un análisis exhaustivo en formato JSON.
     El nombre del archivo es "{filename}". {page_info}{match_score_info}
     
-    IMPORTANTE: 
+    PRINCIPIOS FUNDAMENTALES DE ANÁLISIS:
+    - OBJETIVIDAD: Basa tu análisis únicamente en la información explícita del CV. NO infieras, asumas o inventes información que no esté claramente presente en el documento.
+    - PRECISIÓN: Cada campo debe reflejar exactamente lo que aparece en el CV. Si algo no está mencionado, no lo incluyas.
+    - UTILIDAD: Proporciona insights accionables que ayuden tanto al candidato a mejorar su CV como al reclutador a evaluar la candidatura.
+    - CONTEXTO: Usa la descripción del puesto SOLO para evaluar keywords faltantes y relevancia general, NO para inferir información ausente del CV.
+
+    INSTRUCCIONES TÉCNICAS:
     - Responde ÚNICAMENTE con un objeto JSON válido
     - No incluyas texto adicional fuera del JSON
     - Usa las claves exactas especificadas en la estructura
     - Mantén el formato consistente y legible
     - Usa el número de páginas proporcionado: {page_count}
-    {"- Si se proporcionó una descripción específica del puesto, basa TODO tu análisis en esa descripción, no en suposiciones genéricas" if descripcion_puesto else ""}
+    {"- La descripción del puesto se usa SOLO para evaluar keywords faltantes y relevancia general. NO uses esta descripción para inferir información que no esté explícitamente en el CV" if descripcion_puesto else ""}
     {"- Si se proporcionó un match_score, incluye tu análisis del score ATS en las secciones relevantes del JSON" if match_score is not None else ""}
 
-    ## DEFINICIÓN DE CAMPOS:
+    ## ESTRUCTURA DE ANÁLISIS:
 
     ### metadata
-    - candidate_name (String): Nombre completo del candidato extraído del CV
+    - candidate_name (String): Nombre completo del candidato extraído del CV (SOLO información explícita del CV)
 
     ### filename_analysis
     - filename (String): Nombre actual del archivo
@@ -303,14 +314,16 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
         "strengths": "String"
     }}
 
-    Analiza el CV considerando:
-    1. Relevancia para el puesto de {puesto}{" y la descripción específica proporcionada" if descripcion_puesto else ""}
-    2. Calidad del formato y presentación
-    3. Experiencia laboral y logros
-    4. Habilidades técnicas y blandas
-    5. Cumplimiento con estándares ATS
-    6. Errores comunes y fortalezas
-    {"7. Alineación específica con los requisitos y responsabilidades mencionados en la descripción del puesto" if descripcion_puesto else ""}
+    METODOLOGÍA DE ANÁLISIS:
+    Analiza el CV considerando estos aspectos en orden de prioridad:
+    1. INFORMACIÓN EXPLÍCITA: Extrae únicamente la información que aparece claramente en el CV
+    2. Relevancia para el puesto de {puesto}{" y la descripción específica proporcionada" if descripcion_puesto else ""}
+    3. Calidad del formato y presentación
+    4. Experiencia laboral y logros (basados en el contenido real del CV)
+    5. Habilidades técnicas y blandas (mencionadas explícitamente)
+    6. Cumplimiento con estándares ATS
+    7. Errores comunes y fortalezas
+    {"8. Alineación específica con los requisitos y responsabilidades mencionados en la descripción del puesto" if descripcion_puesto else ""}
 
     REGLAS ESPECÍFICAS PARA EVALUACIÓN DE FOTO:
     - Para puestos técnicos, de desarrollo, o practicantes: la foto NO es obligatoria
@@ -321,9 +334,10 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     - Si tiene foto apropiada para el puesto: status "Alto"
 
     REGLAS ESPECÍFICAS PARA KEYWORDS:
-    - found_keywords: SOLO palabras que aparecen en el CV
-    - missing_keywords: palabras que aparecen en la descripción del trabajo pero NO en el CV
-    - Las keywords deben ser palabras individuales o términos técnicos
+    - found_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en el CV
+    - missing_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del trabajo pero NO en el CV
+    - Las keywords deben ser palabras individuales o términos técnicos específicos
+    - NO inferir keywords relacionadas o similares que no estén mencionadas
     - Sin explicaciones largas, sin paréntesis, sin contexto adicional
 
     REGLAS ESPECÍFICAS PARA IMPACT_VERBS_ANALYSIS:
@@ -346,6 +360,7 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     - ATS_COMPLIANCE: 1-2 keywords técnicas faltantes (65-75), 3+ keywords técnicas (50-65)
     - Enfocar feedback solo en keywords técnicas faltantes críticas
     - Los scores finales no pueden ser menores a 0
+    - IMPORTANTE: NO inventar o inferir keywords que no estén explícitamente en la descripción del puesto
 
     Responde ÚNICAMENTE con el JSON completo, sin texto adicional.
     """
@@ -378,9 +393,13 @@ def get_cv_analysis_basic_prompt(puesto: str, filename: str, descripcion_puesto:
     """
     
     return f"""
-    Eres un experto analista de CVs especializado en análisis de FORMATO, ORTOGRAFÍA y ELEMENTOS ESENCIALES.
-    
-    Tu tarea es analizar la PARTE BÁSICA de un CV para el {puesto_context} y generar un análisis en formato JSON.
+    CONTEXTO Y PROPÓSITO:
+    Eres un experto analista de CVs especializado en análisis de FORMATO, ORTOGRAFÍA y ELEMENTOS ESENCIALES. Tu función es analizar la parte básica de CVs de candidatos para evaluar su presentación, estructura y elementos fundamentales. El usuario te proporciona un CV para que puedas hacer un análisis objetivo basado únicamente en la información explícita del documento.
+
+    Tu análisis debe ser preciso, basado únicamente en la información que aparece claramente en el CV, y debe proporcionar insights valiosos sobre la calidad de presentación del documento.
+
+    TAREA ACTUAL:
+    Analizar la PARTE BÁSICA de un CV para el {puesto_context} y generar un análisis en formato JSON.
     El nombre del archivo es "{filename}". {page_info}{match_score_info}
     
     IMPORTANTE: 
@@ -570,9 +589,13 @@ def get_cv_analysis_detailed_prompt(puesto: str, filename: str, descripcion_pues
     page_info = f"El PDF tiene {page_count} página{'s' if page_count > 1 else ''}."
     
     return f"""
-    Eres un experto analista de CVs especializado en análisis de CONTENIDO DETALLADO, EXPERIENCIA LABORAL y KEYWORDS.
-    
-    Tu tarea es analizar la PARTE DETALLADA de un CV para el {puesto_context} y generar un análisis en formato JSON.
+    CONTEXTO Y PROPÓSITO:
+    Eres un experto analista de CVs especializado en análisis de CONTENIDO DETALLADO, EXPERIENCIA LABORAL y KEYWORDS. Tu función es analizar la parte detallada de CVs de candidatos para evaluar su experiencia, habilidades y alineación con puestos específicos. El usuario te proporciona un CV y una descripción del puesto para que puedas hacer un análisis comprehensivo basado únicamente en la información explícita del documento.
+
+    Tu análisis debe ser objetivo, basado únicamente en la información que aparece claramente en el CV, y debe proporcionar insights valiosos sobre la relevancia del candidato para el puesto específico.
+
+    TAREA ACTUAL:
+    Analizar la PARTE DETALLADA de un CV para el {puesto_context} y generar un análisis en formato JSON.
     El nombre del archivo es "{filename}". {page_info}
     
     IMPORTANTE: 
@@ -659,7 +682,7 @@ def get_cv_analysis_detailed_prompt(puesto: str, filename: str, descripcion_pues
     }}
 
     REGLAS ESPECÍFICAS PARA KEYWORDS:
-    - found_keywords: SOLO palabras que aparecen en el CV (no en la descripción del trabajo)
+    - found_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en el CV (no en la descripción del trabajo)
     - missing_keywords: SOLO palabras que aparecen EXPLÍCITAMENTE en la descripción del trabajo pero NO en el CV
     - Las keywords deben ser palabras individuales o términos técnicos específicos
     - NO inferir keywords adicionales que no estén explícitamente mencionadas en la descripción del puesto
@@ -671,27 +694,32 @@ def get_cv_analysis_detailed_prompt(puesto: str, filename: str, descripcion_pues
     - NO inferir tecnologías relacionadas o similares que no estén mencionadas
     - NO agregar keywords adicionales por similitud o contexto
     - Ser directo y específico: solo palabras exactas de la descripción
+    - IMPORTANTE: NO inventar o inferir keywords que no estén explícitamente en la descripción del puesto
 
     REGLAS ESPECÍFICAS PARA WORK_EXPERIENCE_ANALYSIS:
-    - Analiza cada experiencia laboral encontrada en el CV
-    - La descripción "current" debe ser exactamente como aparece en el CV
+    - Analiza SOLO cada experiencia laboral que aparezca EXPLÍCITAMENTE en el CV
+    - La descripción "current" debe ser exactamente como aparece en el CV (texto literal)
     - La descripción "recommended" debe ser una versión mejorada con verbos de impacto y resultados cuantificables
     - Enfócate en mejorar la claridad y el impacto de las descripciones
+    - NO inventes experiencias laborales que no estén mencionadas en el CV
 
     REGLAS ESPECÍFICAS PARA VOLUNTEERING_ANALYSIS:
-    - Analiza cada experiencia de voluntariado encontrada en el CV
+    - Analiza SOLO cada experiencia de voluntariado que aparezca EXPLÍCITAMENTE en el CV
     - Aplica las mismas reglas que para work_experience_analysis
     - Enfócate en mostrar el impacto y las habilidades desarrolladas
+    - NO inventes experiencias de voluntariado que no estén mencionadas en el CV
 
     REGLAS ESPECÍFICAS PARA EDUCATION_ANALYSIS:
-    - Analiza cada título educativo encontrado en el CV
+    - Analiza SOLO cada título educativo que aparezca EXPLÍCITAMENTE en el CV
     - Incluye comentarios sobre la relevancia de la educación para el puesto
     - Considera la calidad de la institución y la fecha de graduación
+    - NO inventes títulos educativos que no estén mencionados en el CV
 
     REGLAS ESPECÍFICAS PARA EXECUTIVE_SUMMARY_ANALYSIS:
-    - El "current" debe ser el resumen ejecutivo actual del CV
+    - El "current" debe ser el resumen ejecutivo actual del CV (SOLO si existe explícitamente en el CV)
     - El "recommended" debe ser una versión mejorada que destaque las fortalezas principales
     - Enfócate en hacer el resumen más impactante y relevante para el puesto
+    - NO inventes un resumen ejecutivo si no existe en el CV
 
     Responde ÚNICAMENTE con el JSON de la PARTE 2, sin texto adicional.
     """
