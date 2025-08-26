@@ -26,7 +26,7 @@ def generar_pdf_con_secciones(datos_cv, nombre_archivo, logo_path, ruta_logo2):
     """
     try:
         ancho = 8.5 * inch
-        alto = 60 * inch  # Tamaño carta
+        alto = 65 * inch  # Tamaño carta
 
         c = canvas.Canvas(CARPETA_PDFS + nombre_archivo, pagesize=(ancho, alto))
 
@@ -43,11 +43,14 @@ def generar_pdf_con_secciones(datos_cv, nombre_archivo, logo_path, ruta_logo2):
         espacio_entre_secciones = 20
 
         # Generar todas las secciones en orden
+        
         try:
             altura = seccion_2(c, ancho, alto, y_actual, datos_cv)
             y_actual -= altura + espacio_entre_secciones
         except Exception as e:
             print(f"Error al renderizar sección 2 (análisis principal): {e}")
+            import traceback
+            print(f"Traceback completo: {traceback.format_exc()}")
             raise e
 
         try:

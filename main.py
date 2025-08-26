@@ -35,7 +35,8 @@ class JobPosition(BaseModel):
     description: Optional[str] = None
 
 class CVAnalysisRequest(BaseModel):
-    pdf_url: str
+    cv_data: dict  # JSON estructurado con los datos del CV
+    pdf_url: str   # URL del PDF para calcular número de páginas
     filename: str
     position: JobPosition
     match_score: Optional[float] = None
@@ -160,42 +161,29 @@ async def backup_static():
 @app.post("/analizar-cv/")
 async def analizar_cv(request: CVAnalysisRequest):
     """
-            Endpoint principal para analizar CV usando la nueva tecnología de Gemini para leer archivos directamente desde URL
+            Endpoint principal para analizar CV usando datos JSON estructurados
     """
     import time
     start_time = time.time()
     
     try:
-        # PASO 1: Verificar que la URL del PDF sea accesible
-        print("🔍 Paso 1: Verificando URL del PDF...")
-        try:
-            response = requests.head(request.pdf_url, timeout=10)
-            if response.status_code != 200:
-                return JSONResponse(
-                    status_code=400,
-                    content={
-                        "status": "error",
-                        "message": f"No se puede acceder al PDF en la URL: {request.pdf_url}"
-                    }
-                )
-        except Exception as e:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"❌ Error al verificar URL del PDF: {e}")
-            print(f"⏱️ Tiempo total: {elapsed_time:.2f} segundos")
+        # PASO 1: Verificar que los datos del CV sean válidos
+        print("🔍 Paso 1: Verificando datos del CV...")
+        if not request.cv_data:
             return JSONResponse(
                 status_code=400,
                 content={
                     "status": "error",
-                    "message": f"Error al verificar URL del PDF: {str(e)}"
+                    "message": "Los datos del CV no pueden estar vacíos"
                 }
             )
         
-        # PASO 2: Realizar análisis completo usando la nueva API de Gemini para archivos
+        # PASO 2: Realizar análisis completo usando los datos JSON del CV
         print("🤖 Paso 2: Realizando análisis de IA...")
         try:
             analysis_results = ai_service.analyze_cv_complete(
-                file_url=request.pdf_url,
+                cv_data=request.cv_data,
+                pdf_url=request.pdf_url,
                 puesto=request.position.title,
                 filename=request.filename,
                 descripcion_puesto=request.position.description,

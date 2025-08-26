@@ -1,26 +1,22 @@
 """
 Servicio para manejar las llamadas a Google Gemini usando la nueva API
 """
-import asyncio
 from google import genai
+from google.genai import types
 import json
 from typing import Dict, Any
-import threading
 import time
 import fitz  # PyMuPDF
 import requests
-import tempfile
-import os
-from io import BytesIO
-from .prompts.cv_analysis_prompts import get_cv_analysis_prompt, get_cv_analysis_basic_prompt, get_cv_analysis_detailed_prompt
-from .cv_analysis_schema import CVAnalysisResult, CVAnalysisBasic, CVAnalysisDetailed
+from .prompts.cv_analysis_prompts import get_cv_analysis_prompt
+from .cv_analysis_schema import CVAnalysisResult
 
 
 class AIService:
     def __init__(self, api_key: str):
         """Inicializa el servicio de IA con la API key"""
         self.client = genai.Client(api_key=api_key)
-        self.model = "gemini-2.5-flash"
+        self.model = "gemini-2.5-flash-lite"
 
     def get_pdf_page_count(self, file_url: str) -> int:
         """
@@ -58,328 +54,145 @@ class AIService:
             else:
                 raise Exception(f"Error al procesar el PDF: {str(e)}")
 
-    def call_gemini(self, prompt: str, file_url: str) -> CVAnalysisResult:
-        """
-        Realiza una llamada síncrona a Gemini usando la nueva API con responseSchema
-        """
-        try:
-            print(f"🔄 Iniciando llamada completa con modelo: {self.model}")
-            start_time = time.time()
-            
-            # Realizar la llamada a Gemini directamente con la URL del PDF
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=[prompt, file_url],
-                config={
-                    "response_mime_type": "application/json",
-                    "response_schema": CVAnalysisResult,
-                    "temperature": 1,  # Configuración para análisis completo (fallback)
-                },
-            )
-            
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"✅ Llamada completa completada en {elapsed_time:.2f} segundos")
-            
-            # Retornar el objeto parseado directamente
-            return response.parsed
-        except Exception as e:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"❌ Error en llamada a Gemini (completa) después de {elapsed_time:.2f} segundos: {e}")
-            raise e
 
-    def call_gemini_basic(self, prompt: str, file_url: str) -> CVAnalysisBasic:
-        """
-        Realiza una llamada síncrona a Gemini para el análisis básico
-        """
-        try:
-            print(f"🔄 Iniciando llamada básica con modelo: {self.model}")
-            start_time = time.time()
-            
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=[prompt, file_url],
-                config={
-                    "response_mime_type": "application/json",
-                    "response_schema": CVAnalysisBasic,
-                    "temperature": 0.0,  # Configuración específica para análisis básico
-                },
-            )
-            
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"✅ Llamada básica completada en {elapsed_time:.2f} segundos")
-            
-            return response.parsed
-        except Exception as e:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"❌ Error en llamada a Gemini (análisis básico) después de {elapsed_time:.2f} segundos: {e}")
-            raise e
-
-    def call_gemini_detailed(self, prompt: str, file_url: str) -> CVAnalysisDetailed:
-        """
-        Realiza una llamada síncrona a Gemini para el análisis detallado
-        """
-        try:
-            print(f"🔄 Iniciando llamada detallada con modelo: {self.model}")
-            start_time = time.time()
-            
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=[prompt, file_url],
-                config={
-                    "response_mime_type": "application/json",
-                    "response_schema": CVAnalysisDetailed,
-                    "temperature": 0.0,  # Configuración específica para análisis detallado
-                },
-            )
-            
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"✅ Llamada detallada completada en {elapsed_time:.2f} segundos")
-            
-            return response.parsed
-        except Exception as e:
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            print(f"❌ Error en llamada a Gemini (análisis detallado) después de {elapsed_time:.2f} segundos: {e}")
-            raise e
-
-    def _call_gemini_thread(self, prompt: str, file_url: str, result_container: list, index: int):
-        """
-        Función auxiliar para llamadas en thread
-        """
-        try:
-            response = self.call_gemini(prompt, file_url)
-            if response:
-                result_container[index] = response
-        except Exception as e:
-            print(f"Error en thread {index}: {e}")
-
-    def _call_gemini_basic_thread(self, prompt: str, file_url: str, result_container: list, index: int):
-        """
-        Función auxiliar para llamadas en thread del análisis básico
-        """
-        try:
-            print(f"🔄 Iniciando análisis básico en thread {index}")
-            response = self.call_gemini_basic(prompt, file_url)
-            if response:
-                result_container[index] = response
-                print(f"✅ Análisis básico completado en thread {index}")
-            else:
-                print(f"❌ Análisis básico retornó None en thread {index}")
-        except Exception as e:
-            print(f"❌ Error en thread básico {index}: {e}")
-            print(f"   Tipo de error: {type(e).__name__}")
-            import traceback
-            print(f"   Traceback: {traceback.format_exc()}")
-            result_container[index] = None
-
-    def _call_gemini_detailed_thread(self, prompt: str, file_url: str, result_container: list, index: int):
-        """
-        Función auxiliar para llamadas en thread del análisis detallado
-        """
-        try:
-            print(f"🔄 Iniciando análisis detallado en thread {index}")
-            response = self.call_gemini_detailed(prompt, file_url)
-            if response:
-                result_container[index] = response
-                print(f"✅ Análisis detallado completado en thread {index}")
-            else:
-                print(f"❌ Análisis detallado retornó None en thread {index}")
-        except Exception as e:
-            print(f"❌ Error en thread detallado {index}: {e}")
-            print(f"   Tipo de error: {type(e).__name__}")
-            import traceback
-            print(f"   Traceback: {traceback.format_exc()}")
-            result_container[index] = None
 
 
 
     def _patch_response_with_match_score(self, analysis_result: Dict[str, Any], match_score: float) -> Dict[str, Any]:
-        """
-        Parchea la respuesta JSON para asegurar que el match_score se incluya en main_analysis.score
-        """
-        try:
-            # Validar que analysis_result no sea None
-            if analysis_result is None:
-                print("⚠️ analysis_result es None, no se puede parchear")
-                return {}
-            
-            # Validar que analysis_result sea un diccionario
-            if not isinstance(analysis_result, dict):
-                print(f"⚠️ analysis_result no es un diccionario, es: {type(analysis_result)}")
-                return {}
-            
-            # Validar que match_score esté en el rango correcto (0-100)
-            if match_score is not None:
-                if match_score < 0 or match_score > 100:
-                    print(f"⚠️ Warning: match_score ({match_score}) está fuera del rango 0-100")
-                    # Ajustar al rango válido
-                    match_score = max(0, min(100, match_score))
-                    print(f"✅ Ajustado match_score a: {match_score}")
-            
-            # Crear una copia del resultado para no modificar el original
-            patched_result = analysis_result.copy()
-            
-            # Asegurar que main_analysis existe
-            if 'main_analysis' not in patched_result:
-                patched_result['main_analysis'] = {}
-            
-            # Si se proporcionó match_score, SIEMPRE usarlo exactamente como está
-            current_score = patched_result['main_analysis'].get('score', None)
-            
-            # Si hay match_score, usarlo exactamente sin importar la diferencia
-            if match_score is not None:
-                patched_result['main_analysis']['score'] = int(match_score)
-                
-                # Actualizar el ai_feedback si no menciona el match_score
-                current_feedback = patched_result['main_analysis'].get('ai_feedback', '')
-                if 'match_score' not in current_feedback.lower() and 'ats' not in current_feedback.lower():
-                    patched_result['main_analysis']['ai_feedback'] = (
-                        f"Score ATS proporcionado: {match_score}. " + current_feedback
-                    )
-                
-                print(f"✅ Parcheado main_analysis.score con match_score: {match_score}")
-            
-            # También asegurar que ats_compliance tenga el score correcto
-            if 'ats_compliance' in patched_result and match_score is not None:
-                patched_result['ats_compliance']['score'] = int(match_score)
-                print(f"✅ Parcheado ats_compliance.score con match_score: {match_score}")
-            
-            return patched_result
-            
-        except Exception as e:
-            print(f"⚠️ Error al parchear respuesta con match_score: {e}")
-            return analysis_result
+        """Aplica el match_score a la respuesta del análisis"""
+        if not analysis_result or not isinstance(analysis_result, dict):
+            return analysis_result or {}
+        
+        # Ajustar match_score al rango válido
+        match_score = max(0, min(100, match_score))
+        
+        patched_result = analysis_result.copy()
+        
+        # Aplicar match_score a main_analysis
+        if 'main_analysis' not in patched_result:
+            patched_result['main_analysis'] = {}
+        
+        patched_result['main_analysis']['score'] = int(match_score)
+        
+        # Aplicar match_score a ats_compliance
+        if 'ats_compliance' in patched_result:
+            patched_result['ats_compliance']['score'] = int(match_score)
+        
+        return patched_result
 
-    def analyze_cv_complete(self, file_url: str, puesto: str, filename: str, descripcion_puesto: str = None, match_score: float = None) -> Dict[str, Any]:
+    def analyze_cv_single(self, cv_data: dict, pdf_url: str, puesto: str, filename: str, descripcion_puesto: str = None, match_score: float = None) -> Dict[str, Any]:
         """
-        Realiza el análisis completo del CV usando procesamiento paralelo optimizado
-        Divide el análisis en dos partes que se ejecutan en paralelo para reducir el tiempo de respuesta
+        Analiza el CV usando una sola llamada a Gemini con thinking habilitado
         """
         try:
-            # Obtener y validar el número de páginas del PDF
-            page_count = self.get_pdf_page_count(file_url)
+            print("🚀 Iniciando análisis de CV")
             
-            # Generar prompts para cada parte del análisis
-            basic_prompt = get_cv_analysis_basic_prompt(puesto, filename, descripcion_puesto, page_count, match_score)
-            detailed_prompt = get_cv_analysis_detailed_prompt(puesto, filename, descripcion_puesto, page_count, match_score)
+            # Calcular número de páginas del PDF
+            page_count = self.get_pdf_page_count(pdf_url)
             
-            print("🚀 Iniciando análisis paralelo: Parte 1 (Básico) y Parte 2 (Detallado)")
+            # Preparar datos y prompt
+            cv_text = self._format_cv_data_to_text(cv_data)
+            complete_prompt = get_cv_analysis_prompt(puesto, filename, descripcion_puesto, page_count, match_score)
             
-            # Contenedores para almacenar las respuestas (usar listas para poder modificar desde los threads)
-            basic_results = [None]
-            detailed_results = [None]
-            
-            # Crear threads para análisis paralelo
-            basic_thread = threading.Thread(
-                target=self._call_gemini_basic_thread,
-                args=(basic_prompt, file_url, basic_results, 0)
-            )
-            
-            detailed_thread = threading.Thread(
-                target=self._call_gemini_detailed_thread,
-                args=(detailed_prompt, file_url, detailed_results, 0)
-            )
-            
-            # Iniciar ambos threads
+            # Llamada a Gemini
             start_time = time.time()
-            basic_thread.start()
-            detailed_thread.start()
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=[complete_prompt, cv_text],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=CVAnalysisResult,
+                    temperature=1,
+                    thinking_config=types.ThinkingConfig(
+                        thinking_budget=1024,
+                        include_thoughts=True
+                    )
+                ),
+            )
             
-            print("🔄 Threads iniciados, esperando completación...")
+            print(f"⏱️ Análisis completado en {time.time() - start_time:.2f}s")
             
-            # Esperar a que ambos threads terminen
-            basic_thread.join()
-            detailed_thread.join()
+            # Verificar respuesta
+            if not response.parsed:
+                raise Exception("Fallo en análisis: respuesta vacía")
             
-            end_time = time.time()
-            total_thread_time = end_time - start_time
-            print(f"⏱️ Tiempo total de threads: {total_thread_time:.2f} segundos")
-            
-            # Obtener los resultados
-            basic_result = basic_results[0]
-            detailed_result = detailed_results[0]
-            
-            print(f"📊 Resultados obtenidos:")
-            print(f"   - Análisis básico: {'✅ Completado' if basic_result else '❌ Falló'}")
-            print(f"   - Análisis detallado: {'✅ Completado' if detailed_result else '❌ Falló'}")
-            
-            # Mostrar resumen de tiempos
-            print(f"📈 Resumen de tiempos:")
-            print(f"   - Tiempo total paralelo: {total_thread_time:.2f} segundos")
-            print(f"   - Si fuera secuencial: ~{total_thread_time * 2:.2f} segundos (estimado)")
-            print(f"   - Ahorro estimado: ~{total_thread_time:.2f} segundos")
-            
-            # Verificar que ambos análisis se completaron exitosamente
-            if basic_result is None:
-                raise Exception("No se pudo completar el análisis básico - revisa los logs anteriores para más detalles")
-            
-            if detailed_result is None:
-                raise Exception("No se pudo completar el análisis detallado - revisa los logs anteriores para más detalles")
-            
-            print("✅ Análisis paralelo completado exitosamente")
-            
-            # Combinar los resultados
-            combined_result = self._combine_analysis_results(basic_result, detailed_result)
-            
-            # Parchear la respuesta con match_score si se proporcionó
+            # Convertir a diccionario y aplicar match_score si existe
+            result_dict = response.parsed.model_dump() if hasattr(response.parsed, 'model_dump') else response.parsed
             if match_score is not None:
-                combined_result = self._patch_response_with_match_score(combined_result, match_score)
+                result_dict = self._patch_response_with_match_score(result_dict, match_score)
             
-            return combined_result
+            # Generar campos "current" desde cv_data
+            result_dict = self._add_current_fields_from_cv_data(result_dict, cv_data)
+            
+            return result_dict
             
         except Exception as e:
-            print(f"❌ Error en análisis paralelo: {e}")
-            print("🔄 Intentando análisis completo como fallback...")
-            
-            # Fallback: usar el método original completo
-            try:
-                print("🔄 Iniciando análisis completo de fallback...")
-                fallback_start_time = time.time()
-                
-                comprehensive_prompt = get_cv_analysis_prompt(puesto, filename, descripcion_puesto, page_count, match_score)
-                result = self.call_gemini(comprehensive_prompt, file_url)
-                if result:
-                    combined_result = result.model_dump()
-                    
-                    fallback_end_time = time.time()
-                    fallback_total_time = fallback_end_time - fallback_start_time
-                    print(f"✅ Análisis completo de fallback exitoso en {fallback_total_time:.2f} segundos")
-                    
-                    # Parchear la respuesta con match_score si se proporcionó
-                    if match_score is not None:
-                        combined_result = self._patch_response_with_match_score(combined_result, match_score)
-                    
-                    return combined_result
-                else:
-                    raise Exception("Análisis completo de fallback retornó None")
-            except Exception as fallback_error:
-                print(f"❌ Error en análisis de fallback: {fallback_error}")
-                raise Exception(f"Tanto el análisis paralelo como el fallback fallaron. Error paralelo: {e}. Error fallback: {fallback_error}")
-                
-        except Exception as e:
-            print(f"Error en analyze_cv_complete: {e}")
+            print(f"❌ Error en análisis: {e}")
             raise e
 
-    def _combine_analysis_results(self, basic_result: CVAnalysisBasic, detailed_result: CVAnalysisDetailed) -> Dict[str, Any]:
-        """
-        Combina los resultados del análisis básico y detallado en un solo diccionario
-        """
+    def _format_cv_data_to_text(self, cv_data: dict) -> str:
+        """Convierte los datos del CV a JSON string"""
+        return f"DATOS DEL CV:\n{json.dumps(cv_data, ensure_ascii=False, indent=2)}"
+
+    def _add_current_fields_from_cv_data(self, result_dict: dict, cv_data: dict) -> dict:
+        """Agrega campos 'current' desde cv_data al resultado"""
         try:
-            # Convertir ambos resultados a diccionarios
-            basic_dict = basic_result.model_dump()
-            detailed_dict = detailed_result.model_dump()
-            
-            # Combinar los diccionarios
-            combined_dict = {**basic_dict, **detailed_dict}
-            
-            print("🔗 Resultados combinados exitosamente")
-            return combined_dict
+            # Work Experience Analysis
+            if 'work_experience_analysis' in result_dict and 'workExperience' in cv_data:
+                for work_analysis in result_dict['work_experience_analysis']:
+                    # Buscar experiencia por ID
+                    work_id = work_analysis.get('id')
+                    if work_id:
+                        matching_exp = next((exp for exp in cv_data['workExperience'] 
+                                           if exp.get('id') == work_id), None)
+                        if matching_exp:
+                            # Usar achievements para work experience
+                            achievements = matching_exp.get('achievements', [])
+                            if achievements:
+                                current_desc = ". ".join(achievements)
+                            else:
+                                current_desc = "No hay logros disponibles"
+                            
+                            work_analysis['current'] = current_desc
+
+            # Skills Tools Analysis
+            if 'skills_tools_analysis' in result_dict and 'skills' in cv_data:
+                skills_list = []
+                for skill in cv_data['skills']:
+                    skill_desc = skill.get('name', '')
+                    if skill.get('level'):
+                        skill_desc += f" ({skill['level']})"
+                    skills_list.append(skill_desc)
+                
+                result_dict['skills_tools_analysis']['current_skills'] = ', '.join(skills_list)
+
+            # Volunteering Analysis
+            if 'volunteering_analysis' in result_dict and 'volunteer' in cv_data:
+                for volunteer_analysis in result_dict['volunteering_analysis']:
+                    # Buscar voluntariado por ID
+                    volunteer_id = volunteer_analysis.get('id')
+                    if volunteer_id:
+                        matching_volunteer = next((vol for vol in cv_data['volunteer'] 
+                                                 if vol.get('id') == volunteer_id), None)
+                        if matching_volunteer:
+                            # Usar description para volunteering (puede ser 'description' o 'descripcion')
+                            current_desc = matching_volunteer.get('description') or matching_volunteer.get('descripcion', 'No hay descripción')
+                            volunteer_analysis['current'] = current_desc
+
+            # Executive Summary Analysis
+            if 'executive_summary_analysis' in result_dict and 'personalInfo' in cv_data:
+                summary = cv_data['personalInfo'].get('summary', '')
+                if summary:
+                    result_dict['executive_summary_analysis']['current'] = summary
+
+            return result_dict
             
         except Exception as e:
-            print(f"Error al combinar resultados: {e}")
-            raise e
+            print(f"⚠️ Error al agregar campos current: {e}")
+            return result_dict
+
+    def analyze_cv_complete(self, cv_data: dict, pdf_url: str, puesto: str, filename: str, descripcion_puesto: str = None, match_score: float = None) -> Dict[str, Any]:
+        """Analiza el CV usando una sola llamada a Gemini"""
+        return self.analyze_cv_single(cv_data, pdf_url, puesto, filename, descripcion_puesto, match_score)
+
+

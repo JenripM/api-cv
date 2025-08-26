@@ -102,6 +102,7 @@ class CVAnalysisBasic(BaseModel):
 # Campos que requieren análisis profundo de contenido específico
 class WorkExperience(BaseModel):
     company: str
+    id: str
     current: str
     recommended: str
 
@@ -113,6 +114,7 @@ class SkillsToolsAnalysis(BaseModel):
 
 class Volunteering(BaseModel):
     organization: str
+    id: str
     current: str
     recommended: str
 

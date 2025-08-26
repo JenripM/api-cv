@@ -15,6 +15,7 @@ green = HexColor('#008000')
 
 def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     """2. Sección de análisis principal con velocímetro"""
+    
     # Actualizar claves según el nuevo formato
     analisis = datos_cv.get('main_analysis', {}).get('ai_feedback', 'Analysis not available')
     porcentaje = datos_cv.get('main_analysis', {}).get('score', 0)
@@ -47,15 +48,16 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     ancho_disponible = ancho - 2 * margen_horizontal - 2 * padding_interno
     w_analisis, h_analisis = par_analisis.wrap(ancho_disponible, 1000)  # altura máxima para calcular
     
-    # Calcular altura total necesaria
-    altura_elementos_fijos = 200  # espacio para nombre, puesto, velocímetro y estado
-    altura_analisis_necesaria = h_analisis + 40  # altura del análisis + padding
+    # Calcular altura total necesaria - RESPONSIVE
+    altura_elementos_fijos = 300  # espacio para nombre, puesto, velocímetro, estado y separación
+    altura_analisis_necesaria = h_analisis + 60  # altura del análisis + padding extra
     alto_rectangulo = max(alto_minimo, altura_elementos_fijos + altura_analisis_necesaria)
     
     # Ajustar altura del degradado si es necesario
     alto_degradado = max(alto_degradado, alto_rectangulo - 100)
 
     # Dibujar imagen de fondo con las dimensiones deseadas
+
     c.drawImage(imagen_fondo, 0, y_inicio - alto_degradado, width=ancho, height=alto_degradado)
 
     # 2. Dimensiones y posición del div con sombra y rectángulo blanco
@@ -104,6 +106,7 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     centro_y = y_div + alto_div / 2 - espacio_antes_velocimetro
     radio = 80
     valor = porcentaje / 10  # Divide el porcentaje entre 10 para obtener el valor adecuado
+    
 
     # Asumo que tienes la función dibujar_velocimetro definida en otro lado
     dibujar_velocimetro(c, centro_x, centro_y, radio, valor)
@@ -121,7 +124,7 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
         palabra_estado = "REGULAR!"
         color_estado = orange
     else:
-        palabra_estado = "BAJO!"
+        palabra_estado = "PESIMO!"
         color_estado = red
 
     texto_base = "Tu CV está "
@@ -142,28 +145,19 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     c.setFillColor(color_estado)
     c.drawString(text_x + ancho_base, text_y, palabra_estado)
 
-    # 7. Análisis con altura dinámica
+    # 7. Análisis con altura dinámica - RESPONSIVE
     c.setFont("Poppins-Regular", 10)
     c.setFillColor(grey)
 
-    # Calcular posición del análisis dinámicamente
-    y_analisis_pos = text_y - 20 - h_analisis  # Posición ajustada dinámicamente
-
+    # Calcular posición del análisis - RESPONSIVE: siempre debajo del texto "Tu CV está..."
+    separacion_analisis = 40  # Separación fija entre el texto de estado y el análisis
+    y_analisis_pos = text_y - separacion_analisis  # Posición relativa al texto de estado
+    
     # Verificar que el análisis no se salga de la card
-    if y_analisis_pos < y_div + padding_interno:
-        # Si se sale, ajustar la altura de la card
-        espacio_necesario = y_div + padding_interno - y_analisis_pos
-        alto_rectangulo += espacio_necesario
-        alto_div += espacio_necesario
-        y_div -= espacio_necesario
-        
-        # Redibujar el rectángulo con la nueva altura
-        c.setFillColor(white)
-        c.roundRect(x_div, y_div, ancho_div, alto_div, radius=15, fill=1, stroke=0)
-        
-        # Recalcular posición del análisis
-        y_analisis_pos = y_div + padding_interno
-
+    if y_analisis_pos - h_analisis < y_div + padding_interno:
+        # Si se sale, ajustar la posición para que quepa
+        y_analisis_pos = y_div + padding_interno + h_analisis
+    
     # Asegurar que el análisis se dibuje dentro de los límites de la card
     ancho_analisis_disponible = ancho_div - 2 * padding_interno
     x_analisis = x_div + padding_interno
@@ -172,11 +166,13 @@ def seccion_2(c, ancho, alto, y_inicio, datos_cv):
     par_analisis_final = Paragraph(analisis, estilo_analisis)
     w_final, h_final = par_analisis_final.wrap(ancho_analisis_disponible, 1000)
     
-    par_analisis_final.drawOn(c, x_analisis, y_analisis_pos)
+
+    par_analisis_final.drawOn(c, x_analisis, y_analisis_pos - h_final)  # Ajustar posición final
 
     x_texto = margen_horizontal
     y_texto = y_inicio - 30
     c.setFont("Poppins-Regular", 12)
     c.setFillColor(black)
     altura_ocupada = alto_rectangulo + 20  # altura total usada por la sección
+    
     return altura_ocupada

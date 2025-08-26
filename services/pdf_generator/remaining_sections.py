@@ -1215,62 +1215,68 @@ def seccion_11(c, ancho, alto, y_inicio, datos_cv):
                 y_educ -= 10
 
     # -------------------------------------------------------------------
-    # Voluntariado
+    # Voluntariado (solo si hay datos)
     # -------------------------------------------------------------------
-    c.setFont("Poppins-Bold", 14)
-    c.setFillColor(azul_titulo)
-
-    # Agregar más separación antes de la sección de Voluntariado
-    y_vol = y_educ - 50  # He aumentado la separación de 30 a 50
-    c.drawString(margen_izq, y_vol, "Voluntariado")
-
-    y_vol -= 40  # Ajuste adicional para que la parte de "Voluntariado" no se solape
-    c.setFont("Poppins-SemiBold", 10)
-    c.setFillColor(black)
-    c.drawString(margen_izq, y_vol, "Organización")
-    c.drawString(margen_izq + 100, y_vol, "Texto Actual")
-    c.drawString(margen_izq + 300, y_vol, "Texto Recomendado")
-
-    y_vol -= 20
-    c.setStrokeColor(HexColor("#B0B0B0"))
-    c.setLineWidth(0.7)
-    c.line(margen_izq, y_vol, ancho - margen_der, y_vol)
-    y_vol -= 20
-
     voluntariado = datos_cv.get('volunteering_analysis', [])
-    for item in voluntariado:
-        org = item.get("organization", "No disponible") or "No disponible"
-        actual = item.get("current", "No disponible") or "No disponible"
-        reco = item.get("recommended", "No disponible") or "No disponible"
+    
+    # Solo renderizar la sección si hay datos de voluntariado
+    if voluntariado and len(voluntariado) > 0:
+        c.setFont("Poppins-Bold", 14)
+        c.setFillColor(azul_titulo)
 
-        # Organización
-        y_org = y_vol
-        for linea in wrap_text(org, 90, c, "Poppins-Regular", 9):
-            c.drawString(margen_izq, y_org, linea)
-            y_org -= 12
+        # Agregar más separación antes de la sección de Voluntariado
+        y_vol = y_educ - 50  # He aumentado la separación de 30 a 50
+        c.drawString(margen_izq, y_vol, "Voluntariado")
 
-        # Texto Actual
-        par_act = Paragraph(actual, estilo_just)
-        ancho_act = 180
-        w_act, h_act = par_act.wrap(ancho_act, alto)
-        par_act.drawOn(c, margen_izq + 100, y_vol - h_act + 5)
+        y_vol -= 40  # Ajuste adicional para que la parte de "Voluntariado" no se solape
+        c.setFont("Poppins-SemiBold", 10)
+        c.setFillColor(black)
+        c.drawString(margen_izq, y_vol, "Organización")
+        c.drawString(margen_izq + 100, y_vol, "Texto Actual")
+        c.drawString(margen_izq + 300, y_vol, "Texto Recomendado")
 
-        # Texto Recomendado
-        par_reco = Paragraph(reco, estilo_just)
-        ancho_reco = ancho - (margen_izq + 300) - margen_der
-        w_rec, h_rec = par_reco.wrap(ancho_reco, alto)
-        par_reco.drawOn(c, margen_izq + 300, y_vol - h_rec + 5)
+        y_vol -= 20
+        c.setStrokeColor(HexColor("#B0B0B0"))
+        c.setLineWidth(0.7)
+        c.line(margen_izq, y_vol, ancho - margen_der, y_vol)
+        y_vol -= 20
 
-        # Ajuste de la altura (alineación de las sugerencias)
-        max_h = max(h_act, h_rec)
-        y_vol = y_vol - max_h - 20  # Ajustamos la altura de la siguiente línea
-        if item is not voluntariado[-1]:
-            c.setStrokeColor(HexColor("#B0B0B0"))
-            c.setLineWidth(0.5)
-            c.line(margen_izq, y_vol + 15, ancho - margen_der, y_vol + 15)
+        for item in voluntariado:
+            org = item.get("organization", "No disponible") or "No disponible"
+            actual = item.get("current", "No disponible") or "No disponible"
+            reco = item.get("recommended", "No disponible") or "No disponible"
 
-    altura_ocupada = y_inicio - y_vol
-    return altura_ocupada - 20
+            # Organización
+            y_org = y_vol
+            for linea in wrap_text(org, 90, c, "Poppins-Regular", 9):
+                c.drawString(margen_izq, y_org, linea)
+                y_org -= 12
+
+            # Texto Actual
+            par_act = Paragraph(actual, estilo_just)
+            ancho_act = 180
+            w_act, h_act = par_act.wrap(ancho_act, alto)
+            par_act.drawOn(c, margen_izq + 100, y_vol - h_act + 5)
+
+            # Texto Recomendado
+            par_reco = Paragraph(reco, estilo_just)
+            ancho_reco = ancho - (margen_izq + 300) - margen_der
+            w_rec, h_rec = par_reco.wrap(ancho_reco, alto)
+            par_reco.drawOn(c, margen_izq + 300, y_vol - h_rec + 5)
+
+            # Ajuste de la altura (alineación de las sugerencias)
+            max_h = max(h_act, h_rec)
+            y_vol = y_vol - max_h - 20  # Ajustamos la altura de la siguiente línea
+            if item is not voluntariado[-1]:
+                c.setStrokeColor(HexColor("#B0B0B0"))
+                c.setLineWidth(0.5)
+                c.line(margen_izq, y_vol + 15, ancho - margen_der, y_vol + 15)
+
+        altura_ocupada = y_inicio - y_vol
+        return altura_ocupada - 20
+    else:
+        # Si no hay voluntariado, retornar la altura de la sección anterior
+        return y_inicio - y_educ
 
 # SECCION 12 - JUSTIFICADO
 def seccion_12(c, ancho, alto, y_inicio, datos_cv):
