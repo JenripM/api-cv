@@ -37,7 +37,12 @@ from datetime import datetime
 
 
 load_dotenv()
+# Inicializar Firebase
+cred = credentials.Certificate('regresiva-pagina-myworkin-firebase-adminsdk-fbsvc-ca3e3bb410.json')
+firebase_admin.initialize_app(cred)
 
+# Obtener la instancia de la base de datos Firestore
+db = firestore.client()
 # Modelos de datos para el request
 class JobPosition(BaseModel):
     title: str
@@ -470,15 +475,8 @@ async def run_test():
 
 #obtener data
 
-# Inicializar Firebase
-cred = credentials.Certificate('regresiva-pagina-myworkin-firebase-adminsdk-fbsvc-ca3e3bb410.json')
-firebase_admin.initialize_app(cred)
 
-# Obtener la instancia de la base de datos Firestore
-db = firestore.client()
 
-# Crear la app FastAPI
-app = FastAPI()
 
 # Definir el modelo de datos dinámico para los usuarios
 class User(BaseModel):
