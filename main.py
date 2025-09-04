@@ -27,6 +27,15 @@ from services.pdf_generator.pdf_generator import generar_pdf_con_secciones
 from services.pdf_generator.pdf_utils import descargar_imagen
 from services.ai_service import AIService
 
+
+from fastapi import FastAPI, Query
+from pydantic import BaseModel
+from typing import List, Optional, Dict
+import firebase_admin
+from firebase_admin import credentials, firestore
+from datetime import datetime
+
+
 load_dotenv()
 
 # Modelos de datos para el request
@@ -454,6 +463,158 @@ async def run_test():
     Ejecuta la prueba del endpoint
     """
     await test_analizar_cv()
+
+
+
+
+
+#obtener data
+
+# Inicializar Firebase
+cred = credentials.Certificate('regresiva-pagina-myworkin-firebase-adminsdk-fbsvc-ca3e3bb410.json')
+firebase_admin.initialize_app(cred)
+
+# Obtener la instancia de la base de datos Firestore
+db = firestore.client()
+
+# Crear la app FastAPI
+app = FastAPI()
+
+# Definir el modelo de datos dinámico para los usuarios
+class User(BaseModel):
+    id: str
+    displayName: Optional[str] = None
+    createdAt: str
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    university: Optional[str] = None
+    location: Optional[str] = None
+    photoURL: Optional[str] = None
+    modality: Optional[str] = None
+    cvFileUrl: Optional[str] = None
+    pitchVideoUrl: Optional[str] = None
+    career: Optional[str] = None
+
+    @staticmethod
+    def convertir_fechas_a_string(data: Dict[str, any]) -> Dict[str, str]:
+        for key, value in data.items():
+            if isinstance(value, datetime):
+                data[key] = value.isoformat()
+        return data
+
+# Definir la estructura para la respuesta de la paginación
+class UserResponse(BaseModel):
+    users: List[User]
+    next_last_id: Optional[str] = None
+
+@app.get("/users", response_model=UserResponse)
+async def obtener_users(
+    page_size: int = Query(15, ge=1),
+    last_id: Optional[str] = None,
+    displayName: Optional[str] = None,
+    email: Optional[str] = None,
+    phone: Optional[str] = None,
+    university: Optional[str] = None,
+    location: Optional[str] = None,
+    modality: Optional[str] = None,
+    career: Optional[str] = None,
+    pitchVideoUrl: Optional[bool] = None,
+    cvFileUrl: Optional[bool] = None
+):
+    # Acceder a la colección "users" en Firestore
+    collection_ref = db.collection('users')
+
+    # Inicializar el query - ordenamos por createdAt para consistencia
+    query_ref = collection_ref.order_by('createdAt')
+
+    # Seleccionar solo los campos necesarios para mejorar el rendimiento
+    query_ref = query_ref.select([
+        'id', 'displayName', 'createdAt', 'email', 'phone', 
+        'university', 'location', 'photoURL', 'modality', 
+        'cvFileUrl', 'pitchVideoUrl', 'career'
+    ])
+
+    # Aplicar los filtros de Firestore (excepto displayName, location y career para búsqueda por subcadena)
+    if email:
+        query_ref = query_ref.where('email', '==', email)
+    if phone:
+        query_ref = query_ref.where('phone', '==', phone)
+    if university:
+        query_ref = query_ref.where('university', '==', university)
+    if modality:
+        query_ref = query_ref.where('modality', '==', modality)
+
+    # Verificar si el campo 'pitchVideoUrl' existe o no existe
+    if pitchVideoUrl is not None:
+        if pitchVideoUrl:
+            query_ref = query_ref.where('pitchVideoUrl', '>', '')
+        else:
+            query_ref = query_ref.where('pitchVideoUrl', '==', '')
+
+    # Verificar si el campo 'cvFileUrl' existe o no existe
+    if cvFileUrl is not None:
+        if cvFileUrl:
+            query_ref = query_ref.where('cvFileUrl', '>', '')
+        else:
+            query_ref = query_ref.where('cvFileUrl', '==', '')
+
+    # Si 'last_id' está presente, agregamos un 'start_after' para hacer la paginación
+    if last_id:
+        last_doc = collection_ref.document(last_id).get()
+        if last_doc.exists:
+            query_ref = query_ref.start_after(last_doc)
+
+    # Obtener todos los documentos (sin límite inicial)
+    all_docs = query_ref.stream()
+
+    # Formatear la respuesta
+    users = []
+    last_document = None
+
+    # Iterar sobre los documentos
+    for doc in all_docs:
+        user_data = doc.to_dict()
+        user_data = User.convertir_fechas_a_string(user_data)
+        user_data['id'] = doc.id
+        
+        # Aplicar filtros de displayName, location y career en memoria si se proporcionan
+        matches_displayName = True
+        matches_location = True
+        matches_career = True
+        
+        # Búsqueda case-insensitive por subcadena en displayName
+        if displayName:
+            matches_displayName = (user_data.get('displayName') and 
+                                  displayName.lower() in user_data['displayName'].lower())
+        
+        # Búsqueda case-insensitive por subcadena en location
+        if location:
+            matches_location = (user_data.get('location') and 
+                               location.lower() in user_data['location'].lower())
+        
+        # Búsqueda case-insensitive por subcadena en career
+        if career:
+            matches_career = (user_data.get('career') and 
+                             career.lower() in user_data['career'].lower())
+        
+        # Si todos los filtros coinciden (o no se aplicaron), agregar el usuario
+        if matches_displayName and matches_location and matches_career:
+            users.append(User(**user_data))
+        
+        last_document = doc
+
+        # Si alcanzamos el tamaño de página, salir del bucle
+        if len(users) >= page_size:
+            break
+
+    # Si hay un último documento, devolvemos el ID para la siguiente página
+    next_last_id = last_document.id if last_document else None
+
+    # Devolver la respuesta en el formato esperado
+    return UserResponse(users=users[:page_size], next_last_id=next_last_id)
+
+
+
 
 if __name__ == "__main__":
     import asyncio
