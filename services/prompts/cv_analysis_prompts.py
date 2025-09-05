@@ -227,6 +227,17 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
 
     ### common_errors (String): Lista de errores comunes separados por guiones (-)
     ### strengths (String): Lista de fortalezas separadas por guiones (-)
+    ### aspects_to_improve (Array): Lista de aspectos específicos que el candidato debe mejorar. Cada elemento debe ser EXACTAMENTE una de estas opciones:
+    - "Logros cuantificables"              // Resultados medibles en proyectos/prácticas
+    - "Palabras clave del sector"          // Match con competencias del puesto
+    - "Experiencia práctica relevante"     // Prácticas, proyectos, voluntariado
+    - "Objetivos profesionales claros"     // Qué quiere lograr profesionalmente
+    - "Ortografía y gramática"             // Corrección en el texto
+    - "Longitud apropiada del CV"          // Extensión adecuada para early career
+    - "Proyectos destacados"               // Trabajos universitarios, side projects
+    - "Idiomas relevantes"                 // Idioma requerido para el puesto
+    - "Herramientas de ofimática"          // Excel, Word, PowerPoint (nivel intermedio/avanzado)
+    - "Herramientas de IA"                 // ChatGPT, Midjourney, etc.
 
     ## FORMATO JSON ESPERADO:
 
@@ -335,7 +346,8 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
             "score": "Integer (0-100)"
         }},
         "common_errors": "String",
-        "strengths": "String"
+        "strengths": "String",
+        "aspects_to_improve": ["String"]
     }}
 
     METODOLOGÍA DE ANÁLISIS:
@@ -406,6 +418,25 @@ def get_cv_analysis_prompt(puesto: str, filename: str, descripcion_puesto: str =
     - Si algo no está claro, es mejor omitirlo que inventarlo
     - SOLO incluye educación que esté EXPLÍCITAMENTE mencionada en el CV
     - NO infieras educación basada en el contexto o tipo de trabajo
+
+    REGLAS ESPECÍFICAS PARA ASPECTS_TO_IMPROVE:
+    - Cada elemento debe ser EXACTAMENTE una de las 10 opciones predefinidas
+    - NO inventes opciones adicionales o variaciones
+    - NO uses sinónimos o versiones alternativas de las opciones
+    - Selecciona SOLO los aspectos que realmente necesitan mejora en el CV
+    - Si un aspecto ya está bien desarrollado, NO lo incluyas
+    - Máximo 5-7 aspectos por CV (no incluir todos por defecto)
+    - Usa las opciones exactas como están escritas:
+      * "Logros cuantificables"
+      * "Palabras clave del sector"
+      * "Experiencia práctica relevante"
+      * "Objetivos profesionales claros"
+      * "Ortografía y gramática"
+      * "Longitud apropiada del CV"
+      * "Proyectos destacados"
+      * "Idiomas relevantes"
+      * "Herramientas de ofimática"
+      * "Herramientas de IA"
 
     FORMATO DE RESPUESTA:
     Usa tu capacidad de razonamiento para analizar el CV paso a paso. Piensa cuidadosamente sobre cada elemento antes de incluirlo en tu respuesta.

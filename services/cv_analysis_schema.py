@@ -168,3 +168,4 @@ class CVAnalysisResult(BaseModel):
     main_analysis: MainAnalysis
     common_errors: str
     strengths: str
+    aspects_to_improve: List[str]
