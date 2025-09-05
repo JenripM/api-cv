@@ -480,11 +480,6 @@ async def run_test():
 
 # --- NUEVO: helper para traer solo languages y skills ---
 def get_latest_cv_data(user_id: str):
-    """
-    Busca en la colección 'userCVs' el documento más reciente (por createdAt DESC)
-    del usuario indicado, y retorna únicamente 'languages' y 'skills' dentro de 'data'.
-    Si no hay registros, retorna None.
-    """
     cv_query = (db.collection('userCVs')
                   .where('userId', '==', user_id)
                   .order_by('createdAt', direction=firestore.Query.DESCENDING)
@@ -493,15 +488,25 @@ def get_latest_cv_data(user_id: str):
 
     docs = list(cv_query.stream())
     if not docs:
-        return None
+        return None, None  # Retorna dos valores
 
     cv_doc = docs[0].to_dict() or {}
     data = cv_doc.get('data') or {}
-    return {
-        "languages": data.get("languages"),
-        "skills": data.get("skills")
-    }
+    
+    # Extraer solo nombres de idiomas y habilidades
+    languages_list = data.get("languages") or []
+    skills_list = data.get("skills") or []
 
+    # Asegurarnos de que languages_list y skills_list son listas
+    if not isinstance(languages_list, list):
+        languages_list = []
+    if not isinstance(skills_list, list):
+        skills_list = []
+
+    languages = [lang.get('language') for lang in languages_list if isinstance(lang, dict)]
+    skills = [skill.get('name') for skill in skills_list if isinstance(skill, dict)]
+    
+    return languages, skills 
 
 # ------------------- tus modelos -------------------
 class User(BaseModel):
@@ -518,7 +523,9 @@ class User(BaseModel):
     pitchVideoUrl: Optional[str] = None
     career: Optional[str] = None
     # --- NUEVO: se adjunta el último CV (solo 'data') ---
-    latestCvData: Optional[dict] = None
+    languages: Optional[List[str]] = None  # Nuevo campo
+    skills: Optional[List[str]] = None     # Nuevo campo
+
 
     @staticmethod
     def convertir_fechas_a_string(data: Dict[str, any]) -> Dict[str, str]:
@@ -543,7 +550,9 @@ async def obtener_users(
     modality: Optional[str] = None,
     career: Optional[str] = None,
     pitchVideoUrl: Optional[bool] = None,
-    cvFileUrl: Optional[bool] = None
+    cvFileUrl: Optional[bool] = None,
+    languages: Optional[List[str]] = Query(None),
+    skills: Optional[List[str]] = Query(None)
 ):
     collection_ref = db.collection('users')
     query_ref = collection_ref.order_by('createdAt')
@@ -592,23 +601,36 @@ async def obtener_users(
         user_data = User.convertir_fechas_a_string(user_data)
         user_data['id'] = doc.id
 
+        user_id = user_data['id']
+        user_languages, user_skills = get_latest_cv_data(user_id)
+        user_data['languages'] = user_languages
+        user_data['skills'] = user_skills
         # Filtros in-memory por subcadena
         ok_name = True
         ok_loc = True
         ok_career = True
+        ok_languages = True
+        ok_skills = True
 
         if displayName:
             ok_name = (user_data.get('displayName') and displayName.lower() in user_data['displayName'].lower())
         if location:
             ok_loc = (user_data.get('location') and location.lower() in user_data['location'].lower())
+
+        if languages:
+            # Verificar que el usuario tenga al menos uno de los languages buscados
+            ok_languages = any(lang.lower() in [l.lower() for l in user_languages or []] 
+                              for lang in languages)
+        
+        if skills:
+            # Verificar que el usuario tenga al menos una de las skills buscadas
+            ok_skills = any(skill.lower() in [s.lower() for s in user_skills or []] 
+                           for skill in skills)
+
         if career:
             ok_career = (user_data.get('career') and career.lower() in user_data['career'].lower())
 
-        if ok_name and ok_loc and ok_career:
-            # --- NUEVO: adjuntar el último CV (solo 'data') ---
-            user_id = user_data['id']
-            user_data['latestCvData'] = get_latest_cv_data(user_id)
-
+        if ok_name and ok_loc and ok_career and ok_languages and ok_skills:
             users.append(User(**user_data))
 
         last_document = doc
@@ -617,8 +639,6 @@ async def obtener_users(
 
     next_last_id = last_document.id if last_document else None
     return UserResponse(users=users[:page_size], next_last_id=next_last_id)
-
-
 if __name__ == "__main__":
     import asyncio
     asyncio.run(run_test())
