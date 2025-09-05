@@ -508,7 +508,7 @@ def get_latest_cv_data(user_id: str):
     
     return languages, skills 
 
-# ------------------- tus modelos -------------------
+# ------------------- tus modelos --------------------
 class User(BaseModel):
     id: str
     displayName: Optional[str] = None
