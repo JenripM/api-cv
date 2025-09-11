@@ -284,7 +284,7 @@ async def analizar_cv(request: CVAnalysisRequest):
                     input_tokens=input_tokens,
                     output_tokens=output_tokens,
                     model_name=model_used,
-                    feature_name="cv_analysis",
+                    feature_name="cvAnalysis",
                     usage_description=f'Esta feature se ejecuta cada que alguien analiza un CV. Análisis de CV: "{request.filename}" para puesto: "{request.position.title}"',
                     user_id=None,  # No se proporciona user_id en la consulta
                     source_location="services/ai_service.py"
