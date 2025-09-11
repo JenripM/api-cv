@@ -71,19 +71,19 @@ async def log_ai_consumption(input_tokens: int, output_tokens: int, model_name: 
         total_cost = calculate_total_cost(input_tokens, output_tokens, model_name)
         
         log_entry = {
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
-            "model_name": model_name,
-            "feature_name": feature_name,
-            "usage_description": usage_description,
-            "source_location": source_location,
+            "inputTokens": input_tokens,
+            "outputTokens": output_tokens,
+            "modelName": model_name,
+            "featureName": feature_name,
+            "usageDescription": usage_description,
+            "sourceLocation": source_location,
             "totalCost": total_cost,
-            "created_at": datetime.now(timezone(timedelta(hours=-5))).strftime("%d de %B de %Y a las %I:%M %p UTC-5")
+            "createdAt": datetime.now(timezone(timedelta(hours=-5))).strftime("%d de %B de %Y a las %I:%M %p UTC-5")
         }
         
-        # Solo agregar user_id si se proporciona
+        # Solo agregar userId si se proporciona
         if user_id is not None:
-            log_entry["user_id"] = user_id
+            log_entry["userId"] = user_id
         
         db.collection("ai_consumption_logs").add(log_entry)
         print(f"✅ AI consumption logged: {feature_name} - {input_tokens} input, {output_tokens} output tokens - ${total_cost:.4f}")
@@ -101,19 +101,19 @@ def log_ai_consumption_sync(input_tokens: int, output_tokens: int, model_name: s
         total_cost = calculate_total_cost(input_tokens, output_tokens, model_name)
         
         log_entry = {
-            "input_tokens": input_tokens,
-            "output_tokens": output_tokens,
-            "model_name": model_name,
-            "feature_name": feature_name,
-            "usage_description": usage_description,
-            "source_location": source_location,
+            "inputTokens": input_tokens,
+            "outputTokens": output_tokens,
+            "modelName": model_name,
+            "featureName": feature_name,
+            "usageDescription": usage_description,
+            "sourceLocation": source_location,
             "totalCost": total_cost,
-            "created_at": datetime.now(timezone(timedelta(hours=-5))).strftime("%d de %B de %Y a las %I:%M %p UTC-5")
+            "createdAt": datetime.now(timezone(timedelta(hours=-5))).strftime("%d de %B de %Y a las %I:%M %p UTC-5")
         }
         
-        # Solo agregar user_id si se proporciona
+        # Solo agregar userId si se proporciona
         if user_id is not None:
-            log_entry["user_id"] = user_id
+            log_entry["userId"] = user_id
         
         db.collection("ai_consumption_logs").add(log_entry)
         print(f"✅ AI consumption logged: {feature_name} - {input_tokens} input, {output_tokens} output tokens - ${total_cost:.4f}")
