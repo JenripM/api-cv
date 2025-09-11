@@ -21,7 +21,7 @@ MODEL_PRICING = {
 
 def calculate_total_cost(input_tokens: int, output_tokens: int, model_name: str) -> float:
     """
-    Calcula el costo total en USD basado en los tokens y el modelo.
+    Calcula el costo total en USD basado en los tokens y el modelo. Con base a los precios por modelo de Gemini.
     
     Args:
         input_tokens: Número de tokens de entrada
