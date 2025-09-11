@@ -124,6 +124,15 @@ class AIService:
             # Generar campos "current" desde cv_data
             result_dict = self._add_current_fields_from_cv_data(result_dict, cv_data)
             
+            # Agregar información de tokens al resultado
+            if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                result_dict['token_usage'] = {
+                    'input_tokens': response.usage_metadata.prompt_token_count,
+                    'output_tokens': response.usage_metadata.candidates_token_count,
+                    'total_tokens': response.usage_metadata.total_token_count,
+                    'model_used': self.model
+                }
+            
             return result_dict
             
         except Exception as e:

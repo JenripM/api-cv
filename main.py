@@ -26,6 +26,7 @@ from services.ai_utils import (generate_analysis_id)
 from services.pdf_generator.pdf_generator import generar_pdf_con_secciones
 from services.pdf_generator.pdf_utils import descargar_imagen
 from services.ai_service import AIService
+from services.ai_consumption_logger import log_ai_consumption_sync
 
 
 from fastapi import FastAPI, Query
@@ -268,8 +269,35 @@ async def analizar_cv(request: CVAnalysisRequest):
                 error_response["json_path"] = json_path
             return JSONResponse(status_code=500, content=error_response)
         
-        # PASO 6: Leer PDF y devolver JSON con datos completos
-        print("✅ Paso 6: Preparando respuesta completa...")
+        # PASO 6: Logging de tokens en Firestore
+        print("📊 Paso 6: Registrando uso de tokens en Firestore...")
+        try:
+            # Extraer información de tokens del análisis
+            token_usage = analysis_results.get('token_usage', {})
+            if token_usage:
+                input_tokens = token_usage.get('input_tokens', 0)
+                output_tokens = token_usage.get('output_tokens', 0)
+                model_used = token_usage.get('model_used', 'unknown')
+                
+                # Registrar en Firestore sin user_id (no se proporciona en la consulta)
+                log_ai_consumption_sync(
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    model_name=model_used,
+                    feature_name="cv_analysis",
+                    usage_description=f'Esta feature se ejecuta cada que alguien analiza un CV. Análisis de CV: "{request.filename}" para puesto: "{request.position.title}"',
+                    user_id=None,  # No se proporciona user_id en la consulta
+                    source_location="services/ai_service.py"
+                )
+                print(f"✅ Tokens registrados: {input_tokens} input, {output_tokens} output")
+            else:
+                print("⚠️ No se encontró información de tokens en la respuesta")
+        except Exception as e:
+            print(f"⚠️ Error al registrar tokens (no crítico): {e}")
+            # No fallar el proceso por error al registrar tokens
+        
+        # PASO 7: Leer PDF y devolver JSON con datos completos
+        print("✅ Paso 7: Preparando respuesta completa...")
         try:
             # Leer el PDF como bytes y convertirlo a base64
             import base64
@@ -310,6 +338,10 @@ async def analizar_cv(request: CVAnalysisRequest):
                 final_response["data"]["match_score"] = request.match_score
             else:
                 final_response["data"]["used_match_score"] = False
+            
+            # Agregar información de tokens a la respuesta
+            if token_usage:
+                final_response["data"]["token_usage"] = token_usage
             
             # Calcular tiempo total
             end_time = time.time()
